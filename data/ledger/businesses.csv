@@ -1,0 +1,5 @@
+business_id,name,city,nace,sector,synthetic
+atelier-noir,Atelier Noir,Ghent,G47.24,Chocolatier (retail of confectionery),true
+cafe-sablon,Café Sablon,Brussels,I56.30,Café (beverage serving),true
+velo-schelde,Velo Schelde,Antwerp,G47.64,Bicycle shop (retail of sporting goods),true
+fleur-leuven,Fleur Leuven,Leuven,G47.76,Florist (null control: noise only),true

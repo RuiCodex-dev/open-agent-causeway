@@ -1,0 +1,57 @@
+{
+  "business_id": "fleur-leuven",
+  "seed": 2610,
+  "generator": "scripts/gen-ledgers.ts",
+  "spec": {
+    "id": "fleur-leuven",
+    "name": "Fleur Leuven",
+    "city": "Leuven",
+    "nace": "G47.76",
+    "sector": "Florist (null control: noise only)",
+    "base": {
+      "unit_price": 24,
+      "unit_cost": 11,
+      "units": 1500
+    },
+    "seasonality": [
+      1,
+      1,
+      1,
+      1,
+      1,
+      1,
+      1,
+      1,
+      1,
+      1,
+      1,
+      1
+    ],
+    "easter_uplift": 0,
+    "price_drift_per_year": 0.02,
+    "cost_drift_per_year": 0.02,
+    "price_elasticity": 0,
+    "units_per_ticket": 1.2,
+    "noise_sd": 0.035,
+    "cost_weights": [],
+    "demand_elasticities": [],
+    "actions": [],
+    "truth": [
+      {
+        "question": "Why did our revenue change in the first half of 2025?",
+        "metric": "revenue",
+        "period": "2025-H1",
+        "baseline": "2024-H1",
+        "causes": [],
+        "not_causes": [
+          "tourism_demand",
+          "retail_demand",
+          "energy_cost",
+          "input_cost_cocoa",
+          "easter_shift"
+        ]
+      }
+    ]
+  },
+  "eurostat_updated_note": "drivers fetched live from Eurostat at generation time"
+}

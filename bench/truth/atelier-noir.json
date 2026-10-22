@@ -1,0 +1,88 @@
+{
+  "business_id": "atelier-noir",
+  "seed": 2610,
+  "generator": "scripts/gen-ledgers.ts",
+  "spec": {
+    "id": "atelier-noir",
+    "name": "Atelier Noir",
+    "city": "Ghent",
+    "nace": "G47.24",
+    "sector": "Chocolatier (retail of confectionery)",
+    "base": {
+      "unit_price": 9.5,
+      "unit_cost": 3.6,
+      "units": 5200
+    },
+    "seasonality": [
+      0.85,
+      1.25,
+      0.95,
+      0.95,
+      0.85,
+      0.8,
+      0.85,
+      0.85,
+      0.9,
+      1,
+      1.15,
+      1.6
+    ],
+    "easter_uplift": 0.6,
+    "price_drift_per_year": 0.015,
+    "cost_drift_per_year": 0.01,
+    "price_elasticity": -0.6,
+    "units_per_ticket": 1.7,
+    "noise_sd": 0.025,
+    "cost_weights": [
+      {
+        "driver": "choc",
+        "weight": 0.62,
+        "lag": 1,
+        "power": 2.5
+      },
+      {
+        "driver": "elec",
+        "weight": 0.06,
+        "lag": 0
+      }
+    ],
+    "demand_elasticities": [
+      {
+        "driver": "tourism",
+        "elasticity": 0.35
+      }
+    ],
+    "actions": [
+      {
+        "type": "price_change",
+        "from": "2025-04",
+        "pct": 0.06,
+        "owner_fact": "We raised our list prices by 6% on 1 April 2025."
+      },
+      {
+        "type": "unit_cost_step",
+        "from": "2025-05",
+        "pct": 0.04,
+        "owner_fact": "We switched to a more expensive single-origin couverture supplier in May 2025."
+      }
+    ],
+    "truth": [
+      {
+        "question": "Why did our gross margin fall in the first half of 2025?",
+        "metric": "gross_margin_pct",
+        "period": "2025-H1",
+        "baseline": "2024-H1",
+        "causes": [
+          "input_cost_cocoa",
+          "supplier_change"
+        ],
+        "not_causes": [
+          "energy_cost",
+          "tourism_demand",
+          "easter_shift"
+        ]
+      }
+    ]
+  },
+  "eurostat_updated_note": "drivers fetched live from Eurostat at generation time"
+}

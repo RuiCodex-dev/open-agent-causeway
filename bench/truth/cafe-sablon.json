@@ -1,0 +1,67 @@
+{
+  "business_id": "cafe-sablon",
+  "seed": 2610,
+  "generator": "scripts/gen-ledgers.ts",
+  "spec": {
+    "id": "cafe-sablon",
+    "name": "Café Sablon",
+    "city": "Brussels",
+    "nace": "I56.30",
+    "sector": "Café (beverage serving)",
+    "base": {
+      "unit_price": 4.2,
+      "unit_cost": 1.3,
+      "units": 14000
+    },
+    "seasonality": [
+      0.8,
+      0.85,
+      0.95,
+      1.05,
+      1.1,
+      1.1,
+      1.2,
+      1.2,
+      1.05,
+      0.95,
+      0.85,
+      0.9
+    ],
+    "easter_uplift": 0.15,
+    "price_drift_per_year": 0.03,
+    "cost_drift_per_year": 0.025,
+    "price_elasticity": -0.3,
+    "units_per_ticket": 2.1,
+    "noise_sd": 0.03,
+    "cost_weights": [
+      {
+        "driver": "elec",
+        "weight": 0.08,
+        "lag": 0
+      }
+    ],
+    "demand_elasticities": [
+      {
+        "driver": "tourism",
+        "elasticity": 0.9
+      }
+    ],
+    "actions": [],
+    "truth": [
+      {
+        "question": "Why did our revenue change in Q2 2026 compared with Q2 2025?",
+        "metric": "revenue",
+        "period": "2026-Q2",
+        "baseline": "2025-Q2",
+        "causes": [
+          "tourism_demand"
+        ],
+        "not_causes": [
+          "input_cost_cocoa",
+          "retail_demand"
+        ]
+      }
+    ]
+  },
+  "eurostat_updated_note": "drivers fetched live from Eurostat at generation time"
+}
