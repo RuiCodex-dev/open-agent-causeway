@@ -45,12 +45,12 @@ export function buildRouter(cfg: Config, onCall?: (r: CallRecord) => void): Mode
   return new ModelRouter({ primary, fallback, pacers: { nvidia: new Pacer({ perMinute: cfg.NVIDIA_RPM_BUDGET, burst: 8, concurrency: 3 }) }, onCall });
 }
 
-export function makeGenerator(router: ModelRouter, role: ChatRequest["role"], opts: { thinking?: boolean; maxTokens?: number; temperature?: number } = {}): Generator {
+export function makeGenerator(router: ModelRouter, role: ChatRequest["role"], opts: { thinking?: boolean; maxTokens?: number; temperature?: number; json?: boolean } = {}): Generator {
   return async (prompt, _attachments, systemPrompt, onStream, abortSignal) => {
     const messages: ChatRequest["messages"] = [];
     if (systemPrompt) messages.push({ role: "system", content: systemPrompt });
     messages.push({ role: "user", content: prompt });
-    const r = await router.chat({ role, messages, thinking: opts.thinking, maxTokens: opts.maxTokens, temperature: opts.temperature, signal: abortSignal });
+    const r = await router.chat({ role, messages, thinking: opts.thinking, maxTokens: opts.maxTokens, temperature: opts.temperature, json: opts.json, signal: abortSignal });
     onStream?.(r.text);
     return { text: r.text, metadata: { provider: r.provider, model: r.model, latency_ms: r.latency_ms, retries: r.retries, reasoning: r.reasoning, usage: r.usage } };
   };
@@ -77,7 +77,17 @@ export function extractJson(text: string): unknown {
     }
     if (ch === '"') inStr = true;
     else if (ch === open) depth++;
-    else if (ch === close && --depth === 0) return JSON.parse(body.slice(start, i + 1));
+    else if (ch === close && --depth === 0) {
+      const raw = body.slice(start, i + 1);
+      try {
+        return JSON.parse(raw);
+      } catch (e) {
+        // Common model slip: unquoted evidence ids inside arrays, e.g. ["ev-1a2b3c4d", ev-5e6f7a8b].
+        const fixed = raw.replace(/([[,]\s*)(ev-[0-9a-f]{8})(?=\s*[,\]])/g, '$1"$2"').replace(/,\s*([}\]])/g, "$1");
+        if (fixed !== raw) return JSON.parse(fixed);
+        throw e;
+      }
+    }
   }
   throw new Error("unterminated JSON");
 }

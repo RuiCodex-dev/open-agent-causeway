@@ -1,0 +1,1290 @@
+{
+  "run_id": "r-20261022031520-e33b25",
+  "data_mode": "snapshot",
+  "reasoner": "nemotron",
+  "trace_id": "trace-r-20261022031520-e33b25",
+  "log_file": "logs\\trace-r-20261022031520-e33b25.jsonl",
+  "agents": [
+    {
+      "name": "Framer",
+      "role": "Turns the question into metric, period and baseline, or asks one clarifying question"
+    },
+    {
+      "name": "Hypothesiser",
+      "role": "Proposes rival explanations from the cause catalogue"
+    },
+    {
+      "name": "Analyst",
+      "role": "Compiles each test to SQL, runs it on Zetaris, computes statistics and applies the rule table (no LLM)"
+    },
+    {
+      "name": "Skeptic",
+      "role": "Challenges every supported verdict with an untested confounder; veto until the test runs"
+    },
+    {
+      "name": "Writer",
+      "role": "Writes the explanation card; every claim cites evidence"
+    },
+    {
+      "name": "Verifier",
+      "role": "Re-executes cited queries and strikes any number not found in the evidence (no LLM, veto)"
+    },
+    {
+      "name": "Memory Keeper",
+      "role": "Recalls and stores owner facts and verdicts in Meterless H-MEM"
+    }
+  ],
+  "status": "success",
+  "frame": {
+    "business_id": "atelier-noir",
+    "metric": "gross_margin_pct",
+    "period": "2025-H1",
+    "baseline": "2024-H1",
+    "geo": "BE",
+    "question": "Why did our gross margin fall in the first half of 2025?"
+  },
+  "output": {
+    "verdict": "Supplier change and Cocoa-driven input costs best explain the change in gross margin (%) in 2025-H1.",
+    "chain": [
+      "Supplier change: unit-cost step after 2025-05 not explained by cocoa prices: z=11.04 (|z| >= 2) in the expected direction; lag n/a in [0,0]; share n/a; survived Skeptic challenge ch-1-1 (easter timing contradicted)",
+      "Cocoa-driven input costs: material change 11% tracked by the outcome (r=0.94); lag 1 in [0,3]; share 122%"
+    ],
+    "claims": [
+      {
+        "id": "c-1",
+        "text": "gross margin (%) changed by -10.01 percentage points in 2025-H1 compared with 2024-H1.",
+        "evidence_ids": [
+          "ev-68d18815"
+        ],
+        "verified": true
+      },
+      {
+        "id": "c-2",
+        "text": "Supplier change: unit cost stepped up 6.8% beyond what cocoa prices explain.",
+        "evidence_ids": [
+          "ev-68d18815",
+          "ev-6344a76b",
+          "ev-e3879755",
+          "ev-80883669",
+          "ev-803e6457",
+          "ev-21148c3b"
+        ],
+        "verified": true
+      },
+      {
+        "id": "c-3",
+        "text": "Cocoa-driven input costs: the driver moved 10.7% between the windows; it tracks the business's own series with a correlation of 0.94; it accounts for about -12.2 points of margin.",
+        "evidence_ids": [
+          "ev-68d18815",
+          "ev-6344a76b",
+          "ev-e3879755",
+          "ev-4fd13909",
+          "ev-e822c07b",
+          "ev-9babb391"
+        ],
+        "verified": true
+      },
+      {
+        "id": "c-4",
+        "text": "Our own price changes worked the other way, adding about 2.9 points.",
+        "evidence_ids": [
+          "ev-68d18815",
+          "ev-6344a76b",
+          "ev-e3879755",
+          "ev-6ab9e7ac"
+        ],
+        "verified": true
+      }
+    ],
+    "struck_claims": [],
+    "rejected": [
+      {
+        "hypothesis": "Easter timing",
+        "why": "the change persists without the Easter months (99% of it remains)",
+        "evidence_ids": [
+          "ev-68d18815",
+          "ev-6344a76b",
+          "ev-e3879755",
+          "ev-fd34da22",
+          "ev-bc480666",
+          "ev-f7293794"
+        ]
+      }
+    ],
+    "offsets": [
+      {
+        "hypothesis": "Our own price changes",
+        "why": "driver moved the opposite way (z=99.00, change 5%)",
+        "evidence_ids": [
+          "ev-68d18815",
+          "ev-6344a76b",
+          "ev-e3879755",
+          "ev-6ab9e7ac"
+        ]
+      }
+    ],
+    "limitations": [
+      "Association with public statistics is evidence consistent with a cause, not proof of it.",
+      "The business ledger in this demo is synthetic; the public drivers are real Eurostat series."
+    ],
+    "what_would_change": [
+      "An input-cost invoice series that does not follow the public price index.",
+      "A one-off event in the period that the ledger does not show."
+    ],
+    "actions": [
+      "Review list prices against the current input cost per unit.",
+      "Ask suppliers for fixed-price contracts for the next season.",
+      "Track cost per unit monthly so the next squeeze shows early."
+    ],
+    "memory_used": [
+      {
+        "fact": "We switched to a more expensive single-origin couverture supplier in May 2025.",
+        "source": "owner",
+        "memory_id": "mem-3",
+        "cause_type": "supplier_change"
+      }
+    ]
+  },
+  "hypotheses": [
+    {
+      "id": "hyp-1",
+      "title": "Supplier change",
+      "cause_type": "supplier_change",
+      "proposed_by": "Memory",
+      "verdict": "supported",
+      "confidence": "high",
+      "role": "cause",
+      "rule": "unit-cost step after 2025-05 not explained by cocoa prices: z=11.04 (|z| >= 2) in the expected direction; lag n/a in [0,0]; share n/a; survived Skeptic challenge ch-1-1 (easter timing contradicted)",
+      "numbers": {
+        "outcome_change": -10.013,
+        "outcome_z": -2.909,
+        "residual_step_eur": 0.3553,
+        "residual_step_pct": 6.76,
+        "driver_z": 11.042,
+        "months_after": 2
+      },
+      "evidence_ids": [
+        "ev-68d18815",
+        "ev-6344a76b",
+        "ev-e3879755",
+        "ev-80883669",
+        "ev-803e6457",
+        "ev-21148c3b"
+      ]
+    },
+    {
+      "id": "hyp-2",
+      "title": "Cocoa-driven input costs",
+      "cause_type": "input_cost_cocoa",
+      "proposed_by": "Hypothesiser",
+      "verdict": "supported",
+      "confidence": "high",
+      "role": "cause",
+      "rule": "material change 11% tracked by the outcome (r=0.94); lag 1 in [0,3]; share 122%",
+      "numbers": {
+        "outcome_change": -10.013,
+        "outcome_z": -2.909,
+        "splice_ratio": 0.71940448,
+        "assoc_r": 0.9417,
+        "best_lag": 1,
+        "driver_z": 1.015,
+        "driver_change_pct": 10.72,
+        "cost_elasticity": 2.222,
+        "driver_cost_effect_pp": -12.199,
+        "cost_effect_pp": -12.953,
+        "price_effect_pp": 2.94,
+        "delta_margin_pp": -10.013
+      },
+      "evidence_ids": [
+        "ev-68d18815",
+        "ev-6344a76b",
+        "ev-e3879755",
+        "ev-4fd13909",
+        "ev-e822c07b",
+        "ev-9babb391"
+      ]
+    },
+    {
+      "id": "hyp-3",
+      "title": "Our own price changes",
+      "cause_type": "own_price_change",
+      "proposed_by": "Hypothesiser",
+      "verdict": "contradicted",
+      "confidence": "medium",
+      "role": "offset",
+      "rule": "driver moved the opposite way (z=99.00, change 5%)",
+      "numbers": {
+        "outcome_change": -10.013,
+        "outcome_z": -2.909,
+        "driver_z": 99,
+        "driver_change_pct": 4.55,
+        "price_effect_pp": 2.94,
+        "delta_margin_pp": -10.013
+      },
+      "evidence_ids": [
+        "ev-68d18815",
+        "ev-6344a76b",
+        "ev-e3879755",
+        "ev-6ab9e7ac"
+      ]
+    },
+    {
+      "id": "hyp-4",
+      "title": "Energy costs",
+      "cause_type": "energy_cost",
+      "proposed_by": "Hypothesiser",
+      "verdict": "inconclusive",
+      "confidence": "low",
+      "role": "none",
+      "rule": "within noise or mixed signals (z=-0.30, r=0.84, lag ok=true, share ok=false)",
+      "numbers": {
+        "outcome_change": -10.013,
+        "outcome_z": -2.909,
+        "assoc_r": 0.8438,
+        "best_lag": 2,
+        "driver_z": -0.3,
+        "driver_change_pct": 3.44,
+        "cost_elasticity": 0.5407,
+        "driver_cost_effect_pp": -0.951,
+        "cost_effect_pp": -12.953,
+        "price_effect_pp": 2.94,
+        "delta_margin_pp": -10.013
+      },
+      "evidence_ids": [
+        "ev-68d18815",
+        "ev-6344a76b",
+        "ev-e3879755",
+        "ev-1d656412",
+        "ev-9babb391"
+      ]
+    },
+    {
+      "id": "hyp-5",
+      "title": "Easter timing",
+      "cause_type": "easter_shift",
+      "proposed_by": "Skeptic",
+      "verdict": "contradicted",
+      "confidence": "medium",
+      "role": "none",
+      "rule": "the change persists without the Easter months (99% of it remains)",
+      "numbers": {
+        "outcome_change": -10.013,
+        "outcome_z": -2.909,
+        "easter_months_target": 1,
+        "easter_months_baseline": 1,
+        "change_excluding_easter": -9.867,
+        "share_of_change_kept": 0.985
+      },
+      "evidence_ids": [
+        "ev-68d18815",
+        "ev-6344a76b",
+        "ev-e3879755",
+        "ev-fd34da22",
+        "ev-bc480666",
+        "ev-f7293794"
+      ]
+    }
+  ],
+  "challenges": [
+    {
+      "id": "ch-1-1",
+      "target_hypothesis_id": "hyp-1",
+      "confounder": "Easter timing",
+      "argument": "If Easter shifted timing of chocolate sales into Q2 2025 versus Q2 2024, higher-margin seasonal products could have been disproportionately sold earlier/later, altering gross margin independently of supplier unit costs.",
+      "required_test": "easter_shift",
+      "resolved": true,
+      "outcome": "Easter timing is contradicted: the change persists without the Easter months (99% of it remains)"
+    }
+  ],
+  "verdict_changes": [],
+  "evidence": [
+    {
+      "id": "ev-68d18815",
+      "purpose": "gross_margin_pct by month, 2021-01 to 2025-06",
+      "engine": "duckdb-snapshot",
+      "sql": "SELECT b.period AS period, ROUND(100 * (1 - SUM(b.cogs) / SUM(b.revenue)), 4) AS value FROM business_period b WHERE b.business_id = 'atelier-noir' AND b.period BETWEEN '2021-01' AND '2025-06' GROUP BY b.period ORDER BY b.period",
+      "columns": [
+        "period",
+        "value"
+      ],
+      "rows_preview": [
+        [
+          "2021-01",
+          62.2366
+        ],
+        [
+          "2021-02",
+          60.9434
+        ],
+        [
+          "2021-03",
+          63.6747
+        ],
+        [
+          "2021-04",
+          62.6646
+        ],
+        [
+          "2021-05",
+          62.5471
+        ],
+        [
+          "2021-06",
+          62.8829
+        ],
+        [
+          "2021-07",
+          61.9172
+        ],
+        [
+          "2021-08",
+          61.5747
+        ],
+        [
+          "2021-09",
+          62.1407
+        ],
+        [
+          "2021-10",
+          62.5905
+        ],
+        [
+          "2021-11",
+          62.8459
+        ],
+        [
+          "2021-12",
+          62.6654
+        ]
+      ],
+      "row_count": 54,
+      "sha256": "23437b36d4517bff98a0aac4395d9fcaf5f248e44cc2fcee7498dfdd87daedcf",
+      "source_tables": [
+        "causeway.business_period"
+      ],
+      "executed_at": "2026-10-22T03:15:32.109Z"
+    },
+    {
+      "id": "ev-6344a76b",
+      "purpose": "totals 2025-H1",
+      "engine": "duckdb-snapshot",
+      "sql": "SELECT SUM(b.revenue) AS revenue, SUM(b.cogs) AS cogs, SUM(b.units) AS units, SUM(b.transactions) AS transactions, COUNT(*) AS months FROM business_period b WHERE b.business_id = 'atelier-noir' AND b.period IN ('2025-01', '2025-02', '2025-03', '2025-04', '2025-05', '2025-06')",
+      "columns": [
+        "revenue",
+        "cogs",
+        "units",
+        "transactions",
+        "months"
+      ],
+      "rows_preview": [
+        [
+          369166.17000000004,
+          225943.06000000003,
+          35350,
+          20794,
+          6
+        ]
+      ],
+      "row_count": 1,
+      "sha256": "58327b2d31fd6fff4adff781cc0cafd781639391fd555c3a97a36b8ffc8e52be",
+      "source_tables": [
+        "causeway.business_period"
+      ],
+      "executed_at": "2026-10-22T03:15:32.124Z"
+    },
+    {
+      "id": "ev-e3879755",
+      "purpose": "totals 2024-H1",
+      "engine": "duckdb-snapshot",
+      "sql": "SELECT SUM(b.revenue) AS revenue, SUM(b.cogs) AS cogs, SUM(b.units) AS units, SUM(b.transactions) AS transactions, COUNT(*) AS months FROM business_period b WHERE b.business_id = 'atelier-noir' AND b.period IN ('2024-01', '2024-02', '2024-03', '2024-04', '2024-05', '2024-06')",
+      "columns": [
+        "revenue",
+        "cogs",
+        "units",
+        "transactions",
+        "months"
+      ],
+      "rows_preview": [
+        [
+          344072.77,
+          176134.59,
+          34530,
+          20312,
+          6
+        ]
+      ],
+      "row_count": 1,
+      "sha256": "64858ae47e3af07b08cfe710795e4408ffb8478d8506c4fbf0d5010d7aaa3022",
+      "source_tables": [
+        "causeway.business_period"
+      ],
+      "executed_at": "2026-10-22T03:15:32.131Z"
+    },
+    {
+      "id": "ev-80883669",
+      "purpose": "unit cost by month around the supplier change",
+      "engine": "duckdb-snapshot",
+      "sql": "SELECT b.period AS period, ROUND(SUM(b.cogs) / SUM(b.units), 6) AS value FROM business_period b WHERE b.business_id = 'atelier-noir' AND b.period BETWEEN '2022-11' AND '2025-06' GROUP BY b.period ORDER BY b.period",
+      "columns": [
+        "period",
+        "value"
+      ],
+      "rows_preview": [
+        [
+          "2022-11",
+          4.283957
+        ],
+        [
+          "2022-12",
+          4.276492
+        ],
+        [
+          "2023-01",
+          4.412162
+        ],
+        [
+          "2023-02",
+          4.686653
+        ],
+        [
+          "2023-03",
+          4.484228
+        ],
+        [
+          "2023-04",
+          4.812171
+        ],
+        [
+          "2023-05",
+          4.874261
+        ],
+        [
+          "2023-06",
+          4.681029
+        ],
+        [
+          "2023-07",
+          4.963097
+        ],
+        [
+          "2023-08",
+          5.191314
+        ],
+        [
+          "2023-09",
+          4.788304
+        ],
+        [
+          "2023-10",
+          4.794443
+        ]
+      ],
+      "row_count": 32,
+      "sha256": "cddd02e8bbbc2b09fd92a94ed079315482de6eac6974a4199ac2d877ad088b28",
+      "source_tables": [
+        "causeway.business_period"
+      ],
+      "executed_at": "2026-10-22T03:15:30.521Z"
+    },
+    {
+      "id": "ev-803e6457",
+      "purpose": "hicp_choc_i15 by month",
+      "engine": "duckdb-snapshot",
+      "sql": "SELECT d.period AS period, d.value AS value, d.source_period AS source_period FROM driver_month d WHERE d.series_id = 'hicp_choc_i15' AND d.period BETWEEN '2022-10' AND '2025-06' ORDER BY d.period",
+      "columns": [
+        "period",
+        "value",
+        "source_period"
+      ],
+      "rows_preview": [
+        [
+          "2022-10",
+          115.6,
+          "2022-10"
+        ],
+        [
+          "2022-11",
+          114.98,
+          "2022-11"
+        ],
+        [
+          "2022-12",
+          117.19,
+          "2022-12"
+        ],
+        [
+          "2023-01",
+          122.02,
+          "2023-01"
+        ],
+        [
+          "2023-02",
+          118.5,
+          "2023-02"
+        ],
+        [
+          "2023-03",
+          123.67,
+          "2023-03"
+        ],
+        [
+          "2023-04",
+          124.72,
+          "2023-04"
+        ],
+        [
+          "2023-05",
+          122.03,
+          "2023-05"
+        ],
+        [
+          "2023-06",
+          126.23,
+          "2023-06"
+        ],
+        [
+          "2023-07",
+          129.8,
+          "2023-07"
+        ],
+        [
+          "2023-08",
+          124.19,
+          "2023-08"
+        ],
+        [
+          "2023-09",
+          124.11,
+          "2023-09"
+        ]
+      ],
+      "row_count": 33,
+      "sha256": "23c6651297832e9811ba291b56644f32000dd96eddad5d57fad8d3f18a46d67d",
+      "source_tables": [
+        "causeway.driver_month"
+      ],
+      "executed_at": "2026-10-22T03:15:30.531Z"
+    },
+    {
+      "id": "ev-21148c3b",
+      "purpose": "hicp_choc_i25 by month (newer index base)",
+      "engine": "duckdb-snapshot",
+      "sql": "SELECT d.period AS period, d.value AS value, d.source_period AS source_period FROM driver_month d WHERE d.series_id = 'hicp_choc_i25' AND d.period BETWEEN '2022-10' AND '2025-06' ORDER BY d.period",
+      "columns": [
+        "period",
+        "value",
+        "source_period"
+      ],
+      "rows_preview": [
+        [
+          "2024-01",
+          98.03,
+          "2024-01"
+        ],
+        [
+          "2024-02",
+          97.63,
+          "2024-02"
+        ],
+        [
+          "2024-03",
+          98.39,
+          "2024-03"
+        ],
+        [
+          "2024-04",
+          95,
+          "2024-04"
+        ],
+        [
+          "2024-05",
+          92.83,
+          "2024-05"
+        ],
+        [
+          "2024-06",
+          95.99,
+          "2024-06"
+        ],
+        [
+          "2024-07",
+          97.38,
+          "2024-07"
+        ],
+        [
+          "2024-08",
+          96.99,
+          "2024-08"
+        ],
+        [
+          "2024-09",
+          94.25,
+          "2024-09"
+        ],
+        [
+          "2024-10",
+          96.21,
+          "2024-10"
+        ],
+        [
+          "2024-11",
+          95.83,
+          "2024-11"
+        ],
+        [
+          "2024-12",
+          96.91,
+          "2024-12"
+        ]
+      ],
+      "row_count": 18,
+      "sha256": "d8623be5b7c3b17b0799c098274276f6624cf343e749b8434c7ea1748d6a5798",
+      "source_tables": [
+        "causeway.driver_month"
+      ],
+      "executed_at": "2026-10-22T03:15:30.536Z"
+    },
+    {
+      "id": "ev-4fd13909",
+      "purpose": "hicp_choc_i15 by month",
+      "engine": "duckdb-snapshot",
+      "sql": "SELECT d.period AS period, d.value AS value, d.source_period AS source_period FROM driver_month d WHERE d.series_id = 'hicp_choc_i15' AND d.period BETWEEN '2020-01' AND '2025-06' ORDER BY d.period",
+      "columns": [
+        "period",
+        "value",
+        "source_period"
+      ],
+      "rows_preview": [
+        [
+          "2020-01",
+          105.88,
+          "2020-01"
+        ],
+        [
+          "2020-02",
+          103.78,
+          "2020-02"
+        ],
+        [
+          "2020-03",
+          106.98,
+          "2020-03"
+        ],
+        [
+          "2020-04",
+          106.93,
+          "2020-04"
+        ],
+        [
+          "2020-05",
+          106.11,
+          "2020-05"
+        ],
+        [
+          "2020-06",
+          107.25,
+          "2020-06"
+        ],
+        [
+          "2020-07",
+          108.87,
+          "2020-07"
+        ],
+        [
+          "2020-08",
+          105.52,
+          "2020-08"
+        ],
+        [
+          "2020-09",
+          107.11,
+          "2020-09"
+        ],
+        [
+          "2020-10",
+          105.28,
+          "2020-10"
+        ],
+        [
+          "2020-11",
+          107.16,
+          "2020-11"
+        ],
+        [
+          "2020-12",
+          107,
+          "2020-12"
+        ]
+      ],
+      "row_count": 66,
+      "sha256": "079c2c4529bef6be30ed324d9455c8485cfa313483bfb726ceb2f29f25c9b804",
+      "source_tables": [
+        "causeway.driver_month"
+      ],
+      "executed_at": "2026-10-22T03:15:30.558Z"
+    },
+    {
+      "id": "ev-e822c07b",
+      "purpose": "hicp_choc_i25 by month (newer index base)",
+      "engine": "duckdb-snapshot",
+      "sql": "SELECT d.period AS period, d.value AS value, d.source_period AS source_period FROM driver_month d WHERE d.series_id = 'hicp_choc_i25' AND d.period BETWEEN '2020-01' AND '2025-06' ORDER BY d.period",
+      "columns": [
+        "period",
+        "value",
+        "source_period"
+      ],
+      "rows_preview": [
+        [
+          "2024-01",
+          98.03,
+          "2024-01"
+        ],
+        [
+          "2024-02",
+          97.63,
+          "2024-02"
+        ],
+        [
+          "2024-03",
+          98.39,
+          "2024-03"
+        ],
+        [
+          "2024-04",
+          95,
+          "2024-04"
+        ],
+        [
+          "2024-05",
+          92.83,
+          "2024-05"
+        ],
+        [
+          "2024-06",
+          95.99,
+          "2024-06"
+        ],
+        [
+          "2024-07",
+          97.38,
+          "2024-07"
+        ],
+        [
+          "2024-08",
+          96.99,
+          "2024-08"
+        ],
+        [
+          "2024-09",
+          94.25,
+          "2024-09"
+        ],
+        [
+          "2024-10",
+          96.21,
+          "2024-10"
+        ],
+        [
+          "2024-11",
+          95.83,
+          "2024-11"
+        ],
+        [
+          "2024-12",
+          96.91,
+          "2024-12"
+        ]
+      ],
+      "row_count": 18,
+      "sha256": "d8623be5b7c3b17b0799c098274276f6624cf343e749b8434c7ea1748d6a5798",
+      "source_tables": [
+        "causeway.driver_month"
+      ],
+      "executed_at": "2026-10-22T03:15:30.561Z"
+    },
+    {
+      "id": "ev-9babb391",
+      "purpose": "unit_cost by month for the lag test",
+      "engine": "duckdb-snapshot",
+      "sql": "SELECT b.period AS period, ROUND(SUM(b.cogs) / SUM(b.units), 6) AS value FROM business_period b WHERE b.business_id = 'atelier-noir' AND b.period BETWEEN '2021-07' AND '2025-06' GROUP BY b.period ORDER BY b.period",
+      "columns": [
+        "period",
+        "value"
+      ],
+      "rows_preview": [
+        [
+          "2021-07",
+          3.6449
+        ],
+        [
+          "2021-08",
+          3.682242
+        ],
+        [
+          "2021-09",
+          3.632513
+        ],
+        [
+          "2021-10",
+          3.593809
+        ],
+        [
+          "2021-11",
+          3.573708
+        ],
+        [
+          "2021-12",
+          3.595522
+        ],
+        [
+          "2022-01",
+          3.793401
+        ],
+        [
+          "2022-02",
+          3.879642
+        ],
+        [
+          "2022-03",
+          3.755716
+        ],
+        [
+          "2022-04",
+          3.88398
+        ],
+        [
+          "2022-05",
+          3.910741
+        ],
+        [
+          "2022-06",
+          3.713144
+        ]
+      ],
+      "row_count": 48,
+      "sha256": "819447a46e7ab66fe2aa3d62791a06986cc9249728ad885d76974a72fae2e9ef",
+      "source_tables": [
+        "causeway.business_period"
+      ],
+      "executed_at": "2026-10-22T03:15:30.740Z"
+    },
+    {
+      "id": "ev-6ab9e7ac",
+      "purpose": "unit price by month",
+      "engine": "duckdb-snapshot",
+      "sql": "SELECT b.period AS period, ROUND(SUM(b.revenue) / SUM(b.units), 6) AS value FROM business_period b WHERE b.business_id = 'atelier-noir' AND b.period BETWEEN '2021-01' AND '2025-06' GROUP BY b.period ORDER BY b.period",
+      "columns": [
+        "period",
+        "value"
+      ],
+      "rows_preview": [
+        [
+          "2021-01",
+          9.5
+        ],
+        [
+          "2021-02",
+          9.511793
+        ],
+        [
+          "2021-03",
+          9.523603
+        ],
+        [
+          "2021-04",
+          9.535426
+        ],
+        [
+          "2021-05",
+          9.547265
+        ],
+        [
+          "2021-06",
+          9.559118
+        ],
+        [
+          "2021-07",
+          9.570985
+        ],
+        [
+          "2021-08",
+          9.582867
+        ],
+        [
+          "2021-09",
+          9.594763
+        ],
+        [
+          "2021-10",
+          9.606677
+        ],
+        [
+          "2021-11",
+          9.618602
+        ],
+        [
+          "2021-12",
+          9.630544
+        ]
+      ],
+      "row_count": 54,
+      "sha256": "4161c5a29a70d90804ce37b23bc9eb077faecc22fb1b1a87f268dbefb2669014",
+      "source_tables": [
+        "causeway.business_period"
+      ],
+      "executed_at": "2026-10-22T03:15:30.640Z"
+    },
+    {
+      "id": "ev-1d656412",
+      "purpose": "elec_nonhh by month",
+      "engine": "duckdb-snapshot",
+      "sql": "SELECT d.period AS period, d.value AS value, d.source_period AS source_period FROM driver_month d WHERE d.series_id = 'elec_nonhh' AND d.period BETWEEN '2020-01' AND '2025-06' ORDER BY d.period",
+      "columns": [
+        "period",
+        "value",
+        "source_period"
+      ],
+      "rows_preview": [
+        [
+          "2020-01",
+          0.1872,
+          "2020-S1"
+        ],
+        [
+          "2020-02",
+          0.1872,
+          "2020-S1"
+        ],
+        [
+          "2020-03",
+          0.1872,
+          "2020-S1"
+        ],
+        [
+          "2020-04",
+          0.1872,
+          "2020-S1"
+        ],
+        [
+          "2020-05",
+          0.1872,
+          "2020-S1"
+        ],
+        [
+          "2020-06",
+          0.1872,
+          "2020-S1"
+        ],
+        [
+          "2020-07",
+          0.1821,
+          "2020-S2"
+        ],
+        [
+          "2020-08",
+          0.1821,
+          "2020-S2"
+        ],
+        [
+          "2020-09",
+          0.1821,
+          "2020-S2"
+        ],
+        [
+          "2020-10",
+          0.1821,
+          "2020-S2"
+        ],
+        [
+          "2020-11",
+          0.1821,
+          "2020-S2"
+        ],
+        [
+          "2020-12",
+          0.1821,
+          "2020-S2"
+        ]
+      ],
+      "row_count": 66,
+      "sha256": "44262e51b32b5a0fd98bf3bb017643e2d823c9fcc0643fbc29e77d9a5adb8c4d",
+      "source_tables": [
+        "causeway.driver_month"
+      ],
+      "executed_at": "2026-10-22T03:15:30.731Z"
+    },
+    {
+      "id": "ev-fd34da22",
+      "purpose": "Easter window shares by month",
+      "engine": "duckdb-snapshot",
+      "sql": "SELECT c.period AS period, c.easter_share AS easter_share, c.easter_date AS easter_date FROM calendar_month c WHERE c.period IN ('2024-01', '2024-02', '2024-03', '2024-04', '2024-05', '2024-06', '2025-01', '2025-02', '2025-03', '2025-04', '2025-05', '2025-06') ORDER BY c.period",
+      "columns": [
+        "period",
+        "easter_share",
+        "easter_date"
+      ],
+      "rows_preview": [
+        [
+          "2024-01",
+          0,
+          "2024-03-31"
+        ],
+        [
+          "2024-02",
+          0,
+          "2024-03-31"
+        ],
+        [
+          "2024-03",
+          1,
+          "2024-03-31"
+        ],
+        [
+          "2024-04",
+          0,
+          "2024-03-31"
+        ],
+        [
+          "2024-05",
+          0,
+          "2024-03-31"
+        ],
+        [
+          "2024-06",
+          0,
+          "2024-03-31"
+        ],
+        [
+          "2025-01",
+          0,
+          "2025-04-20"
+        ],
+        [
+          "2025-02",
+          0,
+          "2025-04-20"
+        ],
+        [
+          "2025-03",
+          0,
+          "2025-04-20"
+        ],
+        [
+          "2025-04",
+          1,
+          "2025-04-20"
+        ],
+        [
+          "2025-05",
+          0,
+          "2025-04-20"
+        ],
+        [
+          "2025-06",
+          0,
+          "2025-04-20"
+        ]
+      ],
+      "row_count": 12,
+      "sha256": "216e23980397c36901158a3a96f89f80bfbb5f092d5ac0776f6bebad06ede822",
+      "source_tables": [
+        "causeway.calendar_month"
+      ],
+      "executed_at": "2026-10-22T03:15:32.137Z"
+    },
+    {
+      "id": "ev-bc480666",
+      "purpose": "totals excluding Easter months (target)",
+      "engine": "duckdb-snapshot",
+      "sql": "SELECT SUM(b.revenue) AS revenue, SUM(b.cogs) AS cogs, SUM(b.units) AS units, SUM(b.transactions) AS transactions, COUNT(*) AS months FROM business_period b WHERE b.business_id = 'atelier-noir' AND b.period IN ('2025-01', '2025-02', '2025-05', '2025-06')",
+      "columns": [
+        "revenue",
+        "cogs",
+        "units",
+        "transactions",
+        "months"
+      ],
+      "rows_preview": [
+        [
+          216287.14,
+          132594.94,
+          20786,
+          12227,
+          4
+        ]
+      ],
+      "row_count": 1,
+      "sha256": "37c694b0ca92330ebfbf580f2e44c7237d1f8cc5db1d1aba01ceda0a1760314d",
+      "source_tables": [
+        "causeway.business_period"
+      ],
+      "executed_at": "2026-10-22T03:15:32.140Z"
+    },
+    {
+      "id": "ev-f7293794",
+      "purpose": "totals excluding Easter months (baseline)",
+      "engine": "duckdb-snapshot",
+      "sql": "SELECT SUM(b.revenue) AS revenue, SUM(b.cogs) AS cogs, SUM(b.units) AS units, SUM(b.transactions) AS transactions, COUNT(*) AS months FROM business_period b WHERE b.business_id = 'atelier-noir' AND b.period IN ('2024-01', '2024-02', '2024-05', '2024-06')",
+      "columns": [
+        "revenue",
+        "cogs",
+        "units",
+        "transactions",
+        "months"
+      ],
+      "rows_preview": [
+        [
+          203246.19999999998,
+          104545.32999999999,
+          20396,
+          11998,
+          4
+        ]
+      ],
+      "row_count": 1,
+      "sha256": "e23a00a586d20e593be3d15c5f1b846146a7ab4cf75bd4151dc3d39b822128d7",
+      "source_tables": [
+        "causeway.business_period"
+      ],
+      "executed_at": "2026-10-22T03:15:32.142Z"
+    }
+  ],
+  "verification": {
+    "requery": [
+      {
+        "evidence_id": "ev-68d18815",
+        "ok": true,
+        "sha_before": "23437b36d4517bff98a0aac4395d9fcaf5f248e44cc2fcee7498dfdd87daedcf",
+        "sha_after": "23437b36d4517bff98a0aac4395d9fcaf5f248e44cc2fcee7498dfdd87daedcf"
+      },
+      {
+        "evidence_id": "ev-6344a76b",
+        "ok": true,
+        "sha_before": "58327b2d31fd6fff4adff781cc0cafd781639391fd555c3a97a36b8ffc8e52be",
+        "sha_after": "58327b2d31fd6fff4adff781cc0cafd781639391fd555c3a97a36b8ffc8e52be"
+      },
+      {
+        "evidence_id": "ev-e3879755",
+        "ok": true,
+        "sha_before": "64858ae47e3af07b08cfe710795e4408ffb8478d8506c4fbf0d5010d7aaa3022",
+        "sha_after": "64858ae47e3af07b08cfe710795e4408ffb8478d8506c4fbf0d5010d7aaa3022"
+      },
+      {
+        "evidence_id": "ev-80883669",
+        "ok": true,
+        "sha_before": "cddd02e8bbbc2b09fd92a94ed079315482de6eac6974a4199ac2d877ad088b28",
+        "sha_after": "cddd02e8bbbc2b09fd92a94ed079315482de6eac6974a4199ac2d877ad088b28"
+      },
+      {
+        "evidence_id": "ev-803e6457",
+        "ok": true,
+        "sha_before": "23c6651297832e9811ba291b56644f32000dd96eddad5d57fad8d3f18a46d67d",
+        "sha_after": "23c6651297832e9811ba291b56644f32000dd96eddad5d57fad8d3f18a46d67d"
+      },
+      {
+        "evidence_id": "ev-21148c3b",
+        "ok": true,
+        "sha_before": "d8623be5b7c3b17b0799c098274276f6624cf343e749b8434c7ea1748d6a5798",
+        "sha_after": "d8623be5b7c3b17b0799c098274276f6624cf343e749b8434c7ea1748d6a5798"
+      },
+      {
+        "evidence_id": "ev-4fd13909",
+        "ok": true,
+        "sha_before": "079c2c4529bef6be30ed324d9455c8485cfa313483bfb726ceb2f29f25c9b804",
+        "sha_after": "079c2c4529bef6be30ed324d9455c8485cfa313483bfb726ceb2f29f25c9b804"
+      },
+      {
+        "evidence_id": "ev-e822c07b",
+        "ok": true,
+        "sha_before": "d8623be5b7c3b17b0799c098274276f6624cf343e749b8434c7ea1748d6a5798",
+        "sha_after": "d8623be5b7c3b17b0799c098274276f6624cf343e749b8434c7ea1748d6a5798"
+      },
+      {
+        "evidence_id": "ev-9babb391",
+        "ok": true,
+        "sha_before": "819447a46e7ab66fe2aa3d62791a06986cc9249728ad885d76974a72fae2e9ef",
+        "sha_after": "819447a46e7ab66fe2aa3d62791a06986cc9249728ad885d76974a72fae2e9ef"
+      },
+      {
+        "evidence_id": "ev-6ab9e7ac",
+        "ok": true,
+        "sha_before": "4161c5a29a70d90804ce37b23bc9eb077faecc22fb1b1a87f268dbefb2669014",
+        "sha_after": "4161c5a29a70d90804ce37b23bc9eb077faecc22fb1b1a87f268dbefb2669014"
+      }
+    ],
+    "struck": 0,
+    "revisions": 0
+  },
+  "sources": {
+    "framer": "nemotron",
+    "hypothesiser": "nemotron",
+    "skeptic": "nemotron",
+    "writer": "offline"
+  },
+  "model_calls": [
+    {
+      "provider": "nvidia",
+      "model": "nvidia/nemotron-3.5-lightning-30b-a3b",
+      "ok": true,
+      "failover": false
+    },
+    {
+      "provider": "nvidia",
+      "model": null,
+      "ok": false,
+      "failover": false
+    },
+    {
+      "provider": "nvidia",
+      "model": null,
+      "ok": false,
+      "failover": false
+    },
+    {
+      "provider": "nvidia",
+      "model": null,
+      "ok": false,
+      "failover": false
+    },
+    {
+      "provider": "nebius",
+      "model": "nvidia/nemotron-3-super-120b-a12b",
+      "ok": true,
+      "failover": true
+    },
+    {
+      "provider": "nebius",
+      "model": "nvidia/nemotron-3-super-120b-a12b",
+      "ok": true,
+      "failover": true
+    },
+    {
+      "provider": "nebius",
+      "model": "nvidia/nemotron-3-super-120b-a12b",
+      "ok": true,
+      "failover": true
+    },
+    {
+      "provider": "nebius",
+      "model": "nvidia/nemotron-3-super-120b-a12b",
+      "ok": true,
+      "failover": true
+    }
+  ],
+  "world_model": {
+    "events": {
+      "upsertEntity": 26,
+      "relate": 51,
+      "assertFact": 5
+    },
+    "log_file": "logs\\worldmodel-r-20261022031520-e33b25.jsonl"
+  },
+  "memory": {
+    "ledger": {
+      "create": 6,
+      "read": 17
+    },
+    "ledger_file": "logs/hmem-ledger.jsonl"
+  },
+  "execution_time_seconds": 19.6
+}

@@ -44,6 +44,7 @@ export class OpenAICompatProvider implements ChatProvider {
       stream: false,
       chat_template_kwargs: { enable_thinking: req.thinking === true },
     };
+    if (req.json) body.response_format = { type: "json_object" };
     const started = Date.now();
     let res: Response;
     try {

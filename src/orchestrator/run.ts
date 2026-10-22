@@ -70,7 +70,7 @@ export async function runInvestigation(req: RunInput, opts: RunOptions = {}) {
     trace.log("ModelRouter", "call", { ...c });
   });
   const gens: { fast: Generator | null; reason: Generator | null; write: Generator | null } = router
-    ? { fast: makeGenerator(router, "fast", { maxTokens: 400 }), reason: makeGenerator(router, "reasoner", { maxTokens: 2500, temperature: 0.3 }), write: makeGenerator(router, "reasoner", { maxTokens: 2500, temperature: 0.2 }) }
+    ? { fast: makeGenerator(router, "fast", { maxTokens: 400, json: true }), reason: makeGenerator(router, "reasoner", { maxTokens: 2500, temperature: 0.3, json: true }), write: makeGenerator(router, "reasoner", { maxTokens: 2500, temperature: 0.2, json: true }) }
     : { fast: null, reason: null, write: null };
   trace.log("Orchestrator", "start", { input: req.input, options: req.options ?? {}, model_provider: router ? router.primaryId : "offline" });
 

@@ -45,7 +45,8 @@ export class SnapshotDuckdb implements DataAdapter {
     const started = Date.now();
     const reader = await conn.runAndReadAll(sql);
     const columns = reader.columnNames();
-    const rows = reader.getRowsJS() as unknown[][];
+    // DuckDB returns BigInt for integer aggregates; JSON (and the Zetaris path) use plain numbers.
+    const rows = (reader.getRowsJS() as unknown[][]).map((r) => r.map((v) => (typeof v === "bigint" ? Number(v) : v)));
     return { columns, rows, engine: this.engine, elapsed_ms: Date.now() - started };
   }
 }

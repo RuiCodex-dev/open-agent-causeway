@@ -15,6 +15,8 @@ export interface ChatRequest {
   temperature?: number;
   /** Ask the model to think (Nemotron `enable_thinking`). Off by default: content must be non-empty. */
   thinking?: boolean;
+  /** Ask for a JSON object (OpenAI-compatible response_format). */
+  json?: boolean;
   signal?: AbortSignal;
 }
 
