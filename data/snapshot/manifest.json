@@ -1,0 +1,47 @@
+{
+  "created_at": "2026-10-22T02:24:20.818Z",
+  "source": "Zetaris Lightning 2.4.3.1 (local), USL lightning.metastore.causeway_ns.causeway, read over REST",
+  "note": "Business ledgers are SYNTHETIC (labelled). Driver series are real Eurostat data (re-use with attribution).",
+  "tables": {
+    "business": {
+      "sql": "SELECT business_id, name, city, nace, sector, synthetic FROM lightning.metastore.causeway_ns.causeway.business ORDER BY business_id",
+      "executed_at": "2026-10-22T02:24:02.889Z",
+      "row_count": 4,
+      "sha256": "6ff61a55faef9bd0b51f85bf3ea286e79d3a4feab3f75b443b9adbb67942e36a",
+      "file": "business.parquet",
+      "engine": "zetaris"
+    },
+    "calendar_month": {
+      "sql": "SELECT period, easter_date, easter_share, days_in_month FROM lightning.metastore.causeway_ns.causeway.calendar_month ORDER BY period",
+      "executed_at": "2026-10-22T02:24:07.187Z",
+      "row_count": 96,
+      "sha256": "3595f4cac3aade56dafa61aa21228a266a330f563bb204f367cdad1001b87045",
+      "file": "calendar_month.parquet",
+      "engine": "zetaris"
+    },
+    "driver_series": {
+      "sql": "SELECT series_id, dataset, label, unit_label, source_grain, licence FROM lightning.metastore.causeway_ns.causeway.driver_series ORDER BY series_id",
+      "executed_at": "2026-10-22T02:24:08.219Z",
+      "row_count": 7,
+      "sha256": "a3247d5bbbcd3822c2ddff1d06593f0aa0aca8222a821816c80fe0224d817b9b",
+      "file": "driver_series.parquet",
+      "engine": "zetaris"
+    },
+    "business_period": {
+      "sql": "SELECT row_key, business_id, period, units, transactions, revenue, cogs, gross_margin_pct, avg_ticket, synthetic FROM lightning.metastore.causeway_ns.causeway.business_period ORDER BY row_key",
+      "executed_at": "2026-10-22T02:24:09.164Z",
+      "row_count": 264,
+      "sha256": "6a9750321cd043d2acf5d3760e4cad8418fcee0d519d45c33504add21cb9c5bd",
+      "file": "business_period.parquet",
+      "engine": "zetaris"
+    },
+    "driver_month": {
+      "sql": "SELECT obs_key, series_id, period, value, source_period FROM lightning.metastore.causeway_ns.causeway.driver_month ORDER BY obs_key",
+      "executed_at": "2026-10-22T02:24:10.617Z",
+      "row_count": 571,
+      "sha256": "da714fc0ffd959bf7e00bda0309dba91b80c56f40c965fa5787372a0a9c9bcd1",
+      "file": "driver_month.parquet",
+      "engine": "zetaris"
+    }
+  }
+}
