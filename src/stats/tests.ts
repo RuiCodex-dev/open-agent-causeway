@@ -88,6 +88,21 @@ export interface LagPoint {
   lag: number;
   r: number;
   n: number;
+  /** OLS slope of outcome YoY on driver YoY (an elasticity-like pass-through). */
+  slope: number;
+}
+
+export function olsSlope(xs: number[], ys: number[]): number {
+  if (xs.length !== ys.length || xs.length < 3) return NaN;
+  const mx = mean(xs);
+  const my = mean(ys);
+  let num = 0;
+  let den = 0;
+  for (let i = 0; i < xs.length; i++) {
+    num += (xs[i]! - mx) * (ys[i]! - my);
+    den += (xs[i]! - mx) ** 2;
+  }
+  return den > 0 ? num / den : NaN;
 }
 
 export interface LaggedAssoc {
@@ -116,7 +131,7 @@ export function laggedAssociation(outcome: Point[], driver: Point[], window: str
         ys.push(o);
       }
     }
-    return { lag, r: round(pearson(xs, ys), 4), n: xs.length };
+    return { lag, r: round(pearson(xs, ys), 4), n: xs.length, slope: round(olsSlope(xs, ys), 6) };
   });
   let best: LagPoint | null = null;
   for (const x of byLag) {

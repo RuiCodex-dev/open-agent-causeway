@@ -19,6 +19,8 @@ export interface RuleInputs {
   contribution_share: number | null;
   /** Data coverage of the test window (0..1). */
   coverage: number;
+  /** Relative change of the driver between the windows (e.g. 0.107 = +10.7 %), if measured. */
+  driver_change?: number | null;
 }
 
 export interface RuleResult {
@@ -34,6 +36,10 @@ export const THRESHOLDS = {
   flatZ: 1,
   minAssocR: 0.3,
   minShare: 0.15,
+  /** A driver change this large counts as material even when its YoY path was already unusual before. */
+  materialChange: 0.05,
+  flatChange: 0.02,
+  materialAssocR: 0.5,
 } as const;
 
 function pct(x: number): string {
@@ -58,11 +64,17 @@ export function applyRules(x: RuleInputs): RuleResult {
   }
   const absZ = Math.abs(x.driver_z);
   const dir = Math.sign(x.driver_z);
-  if (x.outcome_moved && absZ < T.flatZ) {
-    return { verdict: "contradicted", rule: `driver flat (|z|=${absZ.toFixed(2)} < ${T.flatZ}) while the outcome moved`, confidence: "medium" };
+  const change = finite(x.driver_change ?? null) ? (x.driver_change as number) : null;
+  const flatByChange = change === null || Math.abs(change) < T.flatChange;
+  if (x.outcome_moved && absZ < T.flatZ && flatByChange) {
+    return { verdict: "contradicted", rule: `driver flat (|z|=${absZ.toFixed(2)} < ${T.flatZ}${change === null ? "" : `, change ${pct(change)}`}) while the outcome moved`, confidence: "medium" };
   }
-  if (absZ >= T.supportZ && dir === -x.expected_sign) {
-    return { verdict: "contradicted", rule: `driver moved the opposite way (z=${x.driver_z.toFixed(2)})`, confidence: "medium" };
+  // Material path: a large move in the expected direction that the outcome-side series tracks closely.
+  const material =
+    change !== null && Math.abs(change) >= T.materialChange && Math.sign(change) === x.expected_sign &&
+    finite(x.assoc_r) && x.assoc_r >= T.materialAssocR;
+  if ((absZ >= T.supportZ && dir === -x.expected_sign) || (change !== null && Math.abs(change) >= T.materialChange && Math.sign(change) === -x.expected_sign && absZ >= T.flatZ)) {
+    return { verdict: "contradicted", rule: `driver moved the opposite way (z=${x.driver_z.toFixed(2)}${change === null ? "" : `, change ${pct(change)}`})`, confidence: "medium" };
   }
   if (finite(x.contribution_share) && x.contribution_share < 0 && absZ >= T.supportZ) {
     return { verdict: "contradicted", rule: `contribution has the wrong sign (share ${pct(x.contribution_share)})`, confidence: "medium" };
@@ -73,11 +85,11 @@ export function applyRules(x: RuleInputs): RuleResult {
   const lagOk = !finite(x.best_lag) || (x.best_lag >= x.lag_window[0] && x.best_lag <= x.lag_window[1]);
   const shareOk = !finite(x.contribution_share) || x.contribution_share >= T.minShare;
   const assocOk = !finite(x.assoc_r) || x.assoc_r > -T.minAssocR;
-  if (absZ >= T.supportZ && dir === x.expected_sign && lagOk && shareOk && assocOk) {
-    const high = absZ >= T.highZ && (!finite(x.contribution_share) || x.contribution_share >= 0.3);
+  if (((absZ >= T.supportZ && dir === x.expected_sign) || material) && lagOk && shareOk && assocOk) {
+    const high = (absZ >= T.highZ || (material && (x.assoc_r ?? 0) >= 0.8)) && (!finite(x.contribution_share) || x.contribution_share >= 0.3);
     return {
       verdict: "supported",
-      rule: `z=${x.driver_z.toFixed(2)} (|z| >= ${T.supportZ}) in the expected direction; lag ${finite(x.best_lag) ? x.best_lag : "n/a"} in [${x.lag_window.join(",")}]; share ${finite(x.contribution_share) ? pct(x.contribution_share) : "n/a"}`,
+      rule: `${material && absZ < T.supportZ ? `material change ${pct(change as number)} tracked by the outcome (r=${(x.assoc_r as number).toFixed(2)})` : `z=${x.driver_z.toFixed(2)} (|z| >= ${T.supportZ}) in the expected direction`}; lag ${finite(x.best_lag) ? x.best_lag : "n/a"} in [${x.lag_window.join(",")}]; share ${finite(x.contribution_share) ? pct(x.contribution_share) : "n/a"}`,
       confidence: high ? "high" : "medium",
     };
   }

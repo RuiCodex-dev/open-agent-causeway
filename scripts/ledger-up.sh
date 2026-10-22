@@ -7,9 +7,10 @@ set -a; [ -f .env ] && . ./.env; set +a
 : "${CAUSEWAY_LEDGER_PASSWORD:?set CAUSEWAY_LEDGER_PASSWORD in .env}"
 NET="${ZETARIS_DOCKER_NETWORK:-zetaris_default}"
 ROOT="$(pwd -W 2>/dev/null || pwd)"
-if docker ps -a --format '{{.Names}}' | grep -qx causeway-ledger; then
-  docker start causeway-ledger >/dev/null
-else
+# Recreated on every start: the data is seeded from the committed CSVs, and the Zetaris network is
+# recreated by `docker compose up`, so a stopped container would point at a removed network.
+docker rm -f causeway-ledger >/dev/null 2>&1 || true
+if true; then
   docker run -d --name causeway-ledger --network "$NET" --memory 256m \
     -e POSTGRES_DB=causeway -e POSTGRES_USER=causeway -e POSTGRES_PASSWORD="$CAUSEWAY_LEDGER_PASSWORD" \
     -v "$ROOT/data/ledger:/seed:ro" -v "$ROOT/zetaris/ledger/init.sql:/docker-entrypoint-initdb.d/init.sql:ro" \

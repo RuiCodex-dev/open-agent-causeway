@@ -13,3 +13,4 @@ docs/video/raw/
 ui/dist/
 .vite/
 tmp/
+data/memory/
