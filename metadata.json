@@ -1,0 +1,21 @@
+{
+  "schema": "causeway-metadata/1",
+  "status": "in-development",
+  "project": "Causeway",
+  "tagline": "The agent that argues with itself before it tells you why.",
+  "track": "Track 02 - The Agent That Can Explain Why",
+  "team": { "name": "Rui Codex", "members": [{ "github": "altinayselman", "role": "all", "primary_contact": true }] },
+  "links": { "repo": "https://github.com/RuiCodex-dev/open-agent-causeway", "video": null, "deck": null },
+  "sponsor_technologies": {
+    "zetaris": { "role": "Only data path (planned): ledger + Eurostat via the Unified Semantic Layer 'causeway'", "files": [] },
+    "meterless": { "engines": [], "power_provider": "Meterless Runtime (planned primary provider)" },
+    "nvidia": { "models": [], "files": [] },
+    "cursor": { "usage": "Development environment; rules in .cursor/rules, sessions logged in docs/cursor-sessions", "files": [".cursor/rules/", "docs/cursor-sessions/"], "commit_trailer": "Cursor-Session" }
+  },
+  "pre_existing": [
+    "Design documents written 2026-10-15..18 before the window (no product code)",
+    "Meterless reference engines @0aa7417 (Apache-2.0, to be vendored unmodified)",
+    "Pattern of the Zetaris getting-started Eurostat JSON-stat recipe @44668b2 (Apache-2.0)"
+  ],
+  "licence": "Apache-2.0"
+}

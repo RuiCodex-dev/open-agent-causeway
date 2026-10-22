@@ -1,0 +1,21 @@
+---
+description: Causeway architecture and non-negotiable rules
+alwaysApply: true
+---
+# Causeway — project rules
+
+Causeway answers "why did <metric> change?" for small businesses by testing rival hypotheses against
+real data federated through Zetaris, and shows the evidence behind every sentence.
+
+- TypeScript on Node 22, ESM, strict mode. Fastify API on :8000, Vite React UI on :8080.
+- **Models propose, code decides.** No model ever writes SQL, computes a statistic or issues a verdict.
+  SQL comes only from `src/tests/compiler.ts` templates; statistics only from `src/stats/`; verdicts only
+  from the rule table in `src/stats/rules.ts`.
+- **Portable SQL subset only** (valid in Zetaris Lightning / Spark SQL and DuckDB): SELECT, JOIN, GROUP BY,
+  window functions, CASE, CAST, simple arithmetic. One statement per call, no trailing semicolon.
+- Every model call goes through `src/meterless/generator.ts` (the Meterless-style injected generator).
+- Meterless engines under `vendor/meterless/` are vendored unmodified; adapt them in `src/meterless/`.
+- Never invent data. Synthetic business ledgers are labelled synthetic everywhere. Never read
+  `bench/truth/` or `output_examples/` from `src/`.
+- Every agent action writes a JSONL trace line (`logs/trace-<run>.jsonl`).
+- English only in code, comments, UI and docs.

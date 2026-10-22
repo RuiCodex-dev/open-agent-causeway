@@ -1,0 +1,9 @@
+---
+description: Testing rules
+globs: ["src/**/*.ts", "test/**/*.ts"]
+---
+# Testing
+- vitest. Every function in `src/stats/` and every SQL template has unit tests with known inputs and outputs.
+- Tests never call the network; use fakes for Zetaris and model providers (fake clock for the pacer).
+- SQL templates are executed against DuckDB in tests.
+- Never assert on saved model outputs; assert on structure and deterministic code paths.

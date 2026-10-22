@@ -1,0 +1,12 @@
+---
+description: UI style and accessibility
+globs: ["ui/**/*"]
+---
+# UI
+- Editorial evidence-desk look: paper, ink, one signal colour. Tokens: --paper #F6F3EC, --ink #1C1F24,
+  --rule #D8D2C4, --muted #6B6F76, --signal #1F5FBF, --support #2F7A4F, --refute #B4442E (dark variants in
+  the style guide). Inconclusive = muted + dotted rule. No gradients, no glow.
+- Type: Source Serif 4 for the verdict and headings; IBM Plex Sans / Plex Mono for UI, tables and SQL.
+- Keyboard first: visible focus, logical tab order, Enter asks, E opens the evidence drawer for a focused claim.
+- WCAG AA contrast; respect prefers-reduced-motion.
+- Always show the mode badge (live/sample, model provider) and label synthetic businesses as synthetic.

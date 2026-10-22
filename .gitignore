@@ -1,0 +1,15 @@
+node_modules/
+dist/
+logs/
+coverage/
+.env
+.env.*
+!.env.example
+*.key
+*.pem
+*.log
+.DS_Store
+docs/video/raw/
+ui/dist/
+.vite/
+tmp/
