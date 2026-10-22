@@ -10,6 +10,7 @@ import { USL_PREFIX } from "../data/uslSchema.ts";
 import { Analyst } from "../agents/analyst.ts";
 import { CAUSES } from "../agents/catalogue.ts";
 import { frameQuestion } from "../agents/framer.ts";
+import { guardQuestion } from "../agents/guard.ts";
 import { propose } from "../agents/hypothesiser.ts";
 import { resolveChallenge, review } from "../agents/skeptic.ts";
 import { verify } from "../agents/verifier.ts";
@@ -37,6 +38,7 @@ export interface RunOptions {
 }
 
 export const AGENTS = [
+  { name: "Guard", role: "Classifies the question with NVIDIA Nemotron Content Safety before any agent runs" },
   { name: "Framer", role: "Turns the question into metric, period and baseline, or asks one clarifying question" },
   { name: "Hypothesiser", role: "Proposes rival explanations from the cause catalogue" },
   { name: "Analyst", role: "Compiles each test to SQL, runs it on Zetaris, computes statistics and applies the rule table (no LLM)" },
@@ -76,6 +78,8 @@ export async function runInvestigation(req: RunInput, opts: RunOptions = {}) {
     : { fast: null, reason: null, write: null };
   trace.log("Orchestrator", "start", { input: req.input, options: req.options ?? {}, model_provider: router ? router.primaryId : "offline" });
 
+  const guard = await guardQuestion(req.input.question, router, trace);
+  if (!guard.safe) throw Object.assign(new Error(`The question was refused by the input guard (${guard.source}).`), { type: "UnsafeInput" });
   const { data, mode, failover } = await pickData(cfg, req.options?.sample_mode, trace);
   const t = (name: string) => (data.engine === "zetaris" ? `${USL_PREFIX}.${name}` : name);
   const biz = await data.query(`SELECT business_id, name, city, nace, sector, synthetic FROM ${t("business")} WHERE business_id = '${req.input.business_id.replace(/[^a-z0-9-]/gi, "")}'`);
@@ -199,7 +203,7 @@ export async function runInvestigation(req: RunInput, opts: RunOptions = {}) {
     evidence: [...analyst.evidence.values()].map((e) => ({ id: e.id, purpose: e.purpose, engine: e.engine, sql: e.sql, columns: e.columns, rows_preview: e.rows.slice(0, 12), row_count: e.row_count, sha256: e.sha256, source_tables: e.source_tables, executed_at: e.executed_at })),
     verification: { requery: report.requery, struck_first_pass: struckFirstPass, struck: report.struck, revisions },
     markovian: { ...loop.report(), log_file: mkFile },
-    sources: { framer: framed.source, hypothesiser: hypSource, skeptic: skepticSource, writer: writerSource },
+    sources: { guard: guard.source, framer: framed.source, hypothesiser: hypSource, skeptic: skepticSource, writer: writerSource },
     model_calls: calls,
     world_model: { events: graph.counts(), log_file: wmFile },
     memory: { ledger: memory.ledgerStats(), ledger_file: "logs/hmem-ledger.jsonl" },

@@ -100,7 +100,8 @@ export async function buildServer(): Promise<FastifyInstance> {
       const res = await runInvestigation(parsed.data as RunInput, { config: cfg });
       return reply.send(res);
     } catch (e) {
-      const code = (e as { type?: string }).type === "InvalidInput" ? 400 : 502;
+      const t = (e as { type?: string }).type;
+      const code = t === "InvalidInput" || t === "UnsafeInput" ? 400 : 502;
       return reply.code(code).send(errorBody(parsed.data.run_id, e, started));
     }
   });

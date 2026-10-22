@@ -4,8 +4,21 @@
   "project": "Causeway",
   "tagline": "The agent that argues with itself before it tells you why.",
   "track": "Track 02 - The Agent That Can Explain Why",
-  "team": { "name": "Rui Codex", "members": [{ "github": "altinayselman", "role": "all", "primary_contact": true }] },
-  "links": { "repo": "https://github.com/RuiCodex-dev/open-agent-causeway", "video": null, "deck": null },
+  "team": {
+    "name": "Rui Codex",
+    "members": [
+      {
+        "github": "altinayselman",
+        "role": "all",
+        "primary_contact": true
+      }
+    ]
+  },
+  "links": {
+    "repo": "https://github.com/RuiCodex-dev/open-agent-causeway",
+    "video": null,
+    "deck": null
+  },
   "entry_points": {
     "http": "POST http://localhost:8000/run",
     "http_async": "POST http://localhost:8000/runs, then GET /runs/:id/events (SSE)",
@@ -19,46 +32,180 @@
     "sample": "SAMPLE_MODE=true: Zetaris snapshot (read through Zetaris) executed by DuckDB, real agent logic; Nemotron if a key is set, otherwise the deterministic offline reasoner (labelled)"
   },
   "agents": [
-    { "name": "Framer", "model": "nvidia/nemotron-3.5-lightning-30b-a3b", "authority": "may stop the run with one clarifying question", "file": "src/agents/framer.ts" },
-    { "name": "Hypothesiser", "model": "nvidia/nemotron-3.5-super-vl-120b-a12b", "authority": "proposes rival hypotheses from the typed cause catalogue", "file": "src/agents/hypothesiser.ts" },
-    { "name": "Analyst", "model": null, "authority": "compiles tests to SQL, runs them on Zetaris, computes statistics, applies the rule table", "file": "src/agents/analyst.ts" },
-    { "name": "Skeptic", "model": "nvidia/nemotron-3.5-super-vl-120b-a12b", "authority": "veto: a supported verdict must face an untested confounder test; also challenges the null", "file": "src/agents/skeptic.ts" },
-    { "name": "Writer", "model": "nvidia/nemotron-3.5-super-vl-120b-a12b", "authority": "writes the explanation card; every claim cites evidence", "file": "src/agents/writer.ts" },
-    { "name": "Verifier", "model": null, "authority": "veto: re-executes cited SQL and strikes numbers not in the evidence", "file": "src/agents/verifier.ts" },
-    { "name": "Memory Keeper", "model": null, "authority": "recalls and stores owner facts and verdicts (Meterless H-MEM)", "file": "src/meterless/memory.ts" }
+    {
+      "name": "Guard",
+      "model": "nvidia/nemotron-3.5-content-safety",
+      "authority": "refuses unsafe questions before any agent runs (deny-list fallback without an NVIDIA route)",
+      "file": "src/agents/guard.ts"
+    },
+    {
+      "name": "Framer",
+      "model": "nvidia/nemotron-3.5-lightning-30b-a3b",
+      "authority": "may stop the run with one clarifying question",
+      "file": "src/agents/framer.ts"
+    },
+    {
+      "name": "Hypothesiser",
+      "model": "nvidia/nemotron-3.5-super-vl-120b-a12b",
+      "authority": "proposes rival hypotheses from the typed cause catalogue",
+      "file": "src/agents/hypothesiser.ts"
+    },
+    {
+      "name": "Analyst",
+      "model": null,
+      "authority": "compiles tests to SQL, runs them on Zetaris, computes statistics, applies the rule table",
+      "file": "src/agents/analyst.ts"
+    },
+    {
+      "name": "Skeptic",
+      "model": "nvidia/nemotron-3.5-super-vl-120b-a12b",
+      "authority": "veto: a supported verdict must face an untested confounder test; also challenges the null",
+      "file": "src/agents/skeptic.ts"
+    },
+    {
+      "name": "Writer",
+      "model": "nvidia/nemotron-3.5-super-vl-120b-a12b",
+      "authority": "writes the explanation card; every claim cites evidence",
+      "file": "src/agents/writer.ts"
+    },
+    {
+      "name": "Verifier",
+      "model": null,
+      "authority": "veto: re-executes cited SQL and strikes numbers not in the evidence",
+      "file": "src/agents/verifier.ts"
+    },
+    {
+      "name": "Memory Keeper",
+      "model": null,
+      "authority": "recalls and stores owner facts and verdicts (Meterless H-MEM)",
+      "file": "src/meterless/memory.ts"
+    }
   ],
   "sponsor_technologies": {
     "zetaris": {
       "role": "Only live data path: federates the PostgreSQL ledger datasource and 7 Eurostat REST tables through the Unified Semantic Layer 'causeway'; every number traces to a Lightning SQL run that the Verifier re-executes.",
-      "objects": ["datasource CAUSEWAY_LEDGER", "lightning database EUROSTAT_REST (7 REST tables)", "USL lightning.metastore.causeway_ns.causeway (5 tables, 4 foreign keys)"],
-      "files": ["src/adapters/zetaris.ts", "scripts/onboard.ts", "scripts/snapshot.ts", "scripts/parity.ts", "zetaris/sql/", "docs/zetaris/"],
-      "evidence": ["logs/trace-*.jsonl (action=query_zetaris|requery_zetaris)", "data/snapshot/manifest.json", "docs/evidence/parity-2026-10-22.txt", "docs/evidence/cp2-live-zetaris-run.json", "docs/zetaris/usl-causeway-erd.png"]
+      "objects": [
+        "datasource CAUSEWAY_LEDGER",
+        "lightning database EUROSTAT_REST (7 REST tables)",
+        "USL lightning.metastore.causeway_ns.causeway (5 tables, 4 foreign keys)"
+      ],
+      "files": [
+        "src/adapters/zetaris.ts",
+        "scripts/onboard.ts",
+        "scripts/snapshot.ts",
+        "scripts/parity.ts",
+        "zetaris/sql/",
+        "docs/zetaris/"
+      ],
+      "evidence": [
+        "logs/trace-*.jsonl (action=query_zetaris|requery_zetaris)",
+        "data/snapshot/manifest.json",
+        "docs/evidence/parity-2026-10-22.txt",
+        "docs/evidence/cp2-live-zetaris-run.json",
+        "docs/zetaris/usl-causeway-erd.png"
+      ]
     },
     "meterless": {
       "engines": [
-        { "name": "World Model", "role": "shared evidence graph for all agents (hypotheses, evidence, verdicts, challenges, claims, owner facts) with provenance", "files": ["src/meterless/worldModel.ts", "vendor/meterless/world-model/"], "evidence": ["logs/worldmodel-*.jsonl", "docs/evidence/conformance-world-model.txt"] },
-        { "name": "H-MEM", "role": "cross-session owner facts, verdict history, feedback and the append-only trust ledger; recall before the Hypothesiser", "files": ["src/meterless/memory.ts", "vendor/meterless/hmem/"], "evidence": ["logs/hmem-ledger.jsonl", "docs/evidence/conformance-hmem.txt"] },
-        { "name": "Markovian", "role": "bounded multi-round Hypothesiser-Skeptic-Writer dialogue with compressed carryover between rounds", "files": ["src/meterless/loop.ts", "vendor/meterless/markovian/"], "evidence": ["logs/markovian-*.json", "docs/evidence/conformance-markovian.txt"] }
+        {
+          "name": "World Model",
+          "role": "shared evidence graph for all agents (hypotheses, evidence, verdicts, challenges, claims, owner facts) with provenance",
+          "files": [
+            "src/meterless/worldModel.ts",
+            "vendor/meterless/world-model/"
+          ],
+          "evidence": [
+            "logs/worldmodel-*.jsonl",
+            "docs/evidence/conformance-world-model.txt"
+          ]
+        },
+        {
+          "name": "H-MEM",
+          "role": "cross-session owner facts, verdict history, feedback and the append-only trust ledger; recall before the Hypothesiser",
+          "files": [
+            "src/meterless/memory.ts",
+            "vendor/meterless/hmem/"
+          ],
+          "evidence": [
+            "logs/hmem-ledger.jsonl",
+            "docs/evidence/conformance-hmem.txt"
+          ]
+        },
+        {
+          "name": "Markovian",
+          "role": "bounded multi-round Hypothesiser-Skeptic-Writer dialogue with compressed carryover between rounds",
+          "files": [
+            "src/meterless/loop.ts",
+            "vendor/meterless/markovian/"
+          ],
+          "evidence": [
+            "logs/markovian-*.json",
+            "docs/evidence/conformance-markovian.txt"
+          ]
+        }
       ],
-      "power_provider": { "id": "meterless", "name": "Meterless Runtime", "contract": "Runtime 1.4, provider contract v4", "files": ["src/models/providers/meterless.ts", "src/models/providers/meterless.test.ts"], "default": "MODEL_PROVIDER=meterless" },
+      "power_provider": {
+        "id": "meterless",
+        "name": "Meterless Runtime",
+        "contract": "Runtime 1.4, provider contract v4",
+        "files": [
+          "src/models/providers/meterless.ts",
+          "src/models/providers/meterless.test.ts"
+        ],
+        "default": "MODEL_PROVIDER=meterless"
+      },
       "model_seam": "src/meterless/generator.ts (every model call)"
     },
     "nvidia": {
-      "models": ["nvidia/nemotron-3.5-super-vl-120b-a12b", "nvidia/nemotron-3.5-lightning-30b-a3b", "nvidia/nemotron-3-super-120b-a12b (Nebius failover)"],
+      "models": [
+        "nvidia/nemotron-3.5-super-vl-120b-a12b",
+        "nvidia/nemotron-3.5-lightning-30b-a3b",
+        "nvidia/nemotron-3.5-content-safety",
+        "nvidia/nemotron-3-super-120b-a12b (Nebius failover)"
+      ],
       "access": "build.nvidia.com (integrate.api.nvidia.com/v1), hosted; Nebius Token Factory Nemotron as failover; no local GPU",
-      "files": ["src/models/providers/openaiCompat.ts", "src/models/router.ts", "src/models/pacer.ts"]
+      "files": [
+        "src/models/providers/openaiCompat.ts",
+        "src/models/router.ts",
+        "src/models/pacer.ts"
+      ]
     },
     "cursor": {
       "usage": "Development environment: committed .cursor/rules; headless cursor-agent sessions built named components (S1 scaffold, S2 Meterless Runtime provider, S4 web UI), each reviewed and logged",
-      "files": [".cursor/rules/", "docs/cursor-sessions/"],
+      "files": [
+        ".cursor/rules/",
+        "docs/cursor-sessions/"
+      ],
       "commit_trailer": "Cursor-Session"
     }
   },
   "data_sources": [
-    { "name": "Eurostat", "datasets": ["prc_hicp_midx", "prc_hicp_minr", "nrg_pc_205", "nrg_pc_203", "sts_trtu_m", "tour_occ_nim", "sts_rb_q"], "licence": "Eurostat re-use policy, attribution", "mode": "live REST via Zetaris; snapshot in data/snapshot" },
-    { "name": "Business ledgers", "synthetic": true, "generator": "scripts/gen-ledgers.ts", "note": "Synthetic, labelled; ground truth in scripts/businesses.ts and bench/truth is never read by src/" }
+    {
+      "name": "Eurostat",
+      "datasets": [
+        "prc_hicp_midx",
+        "prc_hicp_minr",
+        "nrg_pc_205",
+        "nrg_pc_203",
+        "sts_trtu_m",
+        "tour_occ_nim",
+        "sts_rb_q"
+      ],
+      "licence": "Eurostat re-use policy, attribution",
+      "mode": "live REST via Zetaris; snapshot in data/snapshot"
+    },
+    {
+      "name": "Business ledgers",
+      "synthetic": true,
+      "generator": "scripts/gen-ledgers.ts",
+      "note": "Synthetic, labelled; ground truth in scripts/businesses.ts and bench/truth is never read by src/"
+    }
   ],
-  "evaluation": { "harness": "npx tsx scripts/bench.ts [--offline]", "report": "bench/report.md", "history": "bench/RUNS.md" },
+  "evaluation": {
+    "harness": "npx tsx scripts/bench.ts [--offline]",
+    "report": "bench/report.md",
+    "history": "bench/RUNS.md"
+  },
   "pre_existing": [
     "Design documents written 2026-10-15..18 before the window (no product code)",
     "Meterless reference engines @0aa7417 (Apache-2.0, vendored unmodified under vendor/meterless)",
