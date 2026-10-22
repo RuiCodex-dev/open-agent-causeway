@@ -1,0 +1,25 @@
+# Judge quick start: `docker compose up --build`, then open http://localhost:8080 (UI) or POST http://localhost:8000/run.
+# With an empty .env this runs SAMPLE MODE: the bundled Zetaris snapshot (DuckDB) and the deterministic offline
+# reasoner - real agent logic, no keys. Add MODEL_API_KEY (a free build.nvidia.com key) to use Nemotron, or point
+# ZETARIS_REST_URL / ZETARIS_API_KEY / ZETARIS_ORG_ID at your own Zetaris instance (see README "Live mode").
+services:
+  causeway:
+    build: .
+    image: causeway:local
+    ports:
+      - "8000:8000"
+      - "8080:8080"
+    environment:
+      MODEL_PROVIDER: ${MODEL_PROVIDER:-offline}
+      SAMPLE_MODE: ${SAMPLE_MODE:-true}
+      MODEL_API_KEY: ${MODEL_API_KEY:-}
+      MODEL_BASE_URL: ${MODEL_BASE_URL:-https://integrate.api.nvidia.com/v1}
+      METERLESS_BASE_URL: ${METERLESS_BASE_URL:-http://host.docker.internal:8088/v1}
+      METERLESS_RUNTIME_TOKEN: ${METERLESS_RUNTIME_TOKEN:-}
+      FALLBACK_API_KEY: ${FALLBACK_API_KEY:-}
+      ZETARIS_REST_URL: ${ZETARIS_REST_URL:-}
+      ZETARIS_API_KEY: ${ZETARIS_API_KEY:-}
+      ZETARIS_ORG_ID: ${ZETARIS_ORG_ID:-}
+      LOG_LEVEL: ${LOG_LEVEL:-info}
+    volumes:
+      - ./logs:/app/logs

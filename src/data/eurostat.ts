@@ -26,7 +26,7 @@ export const SERIES: EurostatSeries[] = [
     grain: "month",
     label: "HICP Belgium - chocolate (2015=100)",
     unit_label: "index 2015=100",
-    since: "2019-01",
+    since: "2016-01",
   },
   {
     id: "hicp_choc_i25",
@@ -44,7 +44,7 @@ export const SERIES: EurostatSeries[] = [
     grain: "half_year",
     label: "Electricity price, non-household 20-499 MWh, excl. VAT (Belgium)",
     unit_label: "EUR/kWh",
-    since: "2019-S1",
+    since: "2016-S1",
   },
   {
     id: "gas_nonhh",
@@ -53,7 +53,7 @@ export const SERIES: EurostatSeries[] = [
     grain: "half_year",
     label: "Gas price, non-household 1,000-9,999 GJ, excl. VAT (Belgium)",
     unit_label: "EUR/kWh",
-    since: "2019-S1",
+    since: "2016-S1",
   },
   {
     id: "retail_vol_g47",
@@ -62,7 +62,7 @@ export const SERIES: EurostatSeries[] = [
     grain: "month",
     label: "Retail trade volume, Belgium (G47, calendar adjusted, 2021=100)",
     unit_label: "index 2021=100",
-    since: "2019-01",
+    since: "2016-01",
   },
   {
     id: "tourism_nights",
@@ -71,7 +71,7 @@ export const SERIES: EurostatSeries[] = [
     grain: "month",
     label: "Nights spent in tourist accommodation, Belgium",
     unit_label: "nights",
-    since: "2019-01",
+    since: "2016-01",
   },
   {
     id: "bankruptcies_g",
@@ -80,7 +80,7 @@ export const SERIES: EurostatSeries[] = [
     grain: "quarter",
     label: "Bankruptcy declarations, wholesale and retail trade (G), Belgium (2021=100)",
     unit_label: "index 2021=100",
-    since: "2019-Q1",
+    since: "2016-Q1",
   },
 ];
 

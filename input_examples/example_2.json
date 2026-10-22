@@ -1,0 +1,11 @@
+{
+  "run_id": "example-2",
+  "input": {
+    "question": "Why did our revenue rise in Q2 2022 compared with Q2 2021?",
+    "business_id": "cafe-sablon"
+  },
+  "options": {
+    "max_rounds": 2
+  },
+  "_about": "Brussels cafe (synthetic): tourism recovery after 2021."
+}

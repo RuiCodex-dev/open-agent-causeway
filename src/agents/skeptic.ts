@@ -43,13 +43,31 @@ export async function review(
   round: number,
   gen: Generator | null,
   trace?: Trace,
+  carryover?: string,
 ): Promise<{ challenges: Challenge[]; approve: boolean; source: "nemotron" | "offline" }> {
   const tested = results.map((r) => r.hypothesis.cause_type);
   const open = openConfounders(frame, nace, tested);
   const supported = results.filter((r) => r.verdict === "supported");
-  if (supported.length === 0 || open.length === 0) {
-    trace?.log("Skeptic", "approve", { round, reason: supported.length === 0 ? "nothing supported to challenge" : "no untested confounders left" });
+  if (open.length === 0) {
+    trace?.log("Skeptic", "approve", { round, reason: "no untested confounders left" });
     return { challenges: [], approve: true, source: gen ? "nemotron" : "offline" };
+  }
+  if (supported.length === 0) {
+    // Challenge the null: before concluding that nothing explains the change, run the calendar and own-action tests.
+    const nullTests = (["easter_shift", "own_price_change"] as CauseType[]).filter((t) => open.includes(t));
+    if (round > 1 || nullTests.length === 0) {
+      trace?.log("Skeptic", "approve", { round, reason: "nothing supported and no calendar or own-action test left" });
+      return { challenges: [], approve: true, source: "offline" };
+    }
+    const challenges: Challenge[] = nullTests.map((t, i) => ({
+      id: `ch-${round}-${i + 1}`,
+      target_hypothesis_id: "null",
+      confounder: CAUSES[t].title,
+      argument: `No explanation is supported yet. Before concluding that nothing external happened, test ${CAUSES[t].title.toLowerCase()}: ${CAUSES[t].mechanism}`,
+      required_test: t,
+    }));
+    trace?.log("Skeptic", "challenge", { round, source: "rule", target: "null", challenges });
+    return { challenges, approve: false, source: "offline" };
   }
   if (gen) {
     try {
@@ -60,6 +78,8 @@ export async function review(
         "You are the Skeptic in an investigation team. Your job is to stop the team from accepting an explanation too early. Attack each SUPPORTED verdict with the most dangerous untested confounder. You cannot run tests yourself; you name which test must run. Reply with JSON only.",
         [
           `Question: "${frame.question}" (${frame.metric}, ${frame.period} vs ${frame.baseline}).`,
+          carryover ? `Investigation state carried over from earlier rounds (Meterless Markovian carryover):
+${carryover}` : "",
           `Verdicts so far (decided by code from statistics):`,
           table,
           `Untested confounders you may demand (use these exact ids as "confounder"):`,

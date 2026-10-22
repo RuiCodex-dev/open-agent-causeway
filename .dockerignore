@@ -1,6 +1,10 @@
-node_modules
-dist
+**/node_modules
+**/dist
 logs
-.env*
+data/memory
+tmp
+.env
+.env.*
 !.env.example
 .git
+docs/video

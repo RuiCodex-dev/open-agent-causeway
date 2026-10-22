@@ -200,7 +200,8 @@ export class Analyst {
         evidence.push(tt.id, bt.id);
       }
       // Orient the association so that + supports the explanation (driver and assoc series move together).
-      const assocOriented = assoc && Number.isFinite(assoc.r) ? assoc.r : null;
+      const assocSign = cause.assoc_metric ? (cause.effects[cause.assoc_metric] ?? 1) : 1;
+      const assocOriented = assoc && Number.isFinite(assoc.r) ? assoc.r * assocSign : null;
       inputs = {
         expected_sign: expected,
         outcome_moved: out.moved,

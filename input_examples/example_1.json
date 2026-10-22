@@ -1,0 +1,11 @@
+{
+  "run_id": "example-1",
+  "input": {
+    "question": "Why did our gross margin fall in the first half of 2025?",
+    "business_id": "atelier-noir"
+  },
+  "options": {
+    "max_rounds": 2
+  },
+  "_about": "Hero: Ghent chocolatier (synthetic). Expect cocoa-driven input costs supported, Easter and energy ruled out, own price rise as an offset."
+}

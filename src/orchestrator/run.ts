@@ -18,6 +18,8 @@ import type { Challenge, Hypothesis, HypothesisResult } from "../agents/types.ts
 import { buildRouter, makeGenerator, type Generator } from "../meterless/generator.ts";
 import { EvidenceGraph } from "../meterless/worldModel.ts";
 import { BusinessMemory } from "../meterless/memory.ts";
+import { InvestigationLoop } from "../meterless/loop.ts";
+import { openConfounders } from "../agents/skeptic.ts";
 import { Trace, type TraceLine } from "./trace.ts";
 import type { Metric } from "../tests/compiler.ts";
 
@@ -114,38 +116,52 @@ export async function runInvestigation(req: RunInput, opts: RunOptions = {}) {
     await record(r);
   }
 
+  // Markovian loop: every round hands the next one a compressed state instead of the full history.
+  const loop = new InvestigationLoop(runId);
+  const openNow = () => openConfounders(frame, nace, results.map((r) => r.hypothesis.cause_type));
   // Skeptic rounds.
   const challenges: Challenge[] = [];
+  let carry = await loop.round(InvestigationLoop.state(frame, results, [], openNow()), JSON.stringify({ hypotheses, results: results.map((r) => ({ id: r.hypothesis.id, verdict: r.verdict, rule: r.rule, numbers: r.numbers })) }));
+  trace.log("Markovian", "carryover", { round: 0, tokens_estimated: Math.ceil(carry.length / 4) });
   const verdictChanges: { hypothesis_id: string; before: string; after: string; by: string }[] = [];
   let skepticSource = "offline";
   for (let round = 1; round <= maxRounds; round++) {
-    const rev = await review(frame, nace, results, round, gens.reason, trace);
+    const rev = await review(frame, nace, results, round, gens.reason, trace, carry);
     skepticSource = rev.source;
     if (rev.challenges.length === 0) break;
     for (const ch of rev.challenges) {
       challenges.push(ch);
-      const target = results.find((r) => r.hypothesis.id === ch.target_hypothesis_id)!;
-      await graph.challenge(ch, hypEntity.get(target.hypothesis.id)!);
+      const target = results.find((r) => r.hypothesis.id === ch.target_hypothesis_id);
+      await graph.challenge(ch, target ? hypEntity.get(target.hypothesis.id)! : bizEntity);
       const h: Hypothesis = { id: `hyp-${results.length + 1}`, cause_type: ch.required_test as Hypothesis["cause_type"], title: CAUSES[ch.required_test as Hypothesis["cause_type"]].title, mechanism: ch.argument, proposed_by: "Skeptic" };
       hypEntity.set(h.id, await graph.hypothesis(h, bizEntity));
       const r = await analyst.test(h);
       results.push(r);
       await record(r);
+      if (!target) {
+        ch.resolved = true;
+        ch.outcome = `${r.hypothesis.title} is ${r.verdict}: ${r.rule}`;
+        trace.log("Skeptic", "challenge_resolved", { challenge: ch.id, target: "null", confounder_verdict: r.verdict, outcome: ch.outcome });
+        continue;
+      }
       const updated = resolveChallenge(target, ch, r);
       if (updated.verdict !== target.verdict || updated.confidence !== target.confidence) verdictChanges.push({ hypothesis_id: target.hypothesis.id, before: `${target.verdict}/${target.confidence}`, after: `${updated.verdict}/${updated.confidence}`, by: ch.id });
       results[results.indexOf(target)] = updated;
       trace.log("Skeptic", "challenge_resolved", { challenge: ch.id, target: target.hypothesis.id, confounder_verdict: r.verdict, outcome: ch.outcome });
     }
+    carry = await loop.round(InvestigationLoop.state(frame, results, challenges, openNow()), JSON.stringify({ round, challenges, results: results.map((r) => ({ id: r.hypothesis.id, verdict: r.verdict, rule: r.rule, numbers: r.numbers })) }));
+    trace.log("Markovian", "carryover", { round, tokens_estimated: Math.ceil(carry.length / 4) });
   }
 
   // Writer + Verifier (one revision).
   const factTexts = recall.facts.map((f) => f.text);
-  let { card, source: writerSource } = await write(frame, results, outcome.change, factTexts, gens.write, trace);
+  let { card, source: writerSource } = await write(frame, results, outcome.change, factTexts, gens.write, trace, undefined, carry);
   let report = await verify(card.claims, results, analyst.evidence, data, trace);
   let revisions = 0;
+  const struckFirstPass = report.struck;
   if (report.struck > 0 && gens.write) {
     const fb = report.claims.filter((c) => !c.verified).map((c) => `- "${c.text}" (${c.struck_reason})`).join("\n");
-    const second = await write(frame, results, outcome.change, factTexts, gens.write, trace, fb);
+    const second = await write(frame, results, outcome.change, factTexts, gens.write, trace, fb, carry);
     const report2 = await verify(second.card.claims, results, analyst.evidence, data, trace);
     revisions = 1;
     card = second.card;
@@ -158,6 +174,7 @@ export async function runInvestigation(req: RunInput, opts: RunOptions = {}) {
   const supported = results.filter((r) => r.verdict === "supported" && r.role === "cause");
   memory.rememberVerdict(req.input.question, card.verdict, supported.flatMap((r) => r.evidence_ids), runId);
   const wmFile = graph.export(opts.logsDir ?? "logs");
+  const mkFile = loop.export(opts.logsDir ?? "logs");
   trace.log("Orchestrator", "done", { status: "success", world_model_events: graph.counts(), world_model_log: wmFile, struck: report.struck, revisions });
 
   return {
@@ -180,7 +197,8 @@ export async function runInvestigation(req: RunInput, opts: RunOptions = {}) {
     challenges,
     verdict_changes: verdictChanges,
     evidence: [...analyst.evidence.values()].map((e) => ({ id: e.id, purpose: e.purpose, engine: e.engine, sql: e.sql, columns: e.columns, rows_preview: e.rows.slice(0, 12), row_count: e.row_count, sha256: e.sha256, source_tables: e.source_tables, executed_at: e.executed_at })),
-    verification: { requery: report.requery, struck: report.struck, revisions },
+    verification: { requery: report.requery, struck_first_pass: struckFirstPass, struck: report.struck, revisions },
+    markovian: { ...loop.report(), log_file: mkFile },
     sources: { framer: framed.source, hypothesiser: hypSource, skeptic: skepticSource, writer: writerSource },
     model_calls: calls,
     world_model: { events: graph.counts(), log_file: wmFile },

@@ -1,0 +1,80 @@
+{
+  "business_id": "fietsen-gent",
+  "seed": 2610,
+  "generator": "scripts/gen-ledgers.ts",
+  "spec": {
+    "id": "fietsen-gent",
+    "name": "Fietsen Kouter",
+    "city": "Ghent",
+    "nace": "G47.64",
+    "sector": "Bicycle shop that raised prices (own action)",
+    "base": {
+      "unit_price": 900,
+      "unit_cost": 600,
+      "units": 110
+    },
+    "seasonality": [
+      0.6,
+      0.7,
+      1,
+      1.3,
+      1.35,
+      1.3,
+      1.15,
+      1.05,
+      1,
+      0.85,
+      0.75,
+      0.95
+    ],
+    "easter_uplift": 0,
+    "price_drift_per_year": 0,
+    "cost_drift_per_year": 0,
+    "price_elasticity": -1.4,
+    "units_per_ticket": 1.05,
+    "noise_sd": 0.025,
+    "cost_weights": [],
+    "demand_elasticities": [],
+    "actions": [
+      {
+        "type": "price_change",
+        "from": "2024-03",
+        "pct": 0.15,
+        "owner_fact": "We raised all bike prices by 15% in March 2024."
+      }
+    ],
+    "truth": [
+      {
+        "case_id": "B11",
+        "split": "holdout",
+        "question": "Why did the number of bikes we sold fall in 2024 compared with 2023?",
+        "metric": "units",
+        "period": "2024",
+        "baseline": "2023",
+        "causes": [
+          "own_price_change"
+        ],
+        "not_causes": [
+          "sector_distress",
+          "easter_shift"
+        ]
+      },
+      {
+        "case_id": "B12",
+        "split": "holdout",
+        "question": "Why did our gross margin change in 2024 compared with 2023?",
+        "metric": "gross_margin_pct",
+        "period": "2024",
+        "baseline": "2023",
+        "causes": [
+          "own_price_change"
+        ],
+        "not_causes": [
+          "energy_cost",
+          "easter_shift"
+        ]
+      }
+    ]
+  },
+  "eurostat_updated_note": "drivers fetched live from Eurostat at generation time"
+}

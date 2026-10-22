@@ -1,0 +1,14 @@
+business         rows=   8 sha256=f1163d82c3ae
+calendar_month   rows=  96 sha256=3595f4cac3aa
+driver_series    rows=   7 sha256=a3247d5bbbcd
+business_period  rows= 720 sha256=ae2c877e1ad8
+driver_month     rows= 787 sha256=c53a40b8f76d
+snapshot written to data/snapshot/
+OK   snapshot business         f1163d82c3ae vs manifest f1163d82c3ae
+OK   snapshot calendar_month   3595f4cac3aa vs manifest 3595f4cac3aa
+OK   snapshot driver_series    a3247d5bbbcd vs manifest a3247d5bbbcd
+OK   snapshot business_period  ae2c877e1ad8 vs manifest ae2c877e1ad8
+OK   snapshot driver_month     c53a40b8f76d vs manifest c53a40b8f76d
+OK   live-vs-snapshot query 1: zetaris 4eca763444ad duckdb 4eca763444ad (18 rows)
+OK   live-vs-snapshot query 2: zetaris d28ca6f50732 duckdb d28ca6f50732 (7 rows)
+OK   live-vs-snapshot query 3: zetaris cbfcbda9b34f duckdb cbfcbda9b34f (8 rows)

@@ -38,6 +38,8 @@
     "actions": [],
     "truth": [
       {
+        "case_id": "B07",
+        "split": "tune",
         "question": "Why did our revenue change in the first half of 2025?",
         "metric": "revenue",
         "period": "2025-H1",
@@ -46,9 +48,9 @@
         "not_causes": [
           "tourism_demand",
           "retail_demand",
-          "energy_cost",
-          "input_cost_cocoa",
-          "easter_shift"
+          "sector_distress",
+          "easter_shift",
+          "own_price_change"
         ]
       }
     ]

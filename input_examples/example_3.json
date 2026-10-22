@@ -1,0 +1,11 @@
+{
+  "run_id": "example-3",
+  "input": {
+    "question": "Why did the number of bikes we sold fall in 2023 compared with 2022?",
+    "business_id": "velo-schelde"
+  },
+  "options": {
+    "max_rounds": 2
+  },
+  "_about": "Antwerp bike shop (synthetic): driven by Belgian retail volume."
+}

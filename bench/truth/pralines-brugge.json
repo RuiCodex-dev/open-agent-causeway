@@ -1,0 +1,59 @@
+{
+  "business_id": "pralines-brugge",
+  "seed": 2610,
+  "generator": "scripts/gen-ledgers.ts",
+  "spec": {
+    "id": "pralines-brugge",
+    "name": "Pralines Minnewater",
+    "city": "Bruges",
+    "nace": "G47.24",
+    "sector": "Praline shop (Easter-heavy confectionery retail)",
+    "base": {
+      "unit_price": 12,
+      "unit_cost": 5.5,
+      "units": 2400
+    },
+    "seasonality": [
+      0.7,
+      1.1,
+      0.8,
+      0.8,
+      0.8,
+      0.8,
+      0.9,
+      0.9,
+      0.8,
+      0.9,
+      1.1,
+      1.8
+    ],
+    "easter_uplift": 1.6,
+    "price_drift_per_year": 0.02,
+    "cost_drift_per_year": 0.02,
+    "price_elasticity": -0.4,
+    "units_per_ticket": 1.4,
+    "noise_sd": 0.025,
+    "cost_weights": [],
+    "demand_elasticities": [],
+    "actions": [],
+    "truth": [
+      {
+        "case_id": "B09",
+        "split": "holdout",
+        "question": "Why did our revenue rise in Q2 2025 compared with Q2 2024?",
+        "metric": "revenue",
+        "period": "2025-Q2",
+        "baseline": "2024-Q2",
+        "causes": [
+          "easter_shift"
+        ],
+        "not_causes": [
+          "tourism_demand",
+          "retail_demand",
+          "own_price_change"
+        ]
+      }
+    ]
+  },
+  "eurostat_updated_note": "drivers fetched live from Eurostat at generation time"
+}

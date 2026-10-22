@@ -152,6 +152,17 @@ async function run(only: string | null): Promise<void> {
     ["eurostat", eurostatStatements()],
     ["usl", uslStatements()],
   ];
+  if (process.argv.includes("--refresh")) {
+    // Recreate the REST tables so their endpoints match the catalogue (e.g. a changed sinceTimePeriod).
+    for (const s of SERIES) {
+      try {
+        await z.query(`DROP LIGHTNING DATABASE TABLE EUROSTAT_REST.${s.id}`);
+        console.log(`DROPPED eurostat/${s.id}`);
+      } catch (e) {
+        console.log(`(drop ${s.id}: ${(e as Error).message.slice(0, 120)})`);
+      }
+    }
+  }
   for (const [name, stmts] of groups) {
     if (only && only !== name) continue;
     for (const s of stmts) {

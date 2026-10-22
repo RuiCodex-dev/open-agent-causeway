@@ -1,0 +1,11 @@
+{
+  "run_id": "example-5",
+  "input": {
+    "question": "Why are things bad lately?",
+    "business_id": "atelier-noir"
+  },
+  "options": {
+    "max_rounds": 2
+  },
+  "_about": "Ambiguous question: expect status needs_clarification with one question, not a guess."
+}

@@ -83,6 +83,7 @@ export async function write(
   gen: Generator | null,
   trace?: Trace,
   feedback?: string,
+  carryover?: string,
 ): Promise<{ card: ExplanationCard; source: "nemotron" | "offline" }> {
   const fixed = rejectedAndOffsets(results);
   if (gen) {
@@ -94,6 +95,8 @@ export async function write(
         [
           `Question: "${frame.question}". Metric: ${METRICS[frame.metric].label}; ${frame.period} vs ${frame.baseline}; overall change ${fmt(change, 2)} ${unitFor(frame.metric)}.`,
           facts.length ? `Owner-confirmed facts: ${facts.join("; ")}` : "",
+          carryover ? `Investigation state (Meterless Markovian carryover):
+${carryover}` : "",
           `Verdict table (decided by code; do not change verdicts):`,
           numberTable(results),
           feedback ? `\nThe Verifier struck these claims in your previous draft; fix them by using only numbers from the table:\n${feedback}` : "",

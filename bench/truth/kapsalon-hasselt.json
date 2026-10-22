@@ -1,0 +1,56 @@
+{
+  "business_id": "kapsalon-hasselt",
+  "seed": 2610,
+  "generator": "scripts/gen-ledgers.ts",
+  "spec": {
+    "id": "kapsalon-hasselt",
+    "name": "Kapsalon Lumière",
+    "city": "Hasselt",
+    "nace": "S96.02",
+    "sector": "Hair salon (null control: noise only)",
+    "base": {
+      "unit_price": 38,
+      "unit_cost": 14,
+      "units": 900
+    },
+    "seasonality": [
+      0.9,
+      0.95,
+      1,
+      1,
+      1,
+      1.05,
+      0.9,
+      0.85,
+      1,
+      1.05,
+      1.05,
+      1.25
+    ],
+    "easter_uplift": 0,
+    "price_drift_per_year": 0.025,
+    "cost_drift_per_year": 0.025,
+    "price_elasticity": 0,
+    "units_per_ticket": 1,
+    "noise_sd": 0.03,
+    "cost_weights": [],
+    "demand_elasticities": [],
+    "actions": [],
+    "truth": [
+      {
+        "case_id": "B10",
+        "split": "holdout",
+        "question": "Why did our revenue change in 2024 compared with 2023?",
+        "metric": "revenue",
+        "period": "2024",
+        "baseline": "2023",
+        "causes": [],
+        "not_causes": [
+          "energy_cost",
+          "own_price_change"
+        ]
+      }
+    ]
+  },
+  "eurostat_updated_note": "drivers fetched live from Eurostat at generation time"
+}

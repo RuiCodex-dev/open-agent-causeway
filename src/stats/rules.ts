@@ -37,7 +37,7 @@ export const THRESHOLDS = {
   minAssocR: 0.3,
   minShare: 0.15,
   /** A driver change this large counts as material even when its YoY path was already unusual before. */
-  materialChange: 0.05,
+  materialChange: 0.03,
   flatChange: 0.02,
   materialAssocR: 0.5,
 } as const;

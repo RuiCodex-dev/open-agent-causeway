@@ -1,9 +1,9 @@
 {
-  "run_id": "r-20261022031520-e33b25",
+  "run_id": "r-20261022041534-3dfec8",
   "data_mode": "snapshot",
   "reasoner": "nemotron",
-  "trace_id": "trace-r-20261022031520-e33b25",
-  "log_file": "logs\\trace-r-20261022031520-e33b25.jsonl",
+  "trace_id": "trace-r-20261022041534-3dfec8",
+  "log_file": "logs\\trace-r-20261022041534-3dfec8.jsonl",
   "agents": [
     {
       "name": "Framer",
@@ -44,28 +44,32 @@
     "question": "Why did our gross margin fall in the first half of 2025?"
   },
   "output": {
-    "verdict": "Supplier change and Cocoa-driven input costs best explain the change in gross margin (%) in 2025-H1.",
+    "verdict": "The gross margin fell mainly because of the May 2025 switch to a more expensive single-origin couverture supplier, compounded by higher cocoa-driven input costs.",
     "chain": [
-      "Supplier change: unit-cost step after 2025-05 not explained by cocoa prices: z=11.04 (|z| >= 2) in the expected direction; lag n/a in [0,0]; share n/a; survived Skeptic challenge ch-1-1 (easter timing contradicted)",
-      "Cocoa-driven input costs: material change 11% tracked by the outcome (r=0.94); lag 1 in [0,3]; share 122%"
+      "Supplier change raised unit costs after May 2025",
+      "Cocoa input costs rose about 11% and tracked the margin decline",
+      "Own price changes and energy costs did not explain the fall",
+      "Easter timing was ruled out because the decline persists outside Easter months"
     ],
     "claims": [
       {
         "id": "c-1",
-        "text": "gross margin (%) changed by -10.01 percentage points in 2025-H1 compared with 2024-H1.",
+        "text": "Gross margin fell 10.14 percentage points from 2024-H1 to 2025-H1.",
         "evidence_ids": [
-          "ev-68d18815"
+          "ev-6e922d17",
+          "ev-61b731e7",
+          "ev-215ca72e"
         ],
         "verified": true
       },
       {
         "id": "c-2",
-        "text": "Supplier change: unit cost stepped up 6.8% beyond what cocoa prices explain.",
+        "text": "The supplier change left a residual unit-cost step of 0.349 EUR, about 6.64% of cost, after May 2025.",
         "evidence_ids": [
-          "ev-68d18815",
-          "ev-6344a76b",
-          "ev-e3879755",
-          "ev-80883669",
+          "ev-6e922d17",
+          "ev-61b731e7",
+          "ev-215ca72e",
+          "ev-e9081b8e",
           "ev-803e6457",
           "ev-21148c3b"
         ],
@@ -73,25 +77,39 @@
       },
       {
         "id": "c-3",
-        "text": "Cocoa-driven input costs: the driver moved 10.7% between the windows; it tracks the business's own series with a correlation of 0.94; it accounts for about -12.2 points of margin.",
+        "text": "Cocoa-driven input costs rose 10.72% and were associated with the margin change (r=0.94, lag 1 month).",
         "evidence_ids": [
-          "ev-68d18815",
-          "ev-6344a76b",
-          "ev-e3879755",
+          "ev-6e922d17",
+          "ev-61b731e7",
+          "ev-215ca72e",
           "ev-4fd13909",
           "ev-e822c07b",
-          "ev-9babb391"
+          "ev-c5ce8061"
         ],
         "verified": true
       },
       {
         "id": "c-4",
-        "text": "Our own price changes worked the other way, adding about 2.9 points.",
+        "text": "Excluding Easter months, 96.8% of the margin decline remained, so Easter timing did not cause the fall.",
         "evidence_ids": [
-          "ev-68d18815",
-          "ev-6344a76b",
-          "ev-e3879755",
-          "ev-6ab9e7ac"
+          "ev-6e922d17",
+          "ev-61b731e7",
+          "ev-215ca72e",
+          "ev-fd34da22",
+          "ev-98e0b553",
+          "ev-9e8391b6"
+        ],
+        "verified": true
+      },
+      {
+        "id": "c-5",
+        "text": "Energy costs were essentially flat (-0.41%) and did not drive the margin change.",
+        "evidence_ids": [
+          "ev-6e922d17",
+          "ev-61b731e7",
+          "ev-215ca72e",
+          "ev-1d656412",
+          "ev-c5ce8061"
         ],
         "verified": true
       }
@@ -99,15 +117,26 @@
     "struck_claims": [],
     "rejected": [
       {
-        "hypothesis": "Easter timing",
-        "why": "the change persists without the Easter months (99% of it remains)",
+        "hypothesis": "Energy costs",
+        "why": "driver flat (|z|=0.44 < 1, change -0%) while the outcome moved",
         "evidence_ids": [
-          "ev-68d18815",
-          "ev-6344a76b",
-          "ev-e3879755",
+          "ev-6e922d17",
+          "ev-61b731e7",
+          "ev-215ca72e",
+          "ev-1d656412",
+          "ev-c5ce8061"
+        ]
+      },
+      {
+        "hypothesis": "Easter timing",
+        "why": "the change persists without the Easter months (97% of it remains)",
+        "evidence_ids": [
+          "ev-6e922d17",
+          "ev-61b731e7",
+          "ev-215ca72e",
           "ev-fd34da22",
-          "ev-bc480666",
-          "ev-f7293794"
+          "ev-98e0b553",
+          "ev-9e8391b6"
         ]
       }
     ],
@@ -116,25 +145,27 @@
         "hypothesis": "Our own price changes",
         "why": "driver moved the opposite way (z=99.00, change 5%)",
         "evidence_ids": [
-          "ev-68d18815",
-          "ev-6344a76b",
-          "ev-e3879755",
-          "ev-6ab9e7ac"
+          "ev-6e922d17",
+          "ev-61b731e7",
+          "ev-215ca72e",
+          "ev-593db200"
         ]
       }
     ],
     "limitations": [
-      "Association with public statistics is evidence consistent with a cause, not proof of it.",
-      "The business ledger in this demo is synthetic; the public drivers are real Eurostat series."
+      "The analysis covers only 2024-H1 versus 2025-H1 for atelier-noir.",
+      "Cocoa cost and supplier change effects overlap and cannot be fully separated.",
+      "The supplier change only affected two months of the half-year period."
     ],
     "what_would_change": [
-      "An input-cost invoice series that does not follow the public price index.",
-      "A one-off event in the period that the ledger does not show."
+      "If cocoa prices fall back to prior levels, part of the margin pressure would ease.",
+      "If the supplier change is reversed or renegotiated, the unit-cost step would be removed.",
+      "If future price increases offset input costs, the margin decline could reverse."
     ],
     "actions": [
-      "Review list prices against the current input cost per unit.",
-      "Ask suppliers for fixed-price contracts for the next season.",
-      "Track cost per unit monthly so the next squeeze shows early."
+      "Renegotiate with the single-origin couverture supplier or compare alternative suppliers.",
+      "Consider modest price adjustments to recover the 10.14 percentage point margin loss.",
+      "Monitor cocoa prices monthly and adjust purchasing or pricing before costs rise further."
     ],
     "memory_used": [
       {
@@ -154,20 +185,20 @@
       "verdict": "supported",
       "confidence": "high",
       "role": "cause",
-      "rule": "unit-cost step after 2025-05 not explained by cocoa prices: z=11.04 (|z| >= 2) in the expected direction; lag n/a in [0,0]; share n/a; survived Skeptic challenge ch-1-1 (easter timing contradicted)",
+      "rule": "unit-cost step after 2025-05 not explained by cocoa prices: z=11.36 (|z| >= 2) in the expected direction; lag n/a in [0,0]; share n/a; survived Skeptic challenge ch-1-1 (easter timing contradicted)",
       "numbers": {
-        "outcome_change": -10.013,
-        "outcome_z": -2.909,
-        "residual_step_eur": 0.3553,
-        "residual_step_pct": 6.76,
-        "driver_z": 11.042,
+        "outcome_change": -10.142,
+        "outcome_z": -2.971,
+        "residual_step_eur": 0.3495,
+        "residual_step_pct": 6.64,
+        "driver_z": 11.356,
         "months_after": 2
       },
       "evidence_ids": [
-        "ev-68d18815",
-        "ev-6344a76b",
-        "ev-e3879755",
-        "ev-80883669",
+        "ev-6e922d17",
+        "ev-61b731e7",
+        "ev-215ca72e",
+        "ev-e9081b8e",
         "ev-803e6457",
         "ev-21148c3b"
       ]
@@ -180,28 +211,28 @@
       "verdict": "supported",
       "confidence": "high",
       "role": "cause",
-      "rule": "material change 11% tracked by the outcome (r=0.94); lag 1 in [0,3]; share 122%",
+      "rule": "material change 11% tracked by the outcome (r=0.94); lag 1 in [0,3]; share 120%",
       "numbers": {
-        "outcome_change": -10.013,
-        "outcome_z": -2.909,
+        "outcome_change": -10.142,
+        "outcome_z": -2.971,
         "splice_ratio": 0.71940448,
-        "assoc_r": 0.9417,
+        "assoc_r": 0.9382,
         "best_lag": 1,
         "driver_z": 1.015,
         "driver_change_pct": 10.72,
-        "cost_elasticity": 2.222,
-        "driver_cost_effect_pp": -12.199,
-        "cost_effect_pp": -12.953,
-        "price_effect_pp": 2.94,
-        "delta_margin_pp": -10.013
+        "cost_elasticity": 2.2168,
+        "driver_cost_effect_pp": -12.164,
+        "cost_effect_pp": -13.121,
+        "price_effect_pp": 2.979,
+        "delta_margin_pp": -10.142
       },
       "evidence_ids": [
-        "ev-68d18815",
-        "ev-6344a76b",
-        "ev-e3879755",
+        "ev-6e922d17",
+        "ev-61b731e7",
+        "ev-215ca72e",
         "ev-4fd13909",
         "ev-e822c07b",
-        "ev-9babb391"
+        "ev-c5ce8061"
       ]
     },
     {
@@ -214,18 +245,18 @@
       "role": "offset",
       "rule": "driver moved the opposite way (z=99.00, change 5%)",
       "numbers": {
-        "outcome_change": -10.013,
-        "outcome_z": -2.909,
+        "outcome_change": -10.142,
+        "outcome_z": -2.971,
         "driver_z": 99,
         "driver_change_pct": 4.55,
-        "price_effect_pp": 2.94,
-        "delta_margin_pp": -10.013
+        "price_effect_pp": 2.979,
+        "delta_margin_pp": -10.142
       },
       "evidence_ids": [
-        "ev-68d18815",
-        "ev-6344a76b",
-        "ev-e3879755",
-        "ev-6ab9e7ac"
+        "ev-6e922d17",
+        "ev-61b731e7",
+        "ev-215ca72e",
+        "ev-593db200"
       ]
     },
     {
@@ -233,29 +264,29 @@
       "title": "Energy costs",
       "cause_type": "energy_cost",
       "proposed_by": "Hypothesiser",
-      "verdict": "inconclusive",
-      "confidence": "low",
+      "verdict": "contradicted",
+      "confidence": "medium",
       "role": "none",
-      "rule": "within noise or mixed signals (z=-0.30, r=0.84, lag ok=true, share ok=false)",
+      "rule": "driver flat (|z|=0.44 < 1, change -0%) while the outcome moved",
       "numbers": {
-        "outcome_change": -10.013,
-        "outcome_z": -2.909,
-        "assoc_r": 0.8438,
-        "best_lag": 2,
-        "driver_z": -0.3,
-        "driver_change_pct": 3.44,
-        "cost_elasticity": 0.5407,
-        "driver_cost_effect_pp": -0.951,
-        "cost_effect_pp": -12.953,
-        "price_effect_pp": 2.94,
-        "delta_margin_pp": -10.013
+        "outcome_change": -10.142,
+        "outcome_z": -2.971,
+        "assoc_r": 0.8269,
+        "best_lag": 3,
+        "driver_z": -0.441,
+        "driver_change_pct": -0.41,
+        "cost_elasticity": 0.5343,
+        "driver_cost_effect_pp": 0.112,
+        "cost_effect_pp": -13.121,
+        "price_effect_pp": 2.979,
+        "delta_margin_pp": -10.142
       },
       "evidence_ids": [
-        "ev-68d18815",
-        "ev-6344a76b",
-        "ev-e3879755",
+        "ev-6e922d17",
+        "ev-61b731e7",
+        "ev-215ca72e",
         "ev-1d656412",
-        "ev-9babb391"
+        "ev-c5ce8061"
       ]
     },
     {
@@ -266,22 +297,22 @@
       "verdict": "contradicted",
       "confidence": "medium",
       "role": "none",
-      "rule": "the change persists without the Easter months (99% of it remains)",
+      "rule": "the change persists without the Easter months (97% of it remains)",
       "numbers": {
-        "outcome_change": -10.013,
-        "outcome_z": -2.909,
+        "outcome_change": -10.142,
+        "outcome_z": -2.971,
         "easter_months_target": 1,
         "easter_months_baseline": 1,
-        "change_excluding_easter": -9.867,
-        "share_of_change_kept": 0.985
+        "change_excluding_easter": -9.818,
+        "share_of_change_kept": 0.968
       },
       "evidence_ids": [
-        "ev-68d18815",
-        "ev-6344a76b",
-        "ev-e3879755",
+        "ev-6e922d17",
+        "ev-61b731e7",
+        "ev-215ca72e",
         "ev-fd34da22",
-        "ev-bc480666",
-        "ev-f7293794"
+        "ev-98e0b553",
+        "ev-9e8391b6"
       ]
     }
   ],
@@ -290,16 +321,16 @@
       "id": "ch-1-1",
       "target_hypothesis_id": "hyp-1",
       "confounder": "Easter timing",
-      "argument": "If Easter shifted timing of chocolate sales into Q2 2025 versus Q2 2024, higher-margin seasonal products could have been disproportionately sold earlier/later, altering gross margin independently of supplier unit costs.",
+      "argument": "The supplier change step after May 2025 could be confounded by Easter shifting seasonal sales volume between periods, creating a spurious unit-cost step correlated with the timing change rather than a true supplier switch.",
       "required_test": "easter_shift",
       "resolved": true,
-      "outcome": "Easter timing is contradicted: the change persists without the Easter months (99% of it remains)"
+      "outcome": "Easter timing is contradicted: the change persists without the Easter months (97% of it remains)"
     }
   ],
   "verdict_changes": [],
   "evidence": [
     {
-      "id": "ev-68d18815",
+      "id": "ev-6e922d17",
       "purpose": "gross_margin_pct by month, 2021-01 to 2025-06",
       "engine": "duckdb-snapshot",
       "sql": "SELECT b.period AS period, ROUND(100 * (1 - SUM(b.cogs) / SUM(b.revenue)), 4) AS value FROM business_period b WHERE b.business_id = 'atelier-noir' AND b.period BETWEEN '2021-01' AND '2025-06' GROUP BY b.period ORDER BY b.period",
@@ -310,62 +341,62 @@
       "rows_preview": [
         [
           "2021-01",
-          62.2366
+          61.9358
         ],
         [
           "2021-02",
-          60.9434
+          60.9405
         ],
         [
           "2021-03",
-          63.6747
+          63.55
         ],
         [
           "2021-04",
-          62.6646
+          62.6018
         ],
         [
           "2021-05",
-          62.5471
+          62.4659
         ],
         [
           "2021-06",
-          62.8829
+          63.0232
         ],
         [
           "2021-07",
-          61.9172
+          61.7476
         ],
         [
           "2021-08",
-          61.5747
+          61.4385
         ],
         [
           "2021-09",
-          62.1407
+          62.4239
         ],
         [
           "2021-10",
-          62.5905
+          62.5109
         ],
         [
           "2021-11",
-          62.8459
+          63.0966
         ],
         [
           "2021-12",
-          62.6654
+          62.1766
         ]
       ],
       "row_count": 54,
-      "sha256": "23437b36d4517bff98a0aac4395d9fcaf5f248e44cc2fcee7498dfdd87daedcf",
+      "sha256": "0323813449832ee0e4d11d10ef1d69b023f21328b263897e381a8d48741bde47",
       "source_tables": [
         "causeway.business_period"
       ],
-      "executed_at": "2026-10-22T03:15:32.109Z"
+      "executed_at": "2026-10-22T04:15:39.108Z"
     },
     {
-      "id": "ev-6344a76b",
+      "id": "ev-61b731e7",
       "purpose": "totals 2025-H1",
       "engine": "duckdb-snapshot",
       "sql": "SELECT SUM(b.revenue) AS revenue, SUM(b.cogs) AS cogs, SUM(b.units) AS units, SUM(b.transactions) AS transactions, COUNT(*) AS months FROM business_period b WHERE b.business_id = 'atelier-noir' AND b.period IN ('2025-01', '2025-02', '2025-03', '2025-04', '2025-05', '2025-06')",
@@ -378,22 +409,22 @@
       ],
       "rows_preview": [
         [
-          369166.17000000004,
-          225943.06000000003,
-          35350,
-          20794,
+          367757.31999999995,
+          225462.91999999998,
+          35197,
+          20704,
           6
         ]
       ],
       "row_count": 1,
-      "sha256": "58327b2d31fd6fff4adff781cc0cafd781639391fd555c3a97a36b8ffc8e52be",
+      "sha256": "82c8c0fbea5faccc346e1779345a591b7ce6e298dfa2edcc91b63681e1f25abb",
       "source_tables": [
         "causeway.business_period"
       ],
-      "executed_at": "2026-10-22T03:15:32.124Z"
+      "executed_at": "2026-10-22T04:15:39.146Z"
     },
     {
-      "id": "ev-e3879755",
+      "id": "ev-215ca72e",
       "purpose": "totals 2024-H1",
       "engine": "duckdb-snapshot",
       "sql": "SELECT SUM(b.revenue) AS revenue, SUM(b.cogs) AS cogs, SUM(b.units) AS units, SUM(b.transactions) AS transactions, COUNT(*) AS months FROM business_period b WHERE b.business_id = 'atelier-noir' AND b.period IN ('2024-01', '2024-02', '2024-03', '2024-04', '2024-05', '2024-06')",
@@ -406,22 +437,22 @@
       ],
       "rows_preview": [
         [
-          344072.77,
-          176134.59,
-          34530,
-          20312,
+          355839.75999999995,
+          182066.69,
+          35711,
+          21006,
           6
         ]
       ],
       "row_count": 1,
-      "sha256": "64858ae47e3af07b08cfe710795e4408ffb8478d8506c4fbf0d5010d7aaa3022",
+      "sha256": "65903591fa1e6e48039c27dc48fef9c4b007b915acf415d89dfdee391e6d3818",
       "source_tables": [
         "causeway.business_period"
       ],
-      "executed_at": "2026-10-22T03:15:32.131Z"
+      "executed_at": "2026-10-22T04:15:39.149Z"
     },
     {
-      "id": "ev-80883669",
+      "id": "ev-e9081b8e",
       "purpose": "unit cost by month around the supplier change",
       "engine": "duckdb-snapshot",
       "sql": "SELECT b.period AS period, ROUND(SUM(b.cogs) / SUM(b.units), 6) AS value FROM business_period b WHERE b.business_id = 'atelier-noir' AND b.period BETWEEN '2022-11' AND '2025-06' GROUP BY b.period ORDER BY b.period",
@@ -432,59 +463,59 @@
       "rows_preview": [
         [
           "2022-11",
-          4.283957
+          4.294997
         ],
         [
           "2022-12",
-          4.276492
+          4.228807
         ],
         [
           "2023-01",
-          4.412162
+          4.383428
         ],
         [
           "2023-02",
-          4.686653
+          4.678184
         ],
         [
           "2023-03",
-          4.484228
+          4.484767
         ],
         [
           "2023-04",
-          4.812171
+          4.789235
         ],
         [
           "2023-05",
-          4.874261
+          4.860798
         ],
         [
           "2023-06",
-          4.681029
+          4.708145
         ],
         [
           "2023-07",
-          4.963097
+          4.917144
         ],
         [
           "2023-08",
-          5.191314
+          5.156867
         ],
         [
           "2023-09",
-          4.788304
+          4.825958
         ],
         [
           "2023-10",
-          4.794443
+          4.794716
         ]
       ],
       "row_count": 32,
-      "sha256": "cddd02e8bbbc2b09fd92a94ed079315482de6eac6974a4199ac2d877ad088b28",
+      "sha256": "fbd6a4c16f06e5d73349575793e5c36012caf64cdae15dfd9b81b0b3bcfc91f8",
       "source_tables": [
         "causeway.business_period"
       ],
-      "executed_at": "2026-10-22T03:15:30.521Z"
+      "executed_at": "2026-10-22T04:15:37.150Z"
     },
     {
       "id": "ev-803e6457",
@@ -563,7 +594,7 @@
       "source_tables": [
         "causeway.driver_month"
       ],
-      "executed_at": "2026-10-22T03:15:30.531Z"
+      "executed_at": "2026-10-22T04:15:37.175Z"
     },
     {
       "id": "ev-21148c3b",
@@ -642,7 +673,7 @@
       "source_tables": [
         "causeway.driver_month"
       ],
-      "executed_at": "2026-10-22T03:15:30.536Z"
+      "executed_at": "2026-10-22T04:15:37.178Z"
     },
     {
       "id": "ev-4fd13909",
@@ -721,7 +752,7 @@
       "source_tables": [
         "causeway.driver_month"
       ],
-      "executed_at": "2026-10-22T03:15:30.558Z"
+      "executed_at": "2026-10-22T04:15:37.220Z"
     },
     {
       "id": "ev-e822c07b",
@@ -800,10 +831,10 @@
       "source_tables": [
         "causeway.driver_month"
       ],
-      "executed_at": "2026-10-22T03:15:30.561Z"
+      "executed_at": "2026-10-22T04:15:37.224Z"
     },
     {
-      "id": "ev-9babb391",
+      "id": "ev-c5ce8061",
       "purpose": "unit_cost by month for the lag test",
       "engine": "duckdb-snapshot",
       "sql": "SELECT b.period AS period, ROUND(SUM(b.cogs) / SUM(b.units), 6) AS value FROM business_period b WHERE b.business_id = 'atelier-noir' AND b.period BETWEEN '2021-07' AND '2025-06' GROUP BY b.period ORDER BY b.period",
@@ -814,62 +845,62 @@
       "rows_preview": [
         [
           "2021-07",
-          3.6449
+          3.661132
         ],
         [
           "2021-08",
-          3.682242
+          3.695294
         ],
         [
           "2021-09",
-          3.632513
+          3.605337
         ],
         [
           "2021-10",
-          3.593809
+          3.60146
         ],
         [
           "2021-11",
-          3.573708
+          3.549588
         ],
         [
           "2021-12",
-          3.595522
+          3.642603
         ],
         [
           "2022-01",
-          3.793401
+          3.801652
         ],
         [
           "2022-02",
-          3.879642
+          3.907579
         ],
         [
           "2022-03",
-          3.755716
+          3.777459
         ],
         [
           "2022-04",
-          3.88398
+          3.842603
         ],
         [
           "2022-05",
-          3.910741
+          3.910004
         ],
         [
           "2022-06",
-          3.713144
+          3.759184
         ]
       ],
       "row_count": 48,
-      "sha256": "819447a46e7ab66fe2aa3d62791a06986cc9249728ad885d76974a72fae2e9ef",
+      "sha256": "bc815aced14c3f5fcc7ddc8c034799ca0187dbb443dd311201166f6e9a8ffa44",
       "source_tables": [
         "causeway.business_period"
       ],
-      "executed_at": "2026-10-22T03:15:30.740Z"
+      "executed_at": "2026-10-22T04:15:37.428Z"
     },
     {
-      "id": "ev-6ab9e7ac",
+      "id": "ev-593db200",
       "purpose": "unit price by month",
       "engine": "duckdb-snapshot",
       "sql": "SELECT b.period AS period, ROUND(SUM(b.revenue) / SUM(b.units), 6) AS value FROM business_period b WHERE b.business_id = 'atelier-noir' AND b.period BETWEEN '2021-01' AND '2025-06' GROUP BY b.period ORDER BY b.period",
@@ -888,7 +919,7 @@
         ],
         [
           "2021-03",
-          9.523603
+          9.523602
         ],
         [
           "2021-04",
@@ -912,27 +943,27 @@
         ],
         [
           "2021-09",
-          9.594763
+          9.594765
         ],
         [
           "2021-10",
-          9.606677
+          9.606676
         ],
         [
           "2021-11",
-          9.618602
+          9.618603
         ],
         [
           "2021-12",
-          9.630544
+          9.630543
         ]
       ],
       "row_count": 54,
-      "sha256": "4161c5a29a70d90804ce37b23bc9eb077faecc22fb1b1a87f268dbefb2669014",
+      "sha256": "ef3082571d564c23b409f5b7ebfada005c0615e64936ce1fff6df4ec6d62e3e0",
       "source_tables": [
         "causeway.business_period"
       ],
-      "executed_at": "2026-10-22T03:15:30.640Z"
+      "executed_at": "2026-10-22T04:15:37.369Z"
     },
     {
       "id": "ev-1d656412",
@@ -1011,7 +1042,7 @@
       "source_tables": [
         "causeway.driver_month"
       ],
-      "executed_at": "2026-10-22T03:15:30.731Z"
+      "executed_at": "2026-10-22T04:15:37.419Z"
     },
     {
       "id": "ev-fd34da22",
@@ -1090,10 +1121,10 @@
       "source_tables": [
         "causeway.calendar_month"
       ],
-      "executed_at": "2026-10-22T03:15:32.137Z"
+      "executed_at": "2026-10-22T04:15:39.154Z"
     },
     {
-      "id": "ev-bc480666",
+      "id": "ev-98e0b553",
       "purpose": "totals excluding Easter months (target)",
       "engine": "duckdb-snapshot",
       "sql": "SELECT SUM(b.revenue) AS revenue, SUM(b.cogs) AS cogs, SUM(b.units) AS units, SUM(b.transactions) AS transactions, COUNT(*) AS months FROM business_period b WHERE b.business_id = 'atelier-noir' AND b.period IN ('2025-01', '2025-02', '2025-05', '2025-06')",
@@ -1106,22 +1137,22 @@
       ],
       "rows_preview": [
         [
-          216287.14,
-          132594.94,
-          20786,
-          12227,
+          214115.71,
+          131173.89,
+          20567,
+          12098,
           4
         ]
       ],
       "row_count": 1,
-      "sha256": "37c694b0ca92330ebfbf580f2e44c7237d1f8cc5db1d1aba01ceda0a1760314d",
+      "sha256": "1d3b1bde4732536d74f2adcd7f9ef0ed2b7aacb05f355f023ccb4f4b8aa5b321",
       "source_tables": [
         "causeway.business_period"
       ],
-      "executed_at": "2026-10-22T03:15:32.140Z"
+      "executed_at": "2026-10-22T04:15:39.157Z"
     },
     {
-      "id": "ev-f7293794",
+      "id": "ev-9e8391b6",
       "purpose": "totals excluding Easter months (baseline)",
       "engine": "duckdb-snapshot",
       "sql": "SELECT SUM(b.revenue) AS revenue, SUM(b.cogs) AS cogs, SUM(b.units) AS units, SUM(b.transactions) AS transactions, COUNT(*) AS months FROM business_period b WHERE b.business_id = 'atelier-noir' AND b.period IN ('2024-01', '2024-02', '2024-05', '2024-06')",
@@ -1134,46 +1165,46 @@
       ],
       "rows_preview": [
         [
-          203246.19999999998,
-          104545.32999999999,
-          20396,
-          11998,
+          211767.30000000002,
+          108943.11,
+          21251,
+          12500,
           4
         ]
       ],
       "row_count": 1,
-      "sha256": "e23a00a586d20e593be3d15c5f1b846146a7ab4cf75bd4151dc3d39b822128d7",
+      "sha256": "e5a8706a194b18d98cd6610287b6a1b9f9af590043f49e15dfb7a01b35584e51",
       "source_tables": [
         "causeway.business_period"
       ],
-      "executed_at": "2026-10-22T03:15:32.142Z"
+      "executed_at": "2026-10-22T04:15:39.160Z"
     }
   ],
   "verification": {
     "requery": [
       {
-        "evidence_id": "ev-68d18815",
+        "evidence_id": "ev-6e922d17",
         "ok": true,
-        "sha_before": "23437b36d4517bff98a0aac4395d9fcaf5f248e44cc2fcee7498dfdd87daedcf",
-        "sha_after": "23437b36d4517bff98a0aac4395d9fcaf5f248e44cc2fcee7498dfdd87daedcf"
+        "sha_before": "0323813449832ee0e4d11d10ef1d69b023f21328b263897e381a8d48741bde47",
+        "sha_after": "0323813449832ee0e4d11d10ef1d69b023f21328b263897e381a8d48741bde47"
       },
       {
-        "evidence_id": "ev-6344a76b",
+        "evidence_id": "ev-61b731e7",
         "ok": true,
-        "sha_before": "58327b2d31fd6fff4adff781cc0cafd781639391fd555c3a97a36b8ffc8e52be",
-        "sha_after": "58327b2d31fd6fff4adff781cc0cafd781639391fd555c3a97a36b8ffc8e52be"
+        "sha_before": "82c8c0fbea5faccc346e1779345a591b7ce6e298dfa2edcc91b63681e1f25abb",
+        "sha_after": "82c8c0fbea5faccc346e1779345a591b7ce6e298dfa2edcc91b63681e1f25abb"
       },
       {
-        "evidence_id": "ev-e3879755",
+        "evidence_id": "ev-215ca72e",
         "ok": true,
-        "sha_before": "64858ae47e3af07b08cfe710795e4408ffb8478d8506c4fbf0d5010d7aaa3022",
-        "sha_after": "64858ae47e3af07b08cfe710795e4408ffb8478d8506c4fbf0d5010d7aaa3022"
+        "sha_before": "65903591fa1e6e48039c27dc48fef9c4b007b915acf415d89dfdee391e6d3818",
+        "sha_after": "65903591fa1e6e48039c27dc48fef9c4b007b915acf415d89dfdee391e6d3818"
       },
       {
-        "evidence_id": "ev-80883669",
+        "evidence_id": "ev-e9081b8e",
         "ok": true,
-        "sha_before": "cddd02e8bbbc2b09fd92a94ed079315482de6eac6974a4199ac2d877ad088b28",
-        "sha_after": "cddd02e8bbbc2b09fd92a94ed079315482de6eac6974a4199ac2d877ad088b28"
+        "sha_before": "fbd6a4c16f06e5d73349575793e5c36012caf64cdae15dfd9b81b0b3bcfc91f8",
+        "sha_after": "fbd6a4c16f06e5d73349575793e5c36012caf64cdae15dfd9b81b0b3bcfc91f8"
       },
       {
         "evidence_id": "ev-803e6457",
@@ -1200,26 +1231,65 @@
         "sha_after": "d8623be5b7c3b17b0799c098274276f6624cf343e749b8434c7ea1748d6a5798"
       },
       {
-        "evidence_id": "ev-9babb391",
+        "evidence_id": "ev-c5ce8061",
         "ok": true,
-        "sha_before": "819447a46e7ab66fe2aa3d62791a06986cc9249728ad885d76974a72fae2e9ef",
-        "sha_after": "819447a46e7ab66fe2aa3d62791a06986cc9249728ad885d76974a72fae2e9ef"
+        "sha_before": "bc815aced14c3f5fcc7ddc8c034799ca0187dbb443dd311201166f6e9a8ffa44",
+        "sha_after": "bc815aced14c3f5fcc7ddc8c034799ca0187dbb443dd311201166f6e9a8ffa44"
       },
       {
-        "evidence_id": "ev-6ab9e7ac",
+        "evidence_id": "ev-fd34da22",
         "ok": true,
-        "sha_before": "4161c5a29a70d90804ce37b23bc9eb077faecc22fb1b1a87f268dbefb2669014",
-        "sha_after": "4161c5a29a70d90804ce37b23bc9eb077faecc22fb1b1a87f268dbefb2669014"
+        "sha_before": "216e23980397c36901158a3a96f89f80bfbb5f092d5ac0776f6bebad06ede822",
+        "sha_after": "216e23980397c36901158a3a96f89f80bfbb5f092d5ac0776f6bebad06ede822"
+      },
+      {
+        "evidence_id": "ev-98e0b553",
+        "ok": true,
+        "sha_before": "1d3b1bde4732536d74f2adcd7f9ef0ed2b7aacb05f355f023ccb4f4b8aa5b321",
+        "sha_after": "1d3b1bde4732536d74f2adcd7f9ef0ed2b7aacb05f355f023ccb4f4b8aa5b321"
+      },
+      {
+        "evidence_id": "ev-9e8391b6",
+        "ok": true,
+        "sha_before": "e5a8706a194b18d98cd6610287b6a1b9f9af590043f49e15dfb7a01b35584e51",
+        "sha_after": "e5a8706a194b18d98cd6610287b6a1b9f9af590043f49e15dfb7a01b35584e51"
+      },
+      {
+        "evidence_id": "ev-1d656412",
+        "ok": true,
+        "sha_before": "44262e51b32b5a0fd98bf3bb017643e2d823c9fcc0643fbc29e77d9a5adb8c4d",
+        "sha_after": "44262e51b32b5a0fd98bf3bb017643e2d823c9fcc0643fbc29e77d9a5adb8c4d"
       }
     ],
+    "struck_first_pass": 0,
     "struck": 0,
     "revisions": 0
+  },
+  "markovian": {
+    "config": {
+      "chunkSize": 4000,
+      "maxChunks": 6,
+      "carryoverTokens": 256,
+      "overlapTokens": 0
+    },
+    "rounds": 2,
+    "cascade_levels": [
+      "marker",
+      "marker"
+    ],
+    "totalTokensUsed": 1154,
+    "standardCost": 1756,
+    "markovianCost": 1666,
+    "tokensSaved": 90,
+    "efficiencyPercent": 5.125284738041002,
+    "token_label": "estimated",
+    "log_file": "logs\\markovian-r-20261022041534-3dfec8.json"
   },
   "sources": {
     "framer": "nemotron",
     "hypothesiser": "nemotron",
     "skeptic": "nemotron",
-    "writer": "offline"
+    "writer": "nemotron"
   },
   "model_calls": [
     {
@@ -1230,61 +1300,37 @@
     },
     {
       "provider": "nvidia",
-      "model": null,
-      "ok": false,
+      "model": "private/nvidia/nemotron-3.5-super-120b-a12b",
+      "ok": true,
       "failover": false
     },
     {
       "provider": "nvidia",
-      "model": null,
-      "ok": false,
+      "model": "private/nvidia/nemotron-3.5-super-120b-a12b",
+      "ok": true,
       "failover": false
     },
     {
       "provider": "nvidia",
-      "model": null,
-      "ok": false,
+      "model": "private/nvidia/nemotron-3.5-super-120b-a12b",
+      "ok": true,
       "failover": false
-    },
-    {
-      "provider": "nebius",
-      "model": "nvidia/nemotron-3-super-120b-a12b",
-      "ok": true,
-      "failover": true
-    },
-    {
-      "provider": "nebius",
-      "model": "nvidia/nemotron-3-super-120b-a12b",
-      "ok": true,
-      "failover": true
-    },
-    {
-      "provider": "nebius",
-      "model": "nvidia/nemotron-3-super-120b-a12b",
-      "ok": true,
-      "failover": true
-    },
-    {
-      "provider": "nebius",
-      "model": "nvidia/nemotron-3-super-120b-a12b",
-      "ok": true,
-      "failover": true
     }
   ],
   "world_model": {
     "events": {
-      "upsertEntity": 26,
-      "relate": 51,
+      "upsertEntity": 27,
+      "relate": 60,
       "assertFact": 5
     },
-    "log_file": "logs\\worldmodel-r-20261022031520-e33b25.jsonl"
+    "log_file": "logs\\worldmodel-r-20261022041534-3dfec8.jsonl"
   },
   "memory": {
     "ledger": {
-      "create": 6,
-      "read": 17
+      "create": 11,
+      "read": 42
     },
     "ledger_file": "logs/hmem-ledger.jsonl"
   },
-  "execution_time_seconds": 19.6
+  "execution_time_seconds": 9.9
 }

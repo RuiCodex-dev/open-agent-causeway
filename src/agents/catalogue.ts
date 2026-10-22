@@ -31,7 +31,7 @@ export const CAUSES: Record<CauseType, CauseDef> = {
     effects: { gross_margin_pct: -1, unit_cost: 1 },
     assoc_metric: "unit_cost",
     lag_window: [0, 3],
-    nace: ["G47.24", "C10.82", "C10.7", "I56"],
+    nace: ["G47.24", "C10.82", "I56"],
   },
   energy_cost: {
     type: "energy_cost",

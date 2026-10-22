@@ -68,6 +68,24 @@
     ],
     "truth": [
       {
+        "case_id": "B01",
+        "split": "tune",
+        "question": "Why did our gross margin fall in the first half of 2025?",
+        "metric": "gross_margin_pct",
+        "period": "2025-H1",
+        "baseline": "2024-H1",
+        "causes": [
+          "input_cost_cocoa"
+        ],
+        "not_causes": [
+          "energy_cost",
+          "easter_shift",
+          "own_price_change"
+        ]
+      },
+      {
+        "case_id": "B02",
+        "split": "tune",
         "question": "Why did our gross margin fall in the first half of 2025?",
         "metric": "gross_margin_pct",
         "period": "2025-H1",
@@ -78,8 +96,23 @@
         ],
         "not_causes": [
           "energy_cost",
-          "tourism_demand",
           "easter_shift"
+        ],
+        "fact": "We switched to a more expensive single-origin couverture supplier in May 2025."
+      },
+      {
+        "case_id": "B03",
+        "split": "holdout",
+        "question": "Why did our revenue fall in Q2 2024 compared with Q2 2023?",
+        "metric": "revenue",
+        "period": "2024-Q2",
+        "baseline": "2023-Q2",
+        "causes": [
+          "easter_shift"
+        ],
+        "not_causes": [
+          "retail_demand",
+          "sector_distress"
         ]
       }
     ]

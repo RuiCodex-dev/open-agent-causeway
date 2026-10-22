@@ -32,27 +32,28 @@
     "cost_drift_per_year": 0.02,
     "price_elasticity": -0.8,
     "units_per_ticket": 1.05,
-    "noise_sd": 0.04,
+    "noise_sd": 0.03,
     "cost_weights": [],
     "demand_elasticities": [
       {
         "driver": "retail",
-        "elasticity": 1.6
+        "elasticity": 3
       }
     ],
     "actions": [],
     "truth": [
       {
-        "question": "Why did the number of bikes we sold change in 2024 compared with 2023?",
+        "case_id": "B06",
+        "split": "tune",
+        "question": "Why did the number of bikes we sold fall in 2023 compared with 2022?",
         "metric": "units",
-        "period": "2024",
-        "baseline": "2023",
+        "period": "2023",
+        "baseline": "2022",
         "causes": [
           "retail_demand"
         ],
         "not_causes": [
-          "tourism_demand",
-          "energy_cost",
+          "own_price_change",
           "easter_shift"
         ]
       }

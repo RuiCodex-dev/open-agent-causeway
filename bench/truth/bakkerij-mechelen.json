@@ -1,0 +1,65 @@
+{
+  "business_id": "bakkerij-mechelen",
+  "seed": 2610,
+  "generator": "scripts/gen-ledgers.ts",
+  "spec": {
+    "id": "bakkerij-mechelen",
+    "name": "Bakkerij De Korenaar",
+    "city": "Mechelen",
+    "nace": "C10.71",
+    "sector": "Bakery (bread and fresh pastry)",
+    "base": {
+      "unit_price": 3.4,
+      "unit_cost": 1.5,
+      "units": 22000
+    },
+    "seasonality": [
+      0.95,
+      0.95,
+      1,
+      1,
+      1,
+      0.95,
+      0.9,
+      0.9,
+      1,
+      1.05,
+      1.05,
+      1.25
+    ],
+    "easter_uplift": 0.05,
+    "price_drift_per_year": 0.02,
+    "cost_drift_per_year": 0.015,
+    "price_elasticity": -0.2,
+    "units_per_ticket": 2.4,
+    "noise_sd": 0.02,
+    "cost_weights": [
+      {
+        "driver": "elec",
+        "weight": 0.3,
+        "lag": 0,
+        "power": 1.4
+      }
+    ],
+    "demand_elasticities": [],
+    "actions": [],
+    "truth": [
+      {
+        "case_id": "B08",
+        "split": "holdout",
+        "question": "Why did our gross margin fall in the second half of 2022?",
+        "metric": "gross_margin_pct",
+        "period": "2022-H2",
+        "baseline": "2021-H2",
+        "causes": [
+          "energy_cost"
+        ],
+        "not_causes": [
+          "own_price_change",
+          "easter_shift"
+        ]
+      }
+    ]
+  },
+  "eurostat_updated_note": "drivers fetched live from Eurostat at generation time"
+}

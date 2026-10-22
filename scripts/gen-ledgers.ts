@@ -12,7 +12,7 @@ import { calendarTable, easterWindowShares } from "../src/data/calendar.ts";
 import { periodRange, shiftPeriod } from "../src/stats/series.ts";
 import { BUSINESSES, type BusinessSpec } from "./businesses.ts";
 
-const START = "2021-01";
+const START = "2019-01";
 const END = "2026-06";
 const seedArg = process.argv.indexOf("--seed");
 const SEED = seedArg > 0 ? Number(process.argv[seedArg + 1]) : 2610;
