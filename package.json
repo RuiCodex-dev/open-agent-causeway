@@ -1,0 +1,31 @@
+{
+  "name": "causeway",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "license": "Apache-2.0",
+  "engines": {
+    "node": ">=22"
+  },
+  "scripts": {
+    "build": "tsc -p tsconfig.json",
+    "dev": "tsx watch src/api/server.ts",
+    "start": "tsx src/api/server.ts",
+    "test": "vitest run",
+    "ask": "tsx src/cli.ts",
+    "typecheck": "tsc -p tsconfig.json",
+    "conformance": "tsx scripts/conformance.ts"
+  },
+  "dependencies": {
+    "@duckdb/node-api": "1.5.5-r.5",
+    "dotenv": "^16",
+    "fastify": "^5",
+    "zod": "^3",
+    "tsx": "^4"
+  },
+  "devDependencies": {
+    "@types/node": "^22",
+    "typescript": "^5.6",
+    "vitest": "^2"
+  }
+}
