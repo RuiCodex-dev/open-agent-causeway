@@ -1,2 +1,2 @@
 #!/usr/bin/env bash
-exec bash scripts/secret-scan.sh
+exec node scripts/secret-scan.mjs
