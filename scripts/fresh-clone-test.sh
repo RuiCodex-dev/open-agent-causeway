@@ -6,8 +6,8 @@ set -u
 SRC="${1:-$(git rev-parse --show-toplevel)}"
 WORK="$(mktemp -d)"
 NAME="causeway-fresh-$$"
-PORT_API=18000
-PORT_UI=18080
+PORT_API=${PORT_API:-28700}
+PORT_UI=${PORT_UI:-28780}
 fail=0
 check() { if eval "$2"; then echo "PASS $1"; else echo "FAIL $1"; fail=1; fi; }
 cleanup() { docker rm -f "$NAME" >/dev/null 2>&1; rm -rf "$WORK"; }

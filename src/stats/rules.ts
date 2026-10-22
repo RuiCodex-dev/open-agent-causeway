@@ -46,6 +46,11 @@ function pct(x: number): string {
   return `${(x * 100).toFixed(0)}%`;
 }
 
+/** z as text; |z| = 99 is the cap used when a series had no historical variation. */
+function zText(z: number): string {
+  return Math.abs(z) >= 99 ? `${z > 0 ? "+" : "-"}off the scale (no historical variation)` : z.toFixed(2);
+}
+
 function finite(x: number | null): x is number {
   return x !== null && Number.isFinite(x);
 }
@@ -74,7 +79,7 @@ export function applyRules(x: RuleInputs): RuleResult {
     change !== null && Math.abs(change) >= T.materialChange && Math.sign(change) === x.expected_sign &&
     finite(x.assoc_r) && x.assoc_r >= T.materialAssocR;
   if ((absZ >= T.supportZ && dir === -x.expected_sign) || (change !== null && Math.abs(change) >= T.materialChange && Math.sign(change) === -x.expected_sign && absZ >= T.flatZ)) {
-    return { verdict: "contradicted", rule: `driver moved the opposite way (z=${x.driver_z.toFixed(2)}${change === null ? "" : `, change ${pct(change)}`})`, confidence: "medium" };
+    return { verdict: "contradicted", rule: `driver moved the opposite way (z=${zText(x.driver_z)}${change === null ? "" : `, change ${pct(change)}`})`, confidence: "medium" };
   }
   if (finite(x.contribution_share) && x.contribution_share < 0 && absZ >= T.supportZ) {
     return { verdict: "contradicted", rule: `contribution has the wrong sign (share ${pct(x.contribution_share)})`, confidence: "medium" };
@@ -89,13 +94,13 @@ export function applyRules(x: RuleInputs): RuleResult {
     const high = (absZ >= T.highZ || (material && (x.assoc_r ?? 0) >= 0.8)) && (!finite(x.contribution_share) || x.contribution_share >= 0.3);
     return {
       verdict: "supported",
-      rule: `${material && absZ < T.supportZ ? `material change ${pct(change as number)} tracked by the outcome (r=${(x.assoc_r as number).toFixed(2)})` : `z=${x.driver_z.toFixed(2)} (|z| >= ${T.supportZ}) in the expected direction`}; lag ${finite(x.best_lag) ? x.best_lag : "n/a"} in [${x.lag_window.join(",")}]; share ${finite(x.contribution_share) ? pct(x.contribution_share) : "n/a"}`,
+      rule: `${material && absZ < T.supportZ ? `material change ${pct(change as number)} tracked by the outcome (r=${(x.assoc_r as number).toFixed(2)})` : `z=${zText(x.driver_z)} (|z| >= ${T.supportZ}) in the expected direction`}; lag ${finite(x.best_lag) ? x.best_lag : "n/a"} in [${x.lag_window.join(",")}]; share ${finite(x.contribution_share) ? pct(x.contribution_share) : "n/a"}`,
       confidence: high ? "high" : "medium",
     };
   }
   return {
     verdict: "inconclusive",
-    rule: `within noise or mixed signals (z=${x.driver_z.toFixed(2)}, r=${finite(x.assoc_r) ? x.assoc_r.toFixed(2) : "n/a"}, lag ok=${lagOk}, share ok=${shareOk})`,
+    rule: `within noise or mixed signals (z=${zText(x.driver_z)}, r=${finite(x.assoc_r) ? x.assoc_r.toFixed(2) : "n/a"}, lag ok=${lagOk}, share ok=${shareOk})`,
     confidence: "low",
   };
 }
