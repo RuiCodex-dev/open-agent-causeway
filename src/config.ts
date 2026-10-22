@@ -18,7 +18,7 @@ const configSchema = z.object({
 
   MODEL_BASE_URL: z.string().default("https://integrate.api.nvidia.com/v1"),
   MODEL_API_KEY: z.string().optional(),
-  MODEL_REASONER: z.string().default("nvidia/nemotron-3-super-120b-a12b"),
+  MODEL_REASONER: z.string().default("nvidia/nemotron-3.5-super-vl-120b-a12b"),
   MODEL_FAST: z.string().default("nvidia/nemotron-3.5-lightning-30b-a3b"),
   MODEL_EMBED: z.string().default("nvidia/nemotron-3-embed-1b"),
   MODEL_GUARD: z.string().default("nvidia/nemotron-3.5-content-safety"),
