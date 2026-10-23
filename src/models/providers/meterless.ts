@@ -29,6 +29,12 @@ export interface MeterlessProviderOpts {
   token?: string;
   appId?: string;
   model?: string;
+  /**
+   * `meterless-scope` header. Nightshift walls its own H-MEM injection and response cache by scope, so Causeway sends
+   * one scope per investigation: no prompt is enriched by another run's memory or answered from another run's cache.
+   * Causeway's own per-business H-MEM (src/meterless/memory.ts) stays the only memory the agents see.
+   */
+  scope?: string;
   fetchImpl?: typeof fetch;
   timeoutMs?: number;
 }
@@ -183,6 +189,7 @@ export class MeterlessProvider implements ChatProvider {
   private readonly appId: string;
   /** Explicit routing mode from opts; when unset, chat maps role → mode. */
   private readonly configuredModel: string | undefined;
+  private readonly scope: string;
   private readonly fetchImpl: typeof fetch;
   private readonly timeoutMs: number;
   private modelsCache: string[] = [];
@@ -192,6 +199,7 @@ export class MeterlessProvider implements ChatProvider {
     this.token = resolveToken(opts.token);
     this.appId = (opts.appId ?? DEFAULT_APP_ID).toLowerCase();
     this.configuredModel = opts.model;
+    this.scope = opts.scope && /^[\w.:-]{1,96}$/.test(opts.scope) ? opts.scope : "user";
     this.fetchImpl = opts.fetchImpl ?? fetch;
     this.timeoutMs = opts.timeoutMs ?? DEFAULT_TIMEOUT_MS;
   }
@@ -263,7 +271,7 @@ export class MeterlessProvider implements ChatProvider {
         headers: {
           Authorization: `Bearer ${this.token}`,
           "meterless-app": this.appId,
-          "meterless-scope": "user",
+          "meterless-scope": this.scope,
           "content-type": "application/json",
         },
         body: JSON.stringify({

@@ -72,7 +72,7 @@ export async function runInvestigation(req: RunInput, opts: RunOptions = {}) {
   const router = req.options?.reasoner === "offline" || cfg.MODEL_PROVIDER === "offline" ? null : buildRouter(cfg, (c) => {
     calls.push({ provider: c.provider, model: c.model, ok: c.ok, failover: c.failover });
     trace.log("ModelRouter", "call", { ...c });
-  });
+  }, { scope: `causeway-${runId}` });
   const gens: { fast: Generator | null; reason: Generator | null; write: Generator | null } = router
     ? { fast: makeGenerator(router, "fast", { maxTokens: 400, json: true }), reason: makeGenerator(router, "reasoner", { maxTokens: 2500, temperature: 0.3, json: true }), write: makeGenerator(router, "reasoner", { maxTokens: 2500, temperature: 0.2, json: true }) }
     : { fast: null, reason: null, write: null };

@@ -120,6 +120,21 @@ describe("MeterlessProvider.status", () => {
 });
 
 describe("MeterlessProvider.chat", () => {
+  it("sends a per-run scope and turns thinking off unless asked", async () => {
+    let scope: string | null = null;
+    let body: { chat_template_kwargs?: { enable_thinking?: boolean } } = {};
+    const fetchImpl: typeof fetch = async (_input, init) => {
+      scope = new Headers(init?.headers).get("meterless-scope");
+      body = JSON.parse(String(init?.body));
+      return new Response(JSON.stringify({ choices: [{ message: { content: "ok" } }] }), { status: 200 });
+    };
+    await new MeterlessProvider({ token: "t", scope: "causeway-r-1", fetchImpl }).chat({ messages: [{ role: "user", content: "hi" }], role: "fast" });
+    expect(scope).toBe("causeway-r-1");
+    expect(body.chat_template_kwargs?.enable_thinking).toBe(false);
+    await new MeterlessProvider({ token: "t", scope: "bad scope with spaces", fetchImpl }).chat({ messages: [{ role: "user", content: "hi" }], role: "fast" });
+    expect(scope).toBe("user");
+  });
+
   it("sends auth, app and scope headers and returns string content", async () => {
     let seenUrl = "";
     let seenHeaders: Headers | undefined;

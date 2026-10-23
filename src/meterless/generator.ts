@@ -27,7 +27,7 @@ export type Generator = (
   abortSignal?: AbortSignal,
 ) => Promise<{ text: string; metadata: GeneratorMeta }>;
 
-export function buildRouter(cfg: Config, onCall?: (r: CallRecord) => void): ModelRouter | null {
+export function buildRouter(cfg: Config, onCall?: (r: CallRecord) => void, opts: { scope?: string } = {}): ModelRouter | null {
   const nvidiaModels = { reasoner: cfg.MODEL_REASONER, fast: cfg.MODEL_FAST, guard: cfg.MODEL_GUARD };
   const nvidia = cfg.MODEL_API_KEY ? new OpenAICompatProvider({ id: "nvidia", baseUrl: cfg.MODEL_BASE_URL, apiKey: cfg.MODEL_API_KEY, models: nvidiaModels }) : null;
   const nebius = cfg.FALLBACK_API_KEY
@@ -36,7 +36,7 @@ export function buildRouter(cfg: Config, onCall?: (r: CallRecord) => void): Mode
   let primary: ChatProvider | null = null;
   if (cfg.MODEL_PROVIDER === "meterless") {
     primary = cfg.METERLESS_RUNTIME_TOKEN
-      ? new MeterlessProvider({ baseUrl: cfg.METERLESS_BASE_URL, token: cfg.METERLESS_RUNTIME_TOKEN, appId: cfg.METERLESS_APP_ID, model: cfg.METERLESS_MODEL })
+      ? new MeterlessProvider({ baseUrl: cfg.METERLESS_BASE_URL, token: cfg.METERLESS_RUNTIME_TOKEN, appId: cfg.METERLESS_APP_ID, model: cfg.METERLESS_MODEL, scope: opts.scope })
       : null;
   } else if (cfg.MODEL_PROVIDER === "nvidia") primary = nvidia;
   else if (cfg.MODEL_PROVIDER === "nebius") primary = nebius;
