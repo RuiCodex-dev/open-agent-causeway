@@ -102,6 +102,9 @@ describe("Writer prose", () => {
     expect(plain("Sales fell (about 5%) in March.")).toBe("Sales fell (about 5%) in March.");
     expect(plain("Cocoa rose 10.72% (r=0.938, evidence_ids: ev-6e922d17, ev-61b731e7).")).toBe("Cocoa rose 10.72% (r=0.938).");
     expect(plain("Prices rose 4.55% (evidence_ids: ev-593db200).")).toBe("Prices rose 4.55%.");
+    expect(plain("A 6.64% step (z=11.36, months_after=2).")).toBe("A 6.64% step (z=11.36).");
+    expect(plain("A step (months_after=2, z=11.36).")).toBe("A step (z=11.36).");
+    expect(plain("A step (months_after=2) here.")).toBe("A step here.");
   });
 });
 
