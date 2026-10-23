@@ -113,3 +113,12 @@ describe("Verifier: causes named in prose", () => {
     expect(untestedCausesNamed("Margin fell 10 points.", tested([]))).toEqual([]);
   });
 });
+
+describe("Verifier: thousands separators", () => {
+  it("reads 14,068 as fourteen thousand and 3,5 as a decimal comma", () => {
+    expect(extractNumbers("Revenue fell by 14,068 euros").map((n) => n.value)).toEqual([14068]);
+    expect(extractNumbers("a drop of -5,845 and 1,234,567.5").map((n) => n.value)).toEqual([-5845, 1234567.5]);
+    expect(extractNumbers("up 3,5 %").map((n) => n.value)).toEqual([3.5]);
+    expect(numberMatches(extractNumbers("14,068")[0]!, [14068.28])).toBe(true);
+  });
+});

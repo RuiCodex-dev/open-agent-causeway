@@ -27,10 +27,12 @@ export function untestedCausesNamed(text: string, results: HypothesisResult[]): 
 /** Numbers written in prose, excluding years and period labels such as H1, Q2, 2025-H1. */
 export function extractNumbers(text: string): { value: number; decimals: number; raw: string }[] {
   const out: { value: number; decimals: number; raw: string }[] = [];
-  const re = /(?<![A-Za-z0-9.\-])(-|−)?(\d+(?:[.,]\d+)?)(?![\d]*-[HQ]\d)/g;
+  // English prose: "14,068" and "1,234,567.5" use commas as thousands separators; "3,5" (one or two digits after
+  // the comma) is read as a decimal comma.
+  const re = /(?<![A-Za-z0-9.\-])(-|−)?(\d{1,3}(?:,\d{3})+(?:\.\d+)?|\d+(?:[.,]\d+)?)(?![\d]*-[HQ]\d)/g;
   let m: RegExpExecArray | null;
   while ((m = re.exec(text))) {
-    const raw = m[2]!.replace(",", ".");
+    const raw = /^\d{1,3}(?:,\d{3})+(?:\.\d+)?$/.test(m[2]!) ? m[2]!.replace(/,/g, "") : m[2]!.replace(",", ".");
     const before = text.slice(Math.max(0, m.index - 1), m.index);
     if (/[HhQq]/.test(before)) continue; // H1, Q2
     const v = Number(raw);
