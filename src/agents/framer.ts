@@ -97,9 +97,17 @@ export async function frameQuestion(
       FrameSchema,
       trace,
     );
-    const metric = (hints.metric ?? value.metric ?? (rules.status === "ok" ? rules.frame.metric : null)) as Metric | null;
-    const period = hints.period ?? validSpec(value.period) ?? (rules.status === "ok" ? rules.frame.period : null);
-    const baseline = hints.baseline ?? validSpec(value.baseline) ?? (period ? defaultBaseline(period) : null);
+    // Models propose, code decides: a metric or period the question states in words is parsed by code and wins over
+    // the model; the model only fills what the words leave open ("why are things bad lately?").
+    const statedMetric = parseMetric(question);
+    const statedPeriods = parsePeriods(question);
+    const metric = (hints.metric ?? statedMetric ?? value.metric ?? null) as Metric | null;
+    const period = hints.period ?? statedPeriods[0] ?? validSpec(value.period) ?? null;
+    const baseline = hints.baseline ?? statedPeriods[1] ?? validSpec(value.baseline) ?? (period ? defaultBaseline(period) : null);
+    const overruled: Record<string, { model: string | null; code: string }> = {};
+    if (!hints.metric && statedMetric && value.metric && value.metric !== statedMetric) overruled.metric = { model: value.metric, code: statedMetric };
+    if (!hints.period && statedPeriods[0] && value.period && value.period !== statedPeriods[0]) overruled.period = { model: value.period, code: statedPeriods[0] };
+    if (Object.keys(overruled).length) trace?.log("Framer", "model_overruled", { overruled });
     if (!metric || !period || (value.ambiguous && rules.status !== "ok")) {
       const q = value.clarifying_question ?? (rules.status === "needs_clarification" ? rules.question : "Which figure and which period do you mean?");
       const res: FrameResult = { status: "needs_clarification", question: q, source: "nemotron" };

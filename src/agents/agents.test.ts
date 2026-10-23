@@ -1,6 +1,6 @@
 import { describe, expect, it } from "vitest";
 import { extractNumbers, numberMatches, candidateValues, untestedCausesNamed, verify } from "./verifier.ts";
-import { parseMetric, parsePeriods, ruleFrame, defaultBaseline } from "./framer.ts";
+import { parseMetric, parsePeriods, ruleFrame, defaultBaseline, frameQuestion } from "./framer.ts";
 import { applicableCauses } from "./catalogue.ts";
 import { compile, resolve } from "../tests/compiler.ts";
 import { extractJson } from "../meterless/generator.ts";
@@ -120,5 +120,17 @@ describe("Verifier: thousands separators", () => {
     expect(extractNumbers("a drop of -5,845 and 1,234,567.5").map((n) => n.value)).toEqual([-5845, 1234567.5]);
     expect(extractNumbers("up 3,5 %").map((n) => n.value)).toEqual([3.5]);
     expect(numberMatches(extractNumbers("14,068")[0]!, [14068.28])).toBe(true);
+  });
+});
+
+describe("Framer: code decides what the question states", () => {
+  const model = (json: object) => async () => ({ text: JSON.stringify(json), metadata: { provider: "fake", model: "fake", latency_ms: 0, retries: 0 } });
+  it("keeps the stated metric when the model picks another one", async () => {
+    const r = await frameQuestion("Why did our gross margin change in 2024 compared with 2023?", "fietsen-gent", {}, model({ metric: "revenue", period: "2024", baseline: "2023", ambiguous: false, clarifying_question: null }));
+    expect(r.status === "ok" && r.frame.metric).toBe("gross_margin_pct");
+  });
+  it("lets the model fill what the words leave open", async () => {
+    const r = await frameQuestion("Why are sales down this spring?", "fietsen-gent", {}, model({ metric: "revenue", period: "2026-Q2", baseline: null, ambiguous: false, clarifying_question: null }));
+    expect(r.status === "ok" && r.frame.metric).toBe("revenue");
   });
 });
