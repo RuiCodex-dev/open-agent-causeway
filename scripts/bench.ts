@@ -114,9 +114,12 @@ const sha = (() => {
 const all = summary(results);
 const tune = summary(results.filter((r) => r.split === "tune"));
 const holdout = summary(results.filter((r) => r.split === "holdout"));
+// Holdout cases that prompted a code change (see bench/RUNS.md) are no longer clean; report the rest separately.
+const PROMPTED_A_CHANGE = new Set(["B03", "B08", "B12"]);
+const cleanHoldout = summary(results.filter((r) => r.split === "holdout" && !PROMPTED_A_CHANGE.has(r.case_id)));
 mkdirSync(outDir, { recursive: true });
 const meta = { generated_at: new Date().toISOString(), git_sha: sha, reasoner: offline ? "offline" : `nemotron (${cfg.MODEL_PROVIDER})`, data: "Zetaris snapshot (data/snapshot) via DuckDB", seed_note: "ledgers from scripts/gen-ledgers.ts, seed 2610" };
-writeFileSync(join(outDir, `results${offline ? "-offline" : ""}.json`), JSON.stringify({ meta, summary: { all, tune, holdout }, cases: results }, null, 2) + "\n");
+writeFileSync(join(outDir, `results${offline ? "-offline" : ""}.json`), JSON.stringify({ meta, summary: { all, tune, holdout, clean_holdout: cleanHoldout }, cases: results }, null, 2) + "\n");
 const pct = (x: number | null) => (x === null ? "n/a" : `${Math.round(x * 100)}%`);
 const row = (name: string, s: ReturnType<typeof summary>) => `| ${name} | ${s.cases} | ${pct(s.main_cause_accuracy)} | ${pct(s.all_causes_recall)} | ${s.false_support_rate.toFixed(2)} | ${s.null_control_pass} | ${s.ungrounded_numbers_in_final_prose} | ${s.verifier_strikes} | ${s.skeptic_challenges} | ${s.mean_seconds}s |`;
 const md = [
@@ -130,7 +133,8 @@ const md = [
   `|---|---|---|---|---|---|---|---|---|---|`,
   row("All", all),
   row("Tune (cases used while setting thresholds)", tune),
-  row("Holdout (never tuned on)", holdout),
+  row("Holdout (never used to set thresholds)", holdout),
+  row("Clean holdout (also never prompted a code change: B05, B09, B10, B11)", cleanHoldout),
   ``,
   `## Cases`,
   ``,
