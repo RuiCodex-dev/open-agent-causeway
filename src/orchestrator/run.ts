@@ -16,7 +16,7 @@ import { resolveChallenge, review } from "../agents/skeptic.ts";
 import { verify } from "../agents/verifier.ts";
 import { unitFor, write } from "../agents/writer.ts";
 import type { Challenge, Hypothesis, HypothesisResult } from "../agents/types.ts";
-import { buildRouter, makeGenerator, type Generator } from "../meterless/generator.ts";
+import { buildGuardRouter, buildRouter, makeGenerator, type Generator } from "../meterless/generator.ts";
 import { EvidenceGraph } from "../meterless/worldModel.ts";
 import { BusinessMemory } from "../meterless/memory.ts";
 import { InvestigationLoop } from "../meterless/loop.ts";
@@ -78,7 +78,11 @@ export async function runInvestigation(req: RunInput, opts: RunOptions = {}) {
     : { fast: null, reason: null, write: null };
   trace.log("Orchestrator", "start", { input: req.input, options: req.options ?? {}, model_provider: router ? router.primaryId : "offline" });
 
-  const guard = await guardQuestion(req.input.question, router, trace);
+  const guardRouter = !router ? null : router.primaryId === "nvidia" ? router : buildGuardRouter(cfg, (c) => {
+    calls.push({ provider: c.provider, model: c.model, ok: c.ok, failover: c.failover });
+    trace.log("ModelRouter", "call", { ...c });
+  });
+  const guard = await guardQuestion(req.input.question, guardRouter, trace);
   if (!guard.safe) throw Object.assign(new Error(`The question was refused by the input guard (${guard.source}).`), { type: "UnsafeInput" });
   const { data, mode, failover } = await pickData(cfg, req.options?.sample_mode, trace);
   const t = (name: string) => (data.engine === "zetaris" ? `${USL_PREFIX}.${name}` : name);

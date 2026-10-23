@@ -5,6 +5,7 @@ import { applicableCauses } from "./catalogue.ts";
 import { compile, resolve } from "../tests/compiler.ts";
 import { extractJson } from "../meterless/generator.ts";
 import { interpretFact } from "../meterless/memory.ts";
+import { plain } from "./writer.ts";
 import type { DataAdapter, QueryResult } from "../adapters/zetaris.ts";
 import { resultHash } from "../adapters/resultHash.ts";
 import type { Evidence, HypothesisResult } from "./types.ts";
@@ -91,5 +92,13 @@ describe("model JSON and owner facts", () => {
   it("maps owner sentences to testable causes with a start month", () => {
     expect(interpretFact("We switched our couverture supplier in May 2025.")).toEqual({ cause_type: "supplier_change", params: { from: "2025-05" } });
     expect(interpretFact("We raised prices by 6% on 1 April 2025").cause_type).toBe("own_price_change");
+  });
+});
+
+describe("Writer prose", () => {
+  it("removes leaked identifiers but keeps numbers", () => {
+    expect(plain("Costs rose 4.2% after the supplier switch (residual_step_pct).")).toBe("Costs rose 4.2% after the supplier switch.");
+    expect(plain("Cocoa rose 38% [ev-3, ev-7] over the year.")).toBe("Cocoa rose 38% over the year.");
+    expect(plain("Sales fell (about 5%) in March.")).toBe("Sales fell (about 5%) in March.");
   });
 });

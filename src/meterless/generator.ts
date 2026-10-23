@@ -45,6 +45,16 @@ export function buildRouter(cfg: Config, onCall?: (r: CallRecord) => void): Mode
   return new ModelRouter({ primary, fallback, pacers: { nvidia: new Pacer({ perMinute: cfg.NVIDIA_RPM_BUDGET, burst: 8, concurrency: 3 }) }, onCall });
 }
 
+/**
+ * The input guard needs NVIDIA Nemotron Content Safety, which is not a Meterless Runtime lane. When an NVIDIA key is
+ * configured the guard gets its own NVIDIA-only router (same pacer budget); otherwise the guard uses its deny-list.
+ */
+export function buildGuardRouter(cfg: Config, onCall?: (r: CallRecord) => void): ModelRouter | null {
+  if (!cfg.MODEL_API_KEY) return null;
+  const nvidia = new OpenAICompatProvider({ id: "nvidia", baseUrl: cfg.MODEL_BASE_URL, apiKey: cfg.MODEL_API_KEY, models: { reasoner: cfg.MODEL_REASONER, fast: cfg.MODEL_FAST, guard: cfg.MODEL_GUARD } });
+  return new ModelRouter({ primary: nvidia, maxAttempts: 2, pacers: { nvidia: new Pacer({ perMinute: cfg.NVIDIA_RPM_BUDGET, burst: 8, concurrency: 3 }) }, onCall });
+}
+
 export function makeGenerator(router: ModelRouter, role: ChatRequest["role"], opts: { thinking?: boolean; maxTokens?: number; temperature?: number; json?: boolean } = {}): Generator {
   return async (prompt, _attachments, systemPrompt, onStream, abortSignal) => {
     const messages: ChatRequest["messages"] = [];

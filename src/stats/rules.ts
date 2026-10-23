@@ -48,7 +48,7 @@ function pct(x: number): string {
 
 /** z as text; |z| = 99 is the cap used when a series had no historical variation. */
 function zText(z: number): string {
-  return Math.abs(z) >= 99 ? `${z > 0 ? "+" : "-"}off the scale (no historical variation)` : z.toFixed(2);
+  return Math.abs(z) >= 99 ? `${z > 0 ? ">+" : "<-"}99, a step with no earlier variation` : z.toFixed(2);
 }
 
 function finite(x: number | null): x is number {
