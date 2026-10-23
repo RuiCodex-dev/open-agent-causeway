@@ -152,7 +152,11 @@
           "src/models/providers/meterless.ts",
           "src/models/providers/meterless.test.ts"
         ],
-        "default": "MODEL_PROVIDER=meterless"
+        "default": "MODEL_PROVIDER=meterless",
+        "runtime": "Meterless Nightshift 1.2.3 (Windows), installed 2026-10-23 after the published SHA-256 matched",
+        "used_for": "every Framer, Hypothesiser, Skeptic and Writer call in the demo and the Bench; receipts record routed_model",
+        "lane": "nvidia/nemotron-3.5-lightning-30b-a3b (METERLESS_MODEL pin; meterless/auto also works)",
+        "scope": "meterless-scope: causeway-<run_id> per investigation, so Nightshift's own memory injection and response cache never cross runs"
       },
       "model_seam": "src/meterless/generator.ts (every model call)"
     },

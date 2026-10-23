@@ -31,7 +31,7 @@ With an empty `.env` this is **sample mode**: the bundled Zetaris snapshot (Duck
 
 ### Enable a live model
 
-**NVIDIA Nemotron** (free key from [build.nvidia.com](https://build.nvidia.com)):
+**Meterless Nightshift** (the primary provider; add your NVIDIA key in Nightshift → Setup → Providers) is configured further down. **NVIDIA Nemotron directly** (free key from [build.nvidia.com](https://build.nvidia.com)):
 
 ```bash
 # in .env
@@ -39,13 +39,17 @@ MODEL_PROVIDER=nvidia
 MODEL_API_KEY=your-nvidia-key-here
 ```
 
-**Meterless Runtime** (Nightshift / Runtime 1.4):
+**Meterless Nightshift** (Runtime 1.4; the token is in Nightshift's `proxy-token` file or its connect link):
 
 ```bash
 MODEL_PROVIDER=meterless
 METERLESS_RUNTIME_TOKEN=your-runtime-token-here
 METERLESS_BASE_URL=http://127.0.0.1:8088/v1
+METERLESS_MODEL=nvidia/nemotron-3.5-lightning-30b-a3b   # optional lane pin; omit for meterless/auto
+MODEL_API_KEY=your-nvidia-key-here                      # optional: input guard + failover
 ```
+
+Nightshift listens on 127.0.0.1 by default, so run Causeway on the same host (`npm run dev`) to use it; the Docker image was validated with NVIDIA direct and with the offline reasoner.
 
 See `.env.example` for all options (Nebius failover, Zetaris live credentials, pacing).
 
@@ -93,10 +97,10 @@ flowchart TD
 |---|---|---|
 | **Guard** | `nvidia/nemotron-3.5-content-safety` | Refuses unsafe questions before any agent runs (deny-list fallback without an NVIDIA route) |
 | **Framer** | `nvidia/nemotron-3.5-lightning-30b-a3b` | May stop the run with one clarifying question |
-| **Hypothesiser** | `nvidia/nemotron-3.5-super-vl-120b-a12b` | Proposes rival hypotheses from the typed cause catalogue |
+| **Hypothesiser** | Nemotron 3.5 via Meterless Nightshift (Super VL 120B when calling NVIDIA directly) | Proposes rival hypotheses from the typed cause catalogue |
 | **Analyst** | *(none — code)* | Compiles tests to SQL, runs them on Zetaris, computes statistics, applies the rule table |
-| **Skeptic** | `nvidia/nemotron-3.5-super-vl-120b-a12b` | Veto: a supported verdict must face an untested confounder test; also challenges the null ("nothing explains it") |
-| **Writer** | `nvidia/nemotron-3.5-super-vl-120b-a12b` | Writes the explanation card; every claim cites evidence |
+| **Skeptic** | Nemotron 3.5 via Meterless Nightshift (Super VL 120B when calling NVIDIA directly) | Veto: a supported verdict must face an untested confounder test; also challenges the null ("nothing explains it") |
+| **Writer** | Nemotron 3.5 via Meterless Nightshift (Super VL 120B when calling NVIDIA directly) | Writes the explanation card; every claim cites evidence |
 | **Verifier** | *(none — code)* | Veto: re-executes cited SQL and strikes numbers not in the evidence |
 | **Memory Keeper** | *(none — Meterless H-MEM)* | Recalls and stores owner facts and verdicts |
 
@@ -144,16 +148,22 @@ Parity: same compiled SQL on live Zetaris and on the snapshot is hash-identical 
 
 Every model call goes through `src/meterless/generator.ts`. Conformance of the vendored engines: `docs/evidence/conformance-world-model.txt`, `conformance-hmem.txt`, `conformance-markovian.txt`.
 
-**Power-rule Meterless Runtime provider** (`MODEL_PROVIDER=meterless`, the default): `src/models/providers/meterless.ts` (Runtime 1.4, provider contract v4), built in Cursor session S2 and unit-tested against the contract (16 tests). Honest note: during the build window the Windows Nightshift 1.2.1 installer's two published SHA-256 values disagreed, so we did not install it; development and the demo runs use `MODEL_PROVIDER=nvidia` (same OpenAI-compatible seam). Point `METERLESS_BASE_URL`/`METERLESS_RUNTIME_TOKEN` at a running Nightshift to switch.
+**Meterless Nightshift is the primary AI provider** (`MODEL_PROVIDER=meterless`, the default): `src/models/providers/meterless.ts` (Runtime 1.4, provider contract v4), built in Cursor session S2 and unit-tested against the contract. The demo and the Bench run through **Nightshift 1.2.3 on Windows** (installed on 2026-10-23 after its published SHA-256 matched the downloaded installer; the earlier 1.2.1 listing had two disagreeing values, so we waited). Nightshift holds the NVIDIA key in its own provider settings and routes every Framer, Hypothesiser, Skeptic and Writer call; its signed receipts record the routed model for each call. Three integration details, each found on the live runtime:
+
+- **One scope per investigation.** Nightshift adds memories from its own H-MEM to prompts and caches answers, both walled by `meterless-scope`. Under the default `user` scope its receipts showed `hmem.injected: 2` on our calls, and one run named a "supplier change" that the owner had never reported. Causeway now sends `meterless-scope: causeway-<run_id>`, so no run sees another run's memory or cached answer, and Causeway's own per-business H-MEM stays the only memory the agents use (receipts after the change: `context_sources: ["messages"]`, cache miss).
+- **Thinking off for structured calls.** Without `chat_template_kwargs.enable_thinking=false` the Nemotron lanes can spend the whole token budget on reasoning and return empty (HTTP 502 from the runtime).
+- **Lane pinned to Nemotron 3.5 Lightning** (`METERLESS_MODEL`). Nightshift lists Nemotron 3.5 Super VL as temporarily excluded, and the Ultra 550B lane worked but took ~97 s for one Skeptic call. `meterless/auto` also works; the pin keeps the demo under 30 s.
+
+The input guard (Nemotron Content Safety) is not a Nightshift lane, so it calls NVIDIA directly when a key is set (deny-list otherwise). `MODEL_PROVIDER=nvidia` and Nebius failover use the same OpenAI-compatible seam.
 
 ### NVIDIA — Nemotron roles, failover, pacing
 
-| Role | Model |
-|---|---|
-| Reasoner (Hypothesiser, Skeptic, Writer) | `nvidia/nemotron-3.5-super-vl-120b-a12b` |
-| Fast (Framer) | `nvidia/nemotron-3.5-lightning-30b-a3b` |
-| Input guard | `nvidia/nemotron-3.5-content-safety` |
-| Nebius failover | `nvidia/nemotron-3-super-120b-a12b` |
+| Role | Through Meterless Nightshift (demo, Bench) | NVIDIA direct (`MODEL_PROVIDER=nvidia`) |
+|---|---|---|
+| Reasoner (Hypothesiser, Skeptic, Writer) | `nvidia/nemotron-3.5-lightning-30b-a3b` (pinned lane) | `nvidia/nemotron-3.5-super-vl-120b-a12b` |
+| Fast (Framer) | `nvidia/nemotron-3.5-lightning-30b-a3b` | `nvidia/nemotron-3.5-lightning-30b-a3b` |
+| Input guard | `nvidia/nemotron-3.5-content-safety` (direct; not a Nightshift lane) | `nvidia/nemotron-3.5-content-safety` |
+| Failover | NVIDIA direct, then Nebius | Nebius `nvidia/nemotron-3-super-120b-a12b` |
 
 Access: hosted on build.nvidia.com (`integrate.api.nvidia.com/v1`); Nebius Token Factory as failover; no local GPU. Client-side pacer (default 32 req/min, burst 8, concurrency 3) for the free tier. Files: `src/models/providers/openaiCompat.ts`, `src/models/router.ts`, `src/models/pacer.ts`.
 
