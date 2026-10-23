@@ -25,8 +25,8 @@ export function untestedCausesNamed(text: string, results: HypothesisResult[]): 
 }
 
 /** Numbers written in prose, excluding years and period labels such as H1, Q2, 2025-H1. */
-export function extractNumbers(text: string): { value: number; decimals: number; raw: string }[] {
-  const out: { value: number; decimals: number; raw: string }[] = [];
+export function extractNumbers(text: string): { value: number; decimals: number; raw: string; unit?: "pp" | "%" }[] {
+  const out: { value: number; decimals: number; raw: string; unit?: "pp" | "%" }[] = [];
   // English prose: "14,068" and "1,234,567.5" use commas as thousands separators; "3,5" (one or two digits after
   // the comma) is read as a decimal comma.
   const re = /(?<![A-Za-z0-9.\-])(-|−)?(\d{1,3}(?:,\d{3})+(?:\.\d+)?|\d+(?:[.,]\d+)?)(?![\d]*-[HQ]\d)/g;
@@ -39,7 +39,9 @@ export function extractNumbers(text: string): { value: number; decimals: number;
     if (/^(19|20)\d{2}$/.test(raw)) continue; // years
     if (/^\d{4}-\d{2}/.test(text.slice(m.index + (m[1] ? 1 : 0)))) continue; // 2025-03
     const decimals = raw.includes(".") ? raw.split(".")[1]!.length : 0;
-    out.push({ value: m[1] ? -v : v, decimals, raw: m[0] });
+    const after = text.slice(m.index + m[0].length);
+    const unit = /^\s*(pp\b|percentage[- ]points?\b)/i.test(after) ? "pp" : /^\s*(%|percent\b)/i.test(after) ? "%" : undefined;
+    out.push({ value: m[1] ? -v : v, decimals, raw: m[0], ...(unit ? { unit } : {}) });
   }
   return out;
 }
@@ -56,6 +58,19 @@ export function candidateValues(results: HypothesisResult[], evidenceIds: string
         set.add(v * 100);
         set.add(Math.abs(v * 100));
       }
+    }
+  }
+  return [...set];
+}
+
+/** Values that are percentage points: fields named *_pp, and the outcome change itself (pp when the metric is margin). */
+export function ppCandidates(results: HypothesisResult[], evidenceIds: string[]): number[] {
+  const set = new Set<number>();
+  for (const r of results) {
+    if (!r.evidence_ids.some((id) => evidenceIds.includes(id))) continue;
+    for (const [k, v] of Object.entries(r.numbers)) {
+      if (v === null || !Number.isFinite(v)) continue;
+      if (k.endsWith("_pp") || k === "outcome_change") set.add(Math.abs(v));
     }
   }
   return [...set];
@@ -111,6 +126,12 @@ export async function verify(claims: Claim[], results: HypothesisResult[], evide
     if (miss) {
       struck++;
       return { ...c, verified: false, struck_reason: `the number ${miss.raw.trim()} does not appear in the cited evidence` };
+    }
+    const pp = ppCandidates(results, ids);
+    const wrongUnit = nums.find((n) => n.unit === "pp" && !numberMatches(n, pp));
+    if (wrongUnit) {
+      struck++;
+      return { ...c, verified: false, struck_reason: `${wrongUnit.raw.trim()} is written as percentage points, but in the evidence it is not a percentage-point figure` };
     }
     return { ...c, verified: true };
   });

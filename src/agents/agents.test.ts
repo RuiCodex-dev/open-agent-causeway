@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest";
-import { extractNumbers, numberMatches, candidateValues, untestedCausesNamed, verify } from "./verifier.ts";
+import { extractNumbers, numberMatches, candidateValues, ppCandidates, untestedCausesNamed, verify } from "./verifier.ts";
 import { parseMetric, parsePeriods, ruleFrame, defaultBaseline, frameQuestion } from "./framer.ts";
 import { applicableCauses } from "./catalogue.ts";
 import { compile, resolve } from "../tests/compiler.ts";
@@ -135,5 +135,18 @@ describe("Framer: code decides what the question states", () => {
   it("lets the model fill what the words leave open", async () => {
     const r = await frameQuestion("Why are sales down this spring?", "fietsen-gent", {}, model({ metric: "revenue", period: "2026-Q2", baseline: null, ambiguous: false, clarifying_question: null }));
     expect(r.status === "ok" && r.frame.metric).toBe("revenue");
+  });
+});
+
+describe("Verifier: percentage points", () => {
+  it("accepts pp only for percentage-point fields", () => {
+    const results = [{ evidence_ids: ["ev-1"], numbers: { residual_step_pct: 6.64, delta_margin_pp: -10.14, outcome_change: -10.14 } }] as unknown as HypothesisResult[];
+    const pp = ppCandidates(results, ["ev-1"]);
+    const [step] = extractNumbers("unit cost rose 6.64 pp");
+    const [margin] = extractNumbers("margin fell 10.14 percentage points");
+    expect(step!.unit).toBe("pp");
+    expect(numberMatches(step!, pp)).toBe(false);
+    expect(numberMatches(margin!, pp)).toBe(true);
+    expect(extractNumbers("a 6.64% step")[0]!.unit).toBe("%");
   });
 });

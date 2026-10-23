@@ -32,7 +32,8 @@ export function rejectedAndOffsets(results: HypothesisResult[]): Pick<Explanatio
 function numberTable(results: HypothesisResult[]): string {
   return results
     .map((r) => {
-      const nums = Object.entries(r.numbers).filter(([, v]) => v !== null).map(([k, v]) => `${k}=${fmt(v as number, Math.abs(v as number) < 1 ? 3 : 2)}`).join(", ");
+      const unit = (k: string) => (k.endsWith("_pp") ? " pp" : k.endsWith("_pct") ? " %" : "");
+      const nums = Object.entries(r.numbers).filter(([, v]) => v !== null).map(([k, v]) => `${k}=${fmt(v as number, Math.abs(v as number) < 1 ? 3 : 2)}${unit(k)}`).join(", ");
       return `- ${r.hypothesis.id} "${r.hypothesis.title}" verdict=${r.verdict} role=${r.role} confidence=${r.confidence}\n  rule: ${r.rule}\n  numbers: ${nums}\n  evidence_ids: ${r.evidence_ids.join(", ")}`;
     })
     .join("\n");
