@@ -272,6 +272,9 @@ export class MeterlessProvider implements ChatProvider {
           max_tokens: req.maxTokens,
           temperature: req.temperature,
           stream: false,
+          // Nightshift forwards this to NVIDIA Nemotron lanes; without it, thinking can consume the whole
+          // max_tokens budget and the lane returns an empty answer (HTTP 502 from the runtime).
+          chat_template_kwargs: { enable_thinking: req.thinking === true },
         }),
         signal,
       });
