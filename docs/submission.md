@@ -28,19 +28,19 @@ Models propose, code decides: no model writes SQL or issues a verdict.
 - World Model is the shared evidence graph for all agents;
 - H-MEM remembers owner facts ("we switched supplier in May") and changes the answer on re-ask;
 - Markovian carries bounded state between Skeptic rounds;
-- the Meterless Runtime provider is the default provider (Power rule);
+- Meterless Nightshift is the primary provider and routes every reasoning call;
 - the engine conformance suites pass.
 
 **NVIDIA:**
-- Nemotron 3.5 Super, Lightning and Content Safety;
+- Nemotron 3.5 Lightning (via Nightshift), Super and Content Safety;
 - Nebius Nemotron as failover.
 
 **Cursor:**
 - rules, plus headless sessions that built the scaffold, the Runtime provider, the UI and the README draft;
 - every session is logged in `docs/cursor-sessions`.
 
-**Causeway Bench:** 12 synthetic cases with hidden truth, including null controls. The main cause was found in [N/12]
-cases, with [0] ungrounded numbers.
+**Causeway Bench:** 12 synthetic cases with hidden truth, including null controls. The main cause was found in 12/12
+cases, with 0 ungrounded numbers (one false support, reported).
 
 **Pre-existing, declared:**
 - design documents (written before the window);

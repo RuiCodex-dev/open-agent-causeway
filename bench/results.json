@@ -1,0 +1,474 @@
+{
+  "meta": {
+    "generated_at": "2026-10-23T16:11:38.760Z",
+    "git_sha": "e66c3d1",
+    "reasoner": "nemotron (meterless)",
+    "data": "Zetaris snapshot (data/snapshot) via DuckDB",
+    "seed_note": "ledgers from scripts/gen-ledgers.ts, seed 2610"
+  },
+  "summary": {
+    "all": {
+      "cases": 12,
+      "main_cause_accuracy": 1,
+      "all_causes_recall": 1,
+      "false_support_rate": 0.08333333333333333,
+      "null_control_pass": "2/2",
+      "ungrounded_numbers_in_final_prose": 0,
+      "verifier_strikes": 0,
+      "writer_revisions": 0,
+      "skeptic_challenges": 7,
+      "skeptic_verdict_changes": 1,
+      "mean_seconds": 15.2,
+      "mean_model_calls": 4.7
+    },
+    "tune": {
+      "cases": 5,
+      "main_cause_accuracy": 1,
+      "all_causes_recall": 1,
+      "false_support_rate": 0,
+      "null_control_pass": "1/1",
+      "ungrounded_numbers_in_final_prose": 0,
+      "verifier_strikes": 0,
+      "writer_revisions": 0,
+      "skeptic_challenges": 4,
+      "skeptic_verdict_changes": 0,
+      "mean_seconds": 16.2,
+      "mean_model_calls": 4.8
+    },
+    "holdout": {
+      "cases": 7,
+      "main_cause_accuracy": 1,
+      "all_causes_recall": 1,
+      "false_support_rate": 0.14285714285714285,
+      "null_control_pass": "1/1",
+      "ungrounded_numbers_in_final_prose": 0,
+      "verifier_strikes": 0,
+      "writer_revisions": 0,
+      "skeptic_challenges": 3,
+      "skeptic_verdict_changes": 1,
+      "mean_seconds": 14.4,
+      "mean_model_calls": 4.6
+    },
+    "clean_holdout": {
+      "cases": 4,
+      "main_cause_accuracy": 1,
+      "all_causes_recall": 1,
+      "false_support_rate": 0.25,
+      "null_control_pass": "1/1",
+      "ungrounded_numbers_in_final_prose": 0,
+      "verifier_strikes": 0,
+      "writer_revisions": 0,
+      "skeptic_challenges": 2,
+      "skeptic_verdict_changes": 1,
+      "mean_seconds": 16.1,
+      "mean_model_calls": 4.8
+    }
+  },
+  "cases": [
+    {
+      "case_id": "B01",
+      "split": "tune",
+      "business_id": "atelier-noir",
+      "question": "Why did our gross margin fall in the first half of 2025?",
+      "expected_causes": [
+        "input_cost_cocoa"
+      ],
+      "supported_causes": [
+        "input_cost_cocoa"
+      ],
+      "main_cause_found": true,
+      "all_causes_found": true,
+      "false_supports": [],
+      "null_control": false,
+      "null_control_pass": null,
+      "struck_claims": 0,
+      "writer_revisions": 0,
+      "verified_claims": 1,
+      "ungrounded_in_final": 0,
+      "skeptic_challenges": 1,
+      "verdict_changes": 0,
+      "model_calls": 5,
+      "seconds": 16.2,
+      "reasoner": "nemotron",
+      "sources": {
+        "guard": "nemotron-content-safety",
+        "framer": "nemotron",
+        "hypothesiser": "nemotron",
+        "skeptic": "nemotron",
+        "writer": "nemotron"
+      },
+      "status": "success"
+    },
+    {
+      "case_id": "B02",
+      "split": "tune",
+      "business_id": "atelier-noir",
+      "question": "Why did our gross margin fall in the first half of 2025?",
+      "expected_causes": [
+        "input_cost_cocoa",
+        "supplier_change"
+      ],
+      "supported_causes": [
+        "input_cost_cocoa",
+        "supplier_change"
+      ],
+      "main_cause_found": true,
+      "all_causes_found": true,
+      "false_supports": [],
+      "null_control": false,
+      "null_control_pass": null,
+      "struck_claims": 0,
+      "writer_revisions": 0,
+      "verified_claims": 2,
+      "ungrounded_in_final": 0,
+      "skeptic_challenges": 1,
+      "verdict_changes": 0,
+      "model_calls": 5,
+      "seconds": 15.6,
+      "reasoner": "nemotron",
+      "sources": {
+        "guard": "nemotron-content-safety",
+        "framer": "nemotron",
+        "hypothesiser": "nemotron",
+        "skeptic": "nemotron",
+        "writer": "nemotron"
+      },
+      "status": "success"
+    },
+    {
+      "case_id": "B03",
+      "split": "holdout",
+      "business_id": "atelier-noir",
+      "question": "Why did our revenue fall in Q2 2024 compared with Q2 2023?",
+      "expected_causes": [
+        "easter_shift"
+      ],
+      "supported_causes": [
+        "easter_shift"
+      ],
+      "main_cause_found": true,
+      "all_causes_found": true,
+      "false_supports": [],
+      "null_control": false,
+      "null_control_pass": null,
+      "struck_claims": 0,
+      "writer_revisions": 0,
+      "verified_claims": 1,
+      "ungrounded_in_final": 0,
+      "skeptic_challenges": 1,
+      "verdict_changes": 0,
+      "model_calls": 4,
+      "seconds": 14.4,
+      "reasoner": "nemotron",
+      "sources": {
+        "guard": "nemotron-content-safety",
+        "framer": "nemotron",
+        "hypothesiser": "nemotron",
+        "skeptic": "nemotron",
+        "writer": "nemotron"
+      },
+      "status": "success"
+    },
+    {
+      "case_id": "B04",
+      "split": "tune",
+      "business_id": "cafe-sablon",
+      "question": "Why did our revenue rise in Q2 2022 compared with Q2 2021?",
+      "expected_causes": [
+        "tourism_demand"
+      ],
+      "supported_causes": [
+        "tourism_demand"
+      ],
+      "main_cause_found": true,
+      "all_causes_found": true,
+      "false_supports": [],
+      "null_control": false,
+      "null_control_pass": null,
+      "struck_claims": 0,
+      "writer_revisions": 0,
+      "verified_claims": 1,
+      "ungrounded_in_final": 0,
+      "skeptic_challenges": 1,
+      "verdict_changes": 0,
+      "model_calls": 5,
+      "seconds": 20.6,
+      "reasoner": "nemotron",
+      "sources": {
+        "guard": "nemotron-content-safety",
+        "framer": "nemotron",
+        "hypothesiser": "nemotron",
+        "skeptic": "nemotron",
+        "writer": "nemotron"
+      },
+      "status": "success"
+    },
+    {
+      "case_id": "B05",
+      "split": "holdout",
+      "business_id": "cafe-sablon",
+      "question": "Why did our revenue fall in 2020?",
+      "expected_causes": [
+        "tourism_demand"
+      ],
+      "supported_causes": [
+        "tourism_demand"
+      ],
+      "main_cause_found": true,
+      "all_causes_found": true,
+      "false_supports": [],
+      "null_control": false,
+      "null_control_pass": null,
+      "struck_claims": 0,
+      "writer_revisions": 0,
+      "verified_claims": 3,
+      "ungrounded_in_final": 0,
+      "skeptic_challenges": 1,
+      "verdict_changes": 0,
+      "model_calls": 5,
+      "seconds": 21.1,
+      "reasoner": "nemotron",
+      "sources": {
+        "guard": "nemotron-content-safety",
+        "framer": "nemotron",
+        "hypothesiser": "nemotron",
+        "skeptic": "nemotron",
+        "writer": "nemotron"
+      },
+      "status": "success"
+    },
+    {
+      "case_id": "B06",
+      "split": "tune",
+      "business_id": "velo-schelde",
+      "question": "Why did the number of bikes we sold fall in 2023 compared with 2022?",
+      "expected_causes": [
+        "retail_demand"
+      ],
+      "supported_causes": [
+        "retail_demand"
+      ],
+      "main_cause_found": true,
+      "all_causes_found": true,
+      "false_supports": [],
+      "null_control": false,
+      "null_control_pass": null,
+      "struck_claims": 0,
+      "writer_revisions": 0,
+      "verified_claims": 1,
+      "ungrounded_in_final": 0,
+      "skeptic_challenges": 0,
+      "verdict_changes": 0,
+      "model_calls": 4,
+      "seconds": 10.8,
+      "reasoner": "nemotron",
+      "sources": {
+        "guard": "nemotron-content-safety",
+        "framer": "nemotron",
+        "hypothesiser": "nemotron",
+        "skeptic": "nemotron",
+        "writer": "nemotron"
+      },
+      "status": "success"
+    },
+    {
+      "case_id": "B07",
+      "split": "tune",
+      "business_id": "fleur-leuven",
+      "question": "Why did our revenue change in the first half of 2025?",
+      "expected_causes": [],
+      "supported_causes": [],
+      "main_cause_found": true,
+      "all_causes_found": true,
+      "false_supports": [],
+      "null_control": true,
+      "null_control_pass": true,
+      "struck_claims": 0,
+      "writer_revisions": 0,
+      "verified_claims": 1,
+      "ungrounded_in_final": 0,
+      "skeptic_challenges": 1,
+      "verdict_changes": 0,
+      "model_calls": 5,
+      "seconds": 17.6,
+      "reasoner": "nemotron",
+      "sources": {
+        "guard": "nemotron-content-safety",
+        "framer": "nemotron",
+        "hypothesiser": "nemotron",
+        "skeptic": "nemotron",
+        "writer": "offline"
+      },
+      "status": "success"
+    },
+    {
+      "case_id": "B08",
+      "split": "holdout",
+      "business_id": "bakkerij-mechelen",
+      "question": "Why did our gross margin fall in the second half of 2022?",
+      "expected_causes": [
+        "energy_cost"
+      ],
+      "supported_causes": [
+        "energy_cost"
+      ],
+      "main_cause_found": true,
+      "all_causes_found": true,
+      "false_supports": [],
+      "null_control": false,
+      "null_control_pass": null,
+      "struck_claims": 0,
+      "writer_revisions": 0,
+      "verified_claims": 1,
+      "ungrounded_in_final": 0,
+      "skeptic_challenges": 0,
+      "verdict_changes": 0,
+      "model_calls": 4,
+      "seconds": 12.1,
+      "reasoner": "nemotron",
+      "sources": {
+        "guard": "nemotron-content-safety",
+        "framer": "nemotron",
+        "hypothesiser": "nemotron",
+        "skeptic": "nemotron",
+        "writer": "nemotron"
+      },
+      "status": "success"
+    },
+    {
+      "case_id": "B09",
+      "split": "holdout",
+      "business_id": "pralines-brugge",
+      "question": "Why did our revenue rise in Q2 2025 compared with Q2 2024?",
+      "expected_causes": [
+        "easter_shift"
+      ],
+      "supported_causes": [
+        "easter_shift"
+      ],
+      "main_cause_found": true,
+      "all_causes_found": true,
+      "false_supports": [],
+      "null_control": false,
+      "null_control_pass": null,
+      "struck_claims": 0,
+      "writer_revisions": 0,
+      "verified_claims": 1,
+      "ungrounded_in_final": 0,
+      "skeptic_challenges": 1,
+      "verdict_changes": 1,
+      "model_calls": 6,
+      "seconds": 17.8,
+      "reasoner": "nemotron",
+      "sources": {
+        "guard": "nemotron-content-safety",
+        "framer": "nemotron",
+        "hypothesiser": "nemotron",
+        "skeptic": "nemotron",
+        "writer": "nemotron"
+      },
+      "status": "success"
+    },
+    {
+      "case_id": "B10",
+      "split": "holdout",
+      "business_id": "kapsalon-hasselt",
+      "question": "Why did our revenue change in 2024 compared with 2023?",
+      "expected_causes": [],
+      "supported_causes": [],
+      "main_cause_found": true,
+      "all_causes_found": true,
+      "false_supports": [],
+      "null_control": true,
+      "null_control_pass": true,
+      "struck_claims": 0,
+      "writer_revisions": 0,
+      "verified_claims": 1,
+      "ungrounded_in_final": 0,
+      "skeptic_challenges": 0,
+      "verdict_changes": 0,
+      "model_calls": 4,
+      "seconds": 13.5,
+      "reasoner": "nemotron",
+      "sources": {
+        "guard": "nemotron-content-safety",
+        "framer": "nemotron",
+        "hypothesiser": "nemotron",
+        "skeptic": "nemotron",
+        "writer": "nemotron"
+      },
+      "status": "success"
+    },
+    {
+      "case_id": "B11",
+      "split": "holdout",
+      "business_id": "fietsen-gent",
+      "question": "Why did the number of bikes we sold fall in 2024 compared with 2023?",
+      "expected_causes": [
+        "own_price_change"
+      ],
+      "supported_causes": [
+        "own_price_change",
+        "sector_distress"
+      ],
+      "main_cause_found": true,
+      "all_causes_found": true,
+      "false_supports": [
+        "sector_distress"
+      ],
+      "null_control": false,
+      "null_control_pass": null,
+      "struck_claims": 0,
+      "writer_revisions": 0,
+      "verified_claims": 1,
+      "ungrounded_in_final": 0,
+      "skeptic_challenges": 0,
+      "verdict_changes": 0,
+      "model_calls": 4,
+      "seconds": 12.1,
+      "reasoner": "nemotron",
+      "sources": {
+        "guard": "nemotron-content-safety",
+        "framer": "nemotron",
+        "hypothesiser": "nemotron",
+        "skeptic": "nemotron",
+        "writer": "nemotron"
+      },
+      "status": "success"
+    },
+    {
+      "case_id": "B12",
+      "split": "holdout",
+      "business_id": "fietsen-gent",
+      "question": "Why did our gross margin change in 2024 compared with 2023?",
+      "expected_causes": [
+        "own_price_change"
+      ],
+      "supported_causes": [
+        "own_price_change"
+      ],
+      "main_cause_found": true,
+      "all_causes_found": true,
+      "false_supports": [],
+      "null_control": false,
+      "null_control_pass": null,
+      "struck_claims": 0,
+      "writer_revisions": 0,
+      "verified_claims": 1,
+      "ungrounded_in_final": 0,
+      "skeptic_challenges": 0,
+      "verdict_changes": 0,
+      "model_calls": 5,
+      "seconds": 10,
+      "reasoner": "nemotron",
+      "sources": {
+        "guard": "rules",
+        "framer": "nemotron",
+        "hypothesiser": "nemotron",
+        "skeptic": "nemotron",
+        "writer": "nemotron"
+      },
+      "status": "success"
+    }
+  ]
+}

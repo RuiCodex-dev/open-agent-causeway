@@ -24,3 +24,34 @@ The clean holdout set after run 1 is B05, B09, B10, B11, B12.
 
 ## Run 2 — after the changes above
 See `report-offline.md` / `results-offline.json` (generated). No change was made in response to run 2's holdout results.
+
+## Run 3 — 2026-10-22, Nemotron called directly (NVIDIA API)
+Kept as `report-nvidia-2026-10-22.md` / `results-nvidia-2026-10-22.json`: main cause 12/12, null controls 2/2,
+one false support (B11, `sector_distress`), 0 ungrounded numbers.
+
+## Runs 4–8 — 2026-10-23, Nemotron through Meterless Nightshift 1.2.3 (lane `nemotron-3.5-lightning-30b-a3b`)
+Every Framer, Hypothesiser, Skeptic and Writer call went through Nightshift (45 calls in run 4, 0 failovers); the input
+guard calls NVIDIA Content Safety directly.
+
+| Run | Commit | Main cause | Null controls | False supports | Ungrounded numbers | Verifier strikes | What it led to |
+|---|---|---|---|---|---|---|---|
+| 4 | `057688f` | 12/12 | 2/2 | 1 (B11) | 0 | 3 | The 3 strikes were **Verifier false positives**: "14,068" was read as 14.068. Fixed in `d6ade0e` (thousands separators). Found on B03, B04, B09; it changes no verdict, only the Verifier. |
+| 5 | `d6ade0e` | **11/12** | 2/2 | 2 (B11, B12) | 0 | 0 | **B12 missed**: the Framer model read "gross margin" as `revenue`, so the run tested the wrong figure. Fixed in `77281cc`: a metric or period the question states is parsed by code and wins over the model. **Prompted by holdout case B12, so B12 is no longer a clean holdout.** |
+| 6 | `77281cc` | 12/12 | 2/2 | 1 (B11) | 0 | 0 | none |
+| 7 | `77281cc` (+ report row) | 12/12 | 2/2 | 1 (B11) | 0 | 0 | none (repeat, for stability) |
+| 8 | `e66c3d1` | 12/12 | 2/2 | 1 (B11) | 0 | 0 | none — this is `report.md` / `results.json` |
+
+Runs 6–8 are the same product code three times: identical per-case results. Across their 36 case runs, code overruled
+the Framer model once (`gross_margin_pct` kept where the model said `revenue`).
+
+**Also changed on 10-23, not prompted by any Bench case:** one Nightshift scope per investigation (`7abf49f`; without it
+Nightshift injected its own stored memories into prompts and could replay cached answers across cases), and a Verifier
+rule that strikes prose naming a cause the run never tested (`4a0e2ec`; seen in a demo run, not in the Bench).
+
+**B11 stays a false support, reported as is.** For a bike shop's 2024 unit sales, Belgian retail bankruptcies (real
+Eurostat) rose 11 % and the synthetic unit series correlates with them at r = 0.54 (lag 2), which passes the rule
+"material change tracked by the outcome" (|change| ≥ 3 %, r ≥ 0.5). The generator puts no bankruptcy effect in this
+business, so this is a weakness of that rule (a shared trend is enough to pass it). B11 is a clean holdout; we have not
+changed the rule to fix it, because doing so after seeing the case would make B11 a tuned case.
+
+Clean holdout after 10-23: **B05, B09, B10, B11** (B03, B08, B12 each prompted a change).
