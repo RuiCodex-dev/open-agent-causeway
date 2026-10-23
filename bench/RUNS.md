@@ -29,7 +29,7 @@ See `report-offline.md` / `results-offline.json` (generated). No change was made
 Kept as `report-nvidia-2026-10-22.md` / `results-nvidia-2026-10-22.json`: main cause 12/12, null controls 2/2,
 one false support (B11, `sector_distress`), 0 ungrounded numbers.
 
-## Runs 4–8 — 2026-10-23, Nemotron through Meterless Nightshift 1.2.3 (lane `nemotron-3.5-lightning-30b-a3b`)
+## Runs 4–9 — 2026-10-23, Nemotron through Meterless Nightshift 1.2.3 (lane `nemotron-3.5-lightning-30b-a3b`)
 Every Framer, Hypothesiser, Skeptic and Writer call went through Nightshift (45 calls in run 4, 0 failovers); the input
 guard calls NVIDIA Content Safety directly.
 
@@ -39,7 +39,8 @@ guard calls NVIDIA Content Safety directly.
 | 5 | `d6ade0e` | **11/12** | 2/2 | 2 (B11, B12) | 0 | 0 | **B12 missed**: the Framer model read "gross margin" as `revenue`, so the run tested the wrong figure. Fixed in `77281cc`: a metric or period the question states is parsed by code and wins over the model. **Prompted by holdout case B12, so B12 is no longer a clean holdout.** |
 | 6 | `77281cc` | 12/12 | 2/2 | 1 (B11) | 0 | 0 | none |
 | 7 | `77281cc` (+ report row) | 12/12 | 2/2 | 1 (B11) | 0 | 0 | none (repeat, for stability) |
-| 8 | `e66c3d1` | 12/12 | 2/2 | 1 (B11) | 0 | 0 | none — this is `report.md` / `results.json` |
+| 8 | `e66c3d1` | 12/12 | 2/2 | 1 (B11) | 0 | 0 | none |
+| 9 | `353328b` | 12/12 | 2/2 | 1 (B11) | 0 | 3 | Verifier now also checks percentage points (`353328b`, prompted by the UI demo, not by a case). The 3 strikes are real catches, each fixed by the Writer's one revision: B04 and B09 wrote a share of 95.43 % / 56.21 % as "pp", B03 wrote "5,030.00" with precision the evidence does not have. **This is `report.md` / `results.json`.** |
 
 Runs 6–8 are the same product code three times: identical per-case results. Across their 36 case runs, code overruled
 the Framer model once (`gross_margin_pct` kept where the model said `revenue`).
