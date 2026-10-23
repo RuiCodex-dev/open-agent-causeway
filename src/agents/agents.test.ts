@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest";
-import { extractNumbers, numberMatches, candidateValues, verify } from "./verifier.ts";
+import { extractNumbers, numberMatches, candidateValues, untestedCausesNamed, verify } from "./verifier.ts";
 import { parseMetric, parsePeriods, ruleFrame, defaultBaseline } from "./framer.ts";
 import { applicableCauses } from "./catalogue.ts";
 import { compile, resolve } from "../tests/compiler.ts";
@@ -100,5 +100,16 @@ describe("Writer prose", () => {
     expect(plain("Costs rose 4.2% after the supplier switch (residual_step_pct).")).toBe("Costs rose 4.2% after the supplier switch.");
     expect(plain("Cocoa rose 38% [ev-3, ev-7] over the year.")).toBe("Cocoa rose 38% over the year.");
     expect(plain("Sales fell (about 5%) in March.")).toBe("Sales fell (about 5%) in March.");
+    expect(plain("Cocoa rose 10.72% (r=0.938, evidence_ids: ev-6e922d17, ev-61b731e7).")).toBe("Cocoa rose 10.72% (r=0.938).");
+    expect(plain("Prices rose 4.55% (evidence_ids: ev-593db200).")).toBe("Prices rose 4.55%.");
+  });
+});
+
+describe("Verifier: causes named in prose", () => {
+  const tested = (types: string[]) => types.map((t) => ({ hypothesis: { cause_type: t } })) as unknown as HypothesisResult[];
+  it("flags a cause the run never tested and accepts tested ones", () => {
+    expect(untestedCausesNamed("A supplier change and cocoa prices squeezed the margin.", tested(["input_cost_cocoa"]))).toEqual(["supplier_change"]);
+    expect(untestedCausesNamed("Cocoa prices rose; energy was flat.", tested(["input_cost_cocoa", "energy_cost"]))).toEqual([]);
+    expect(untestedCausesNamed("Margin fell 10 points.", tested([]))).toEqual([]);
   });
 });

@@ -24,6 +24,9 @@ export interface AskPanelProps {
   facts: OwnerFact[];
   usedMemoryIds: Set<string>;
   onAddFact: (text: string) => Promise<void>;
+  onForget: (id: string) => Promise<void>;
+  canReask?: boolean;
+  onReask?: () => void;
   questionRef?: RefObject<HTMLTextAreaElement>;
 }
 
@@ -44,6 +47,9 @@ export function AskPanel({
   facts,
   usedMemoryIds,
   onAddFact,
+  onForget,
+  canReask,
+  onReask,
   questionRef,
 }: AskPanelProps) {
   const localRef = useRef<HTMLTextAreaElement>(null);
@@ -191,6 +197,9 @@ export function AskPanel({
         usedMemoryIds={usedMemoryIds}
         disabled={running || !businessId}
         onAddFact={onAddFact}
+        onForget={onForget}
+        canReask={canReask}
+        onReask={onReask}
       />
     </section>
   );

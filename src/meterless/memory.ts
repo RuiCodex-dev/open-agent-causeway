@@ -88,6 +88,15 @@ export class BusinessMemory {
     this.logLedger("remember_verdict", { memory_id: rec.id, run_id: runId, evidence_ids: evidenceIds });
   }
 
+  /** The owner retracts a fact: removed from recall, and the deletion is kept in the engine's trust ledger. */
+  forget(memoryId: string): boolean {
+    const rec = this.hmem.store.get(memoryId);
+    if (!rec || !rec.tags.includes("owner_fact")) return false;
+    this.hmem.store.delete(memoryId, "owner retracted the fact");
+    this.logLedger("forget_fact", { memory_id: memoryId });
+    return true;
+  }
+
   feedback(memoryId: string, kind: "helpful" | "wrong"): void {
     this.hmem.feedback(memoryId, kind);
     this.logLedger("feedback", { memory_id: memoryId, kind });

@@ -1,13 +1,36 @@
 import { useEffect, useRef, type KeyboardEvent, type RefObject } from "react";
-import type { EvidenceItem, ModelCall, RunResult } from "../types";
+import type { EvidenceItem, HypothesisResult, ModelCall, RunResult } from "../types";
 
 export interface ExplanationCardProps {
   result: RunResult | null;
+  /** The previous answer to the same question (before the owner changed memory), for a before/after view. */
+  previous?: RunResult | null;
   onOpenEvidence: (id: string) => void;
   questionRef?: RefObject<HTMLTextAreaElement>;
 }
 
-export function ExplanationCard({ result, onOpenEvidence, questionRef }: ExplanationCardProps) {
+interface MemoryDelta {
+  title: string;
+  before: string;
+  after: string;
+}
+
+function label(h: HypothesisResult | undefined): string {
+  if (!h) return "not tested";
+  return h.role === "offset" ? `${h.verdict} (offset)` : h.verdict;
+}
+
+/** Per cause: the verdict in the previous answer against the verdict now. Only rows that changed are returned. */
+export function memoryDeltas(previous: RunResult, current: RunResult): MemoryDelta[] {
+  const before = new Map((previous.hypotheses ?? []).map((h) => [h.cause_type, h]));
+  const after = new Map((current.hypotheses ?? []).map((h) => [h.cause_type, h]));
+  const keys = [...new Set([...before.keys(), ...after.keys()])];
+  return keys
+    .map((k) => ({ title: (after.get(k) ?? before.get(k))!.title, before: label(before.get(k)), after: label(after.get(k)) }))
+    .filter((d) => d.before !== d.after);
+}
+
+export function ExplanationCard({ result, previous, onOpenEvidence, questionRef }: ExplanationCardProps) {
   const clarifyingRef = useRef<HTMLParagraphElement>(null);
 
   useEffect(() => {
@@ -93,6 +116,40 @@ export function ExplanationCard({ result, onOpenEvidence, questionRef }: Explana
       <p className="verdict" aria-live="polite">
         {out.verdict}
       </p>
+
+      {previous?.output?.verdict && (
+        <div className="card-section memory-delta">
+          <h3 className="panel__subtitle">What the owner&apos;s memory changed</h3>
+          <p className="memory-delta__before">
+            <span className="memory-delta__tag">Before</span> {previous.output.verdict}
+          </p>
+          {(() => {
+            const rows = memoryDeltas(previous, result);
+            return rows.length === 0 ? (
+              <p className="muted">No verdict changed: the same causes are supported as before.</p>
+            ) : (
+              <table className="memory-delta__table">
+                <thead>
+                  <tr>
+                    <th scope="col">Cause</th>
+                    <th scope="col">Before</th>
+                    <th scope="col">Now</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {rows.map((r) => (
+                    <tr key={r.title}>
+                      <th scope="row">{r.title}</th>
+                      <td>{r.before}</td>
+                      <td className={`verdict-${r.after.split(" ")[0]}`}>{r.after}</td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            );
+          })()}
+        </div>
+      )}
 
       {out.chain && out.chain.length > 0 && (
         <div className="card-section">

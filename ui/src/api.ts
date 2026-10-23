@@ -66,6 +66,12 @@ export async function postMemory(businessId: string, fact: string): Promise<Memo
   );
 }
 
+export async function deleteMemory(businessId: string, memoryId: string): Promise<{ status: string }> {
+  return parseJson(
+    await fetch(`${apiBase()}/memory/${encodeURIComponent(businessId)}/${encodeURIComponent(memoryId)}`, { method: "DELETE" }),
+  );
+}
+
 export interface RunEventHandlers {
   onTrace: (line: TraceLine) => void;
   onResult: (result: RunResult) => void;

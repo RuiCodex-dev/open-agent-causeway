@@ -1,10 +1,28 @@
 // Verifier (no LLM, veto): (1) re-executes every cited query and compares the result hash, (2) checks that
-// every number written in a claim appears in the statistics of the evidence that claim cites.
-// Failing claims are struck before the owner sees them.
+// every number written in a claim appears in the statistics of the evidence that claim cites, (3) checks that
+// no sentence names a cause that was never tested in this run. Failing claims are struck before the owner sees them.
 import type { DataAdapter } from "../adapters/zetaris.ts";
 import { resultHash } from "../adapters/resultHash.ts";
 import type { Trace } from "../orchestrator/trace.ts";
-import type { Claim, Evidence, HypothesisResult } from "./types.ts";
+import type { CauseType, Claim, Evidence, HypothesisResult } from "./types.ts";
+
+/** Words that name each catalogue cause in prose. */
+const CAUSE_WORDS: Record<CauseType, RegExp> = {
+  input_cost_cocoa: /\b(cocoa|cacao)\b/i,
+  energy_cost: /\b(energy|electricity)\b/i,
+  tourism_demand: /\b(touris[mt]s?|visitors?)\b/i,
+  retail_demand: /\b(retail|consumer) (demand|spending|sales)\b/i,
+  easter_shift: /\beaster\b/i,
+  own_price_change: /\b(own prices?|price (increase|rise|change)s?|raised (its |our |their )?prices?)\b/i,
+  sector_distress: /\b(bankrupt\w*|insolven\w*|sector distress)\b/i,
+  supplier_change: /\bsuppliers?\b/i,
+};
+
+/** Causes a sentence names although this run never tested them (a model inventing a cause the code did not decide). */
+export function untestedCausesNamed(text: string, results: HypothesisResult[]): CauseType[] {
+  const tested = new Set(results.map((r) => r.hypothesis.cause_type));
+  return (Object.keys(CAUSE_WORDS) as CauseType[]).filter((c) => !tested.has(c) && CAUSE_WORDS[c].test(text));
+}
 
 /** Numbers written in prose, excluding years and period labels such as H1, Q2, 2025-H1. */
 export function extractNumbers(text: string): { value: number; decimals: number; raw: string }[] {
@@ -79,6 +97,11 @@ export async function verify(claims: Claim[], results: HypothesisResult[], evide
     if (bad) {
       struck++;
       return { ...c, verified: false, struck_reason: `re-executed query ${bad} returned a different result` };
+    }
+    const untested = untestedCausesNamed(c.text, results);
+    if (untested.length) {
+      struck++;
+      return { ...c, verified: false, struck_reason: `names a cause this run never tested (${untested.join(", ")})` };
     }
     const cands = candidateValues(results, ids);
     const nums = extractNumbers(c.text);

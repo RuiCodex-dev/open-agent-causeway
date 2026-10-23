@@ -246,7 +246,9 @@ export function formatReasoner(
 ): string {
   const r = reasoner ?? (health?.model_provider === "offline" ? "offline" : "nemotron");
   if (r === "offline" || health?.model_provider === "offline") return "offline reasoner";
-  const ok = modelCalls?.find((c) => c.ok && c.provider);
+  // The reasoning calls decide the label; the input guard always calls NVIDIA directly and must not mask the route.
+  const ok = modelCalls?.find((c) => c.ok && c.provider && c.provider !== "nvidia") ?? modelCalls?.find((c) => c.ok && c.provider);
   const provider = ok?.provider ?? health?.model_provider ?? "unknown";
-  return `Nemotron via ${provider}`;
+  const names: Record<string, string> = { meterless: "Meterless Nightshift", nvidia: "NVIDIA API", nebius: "Nebius (failover)" };
+  return `Nemotron via ${names[provider] ?? provider}`;
 }

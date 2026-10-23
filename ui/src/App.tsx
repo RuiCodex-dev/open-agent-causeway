@@ -1,5 +1,5 @@
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
-import { getBusinesses, getHealth, getMemory, postMemory, startRun, subscribeRunEvents } from "./api";
+import { deleteMemory, getBusinesses, getHealth, getMemory, postMemory, startRun, subscribeRunEvents } from "./api";
 import { AskPanel } from "./components/AskPanel";
 import { EvidenceDrawer } from "./components/EvidenceDrawer";
 import { ExplanationCard } from "./components/ExplanationCard";
@@ -38,8 +38,13 @@ export default function App() {
   const [result, setResult] = useState<RunResult | null>(null);
   const [loadError, setLoadError] = useState<string | null>(null);
   const [drawerId, setDrawerId] = useState<string | null>(null);
+  /** Memory changed after the last finished answer (enables "ask again"). */
+  const [memoryDirty, setMemoryDirty] = useState(false);
+  /** The previous answer to the same question, kept so the card can show what the new memory changed. */
+  const [previous, setPrevious] = useState<{ question: string; result: RunResult } | null>(null);
 
   const questionRef = useRef<HTMLTextAreaElement>(null);
+  const lastQuestionRef = useRef<string>("");
   const disposeRef = useRef<(() => void) | null>(null);
 
   const usedMemoryIds = useMemo(() => {
@@ -91,6 +96,8 @@ export default function App() {
 
   const onBusinessChange = (id: string) => {
     setBusinessId(id);
+    setMemoryDirty(false);
+    setPrevious(null);
     void loadMemory(id);
   };
 
@@ -192,6 +199,7 @@ export default function App() {
     (res: RunResult) => {
       setResult(res);
       setRunning(false);
+      setMemoryDirty(false);
       disposeRef.current = null;
 
       if (res.hypotheses?.length) {
@@ -231,6 +239,13 @@ export default function App() {
   const run = async () => {
     if (running || !question.trim() || !businessId) return;
     disposeRef.current?.();
+    // Keep the last finished answer to the same question so the card can show what changed.
+    if (result?.status === "success" && lastQuestionRef.current === `${businessId}|${question.trim()}`) {
+      setPrevious({ question: question.trim(), result });
+    } else {
+      setPrevious(null);
+    }
+    lastQuestionRef.current = `${businessId}|${question.trim()}`;
     setRunning(true);
     setResult(null);
     setHypotheses([]);
@@ -283,6 +298,13 @@ export default function App() {
   const onAddFact = async (text: string) => {
     await postMemory(businessId, text);
     await loadMemory(businessId);
+    if (result?.status === "success") setMemoryDirty(true);
+  };
+
+  const onForget = async (id: string) => {
+    await deleteMemory(businessId, id);
+    await loadMemory(businessId);
+    if (result?.status === "success") setMemoryDirty(true);
   };
 
   const evidenceMap = useMemo(() => {
@@ -329,6 +351,9 @@ export default function App() {
           facts={facts}
           usedMemoryIds={usedMemoryIds}
           onAddFact={onAddFact}
+          onForget={onForget}
+          canReask={memoryDirty && !running && lastQuestionRef.current === `${businessId}|${question.trim()}`}
+          onReask={() => void run()}
           questionRef={questionRef}
         />
 
@@ -340,7 +365,7 @@ export default function App() {
           running={running}
         />
 
-        <ExplanationCard result={result} onOpenEvidence={openEvidence} questionRef={questionRef} />
+        <ExplanationCard result={result} previous={previous?.result ?? null} onOpenEvidence={openEvidence} questionRef={questionRef} />
       </main>
 
       <EvidenceDrawer

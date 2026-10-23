@@ -78,6 +78,9 @@ export function offlineCard(frame: Frame, results: HypothesisResult[], change: n
 /** Remove leaked internal identifiers such as "(residual_step_pct)" or "[ev-12]" from owner-facing prose. Numbers are untouched. */
 export function plain(text: string): string {
   return text
+    // "evidence_ids: ev-1, ev-2" written inline, then any bracket left empty by it
+    .replace(/[,;]?\s*evidence[_ ]ids?\s*[:=]\s*\[?\s*ev-[\w-]+(?:\s*,\s*ev-[\w-]+)*\s*\]?/gi, "")
+    .replace(/\s*\(\s*\)|\s*\[\s*\]/g, "")
     .replace(/\s*[([]\s*(?:[a-z]+_[a-z0-9_]+|ev-[\w-]+)(?:\s*,\s*(?:[a-z]+_[a-z0-9_]+|ev-[\w-]+))*\s*[)\]]/g, "")
     .replace(/\s{2,}/g, " ")
     .trim();
@@ -99,7 +102,7 @@ export async function write(
       const { value } = await generateJson(
         gen,
         "Writer",
-        "You are the Writer. You explain an investigation's result to a small-business owner in plain English. Every claim must cite evidence ids from the table, and every number you write must come from the table (you may round, and you may turn a fraction like 0.94 into 94%). Never invent numbers, causes or data. Write for the owner: never put internal field names, snake_case identifiers or evidence ids in the sentence text (evidence ids go only in evidence_ids). Reply with JSON only.",
+        "You are the Writer. You explain an investigation's result to a small-business owner in plain English. Every claim must cite evidence ids from the table, and every number you write must come from the table (you may round, and you may turn a fraction like 0.94 into 94%). Never invent numbers, causes or data, and name only causes that appear in the verdict table. Write for the owner: never put internal field names, snake_case identifiers or evidence ids in the sentence text (evidence ids go only in evidence_ids). Reply with JSON only.",
         [
           `Question: "${frame.question}". Metric: ${METRICS[frame.metric].label}; ${frame.period} vs ${frame.baseline}; overall change ${fmt(change, 2)} ${unitFor(frame.metric)}.`,
           facts.length ? `Owner-confirmed facts: ${facts.join("; ")}` : "",
@@ -114,7 +117,7 @@ ${carryover}` : "",
         trace,
       );
       const claims = value.claims.map((c, i) => ({ id: `c-${i + 1}`, text: plain(c.text), evidence_ids: c.evidence_ids }));
-      return { card: { verdict: plain(value.verdict), chain: value.chain.map(plain), claims, limitations: value.limitations, what_would_change: value.what_would_change, actions: value.actions, ...fixed }, source: "nemotron" };
+      return { card: { verdict: plain(value.verdict), chain: value.chain.map(plain), claims, limitations: value.limitations.map(plain), what_would_change: value.what_would_change.map(plain), actions: value.actions.map(plain), ...fixed }, source: "nemotron" };
     } catch (e) {
       trace?.log("Writer", "fallback_offline", { error: (e as Error).message.slice(0, 200) });
     }

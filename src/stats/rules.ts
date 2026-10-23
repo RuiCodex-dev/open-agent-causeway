@@ -43,7 +43,8 @@ export const THRESHOLDS = {
 } as const;
 
 function pct(x: number): string {
-  return `${(x * 100).toFixed(0)}%`;
+  const r = (x * 100).toFixed(0);
+  return `${r === "-0" ? "0" : r}%`;
 }
 
 /** z as text; |z| = 99 is the cap used when a series had no historical variation. */

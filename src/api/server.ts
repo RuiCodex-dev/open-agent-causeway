@@ -7,6 +7,7 @@
 //   GET  /runs/:id                    result of a finished run
 //   GET  /memory/:business_id         owner facts in H-MEM + trust-ledger stats
 //   POST /memory                      { business_id, fact } -> store an owner-confirmed fact
+//   DELETE /memory/:business_id/:memory_id  the owner retracts a fact (kept in the trust ledger)
 //   POST /memory/feedback             { business_id, memory_id, kind: helpful|wrong }
 import "dotenv/config";
 import { existsSync, readFileSync } from "node:fs";
@@ -69,6 +70,7 @@ export async function buildServer(): Promise<FastifyInstance> {
     if (origin && /^http:\/\/(localhost|127\.0\.0\.1)(:\d+)?$/.test(origin)) {
       reply.header("access-control-allow-origin", origin);
       reply.header("access-control-allow-headers", "content-type");
+      reply.header("access-control-allow-methods", "GET, POST, DELETE, OPTIONS");
     }
     return payload;
   });
@@ -182,6 +184,14 @@ export async function buildServer(): Promise<FastifyInstance> {
     if (!p.success) return reply.code(400).send({ status: "error", error: { type: "InvalidInput", message: p.error.issues.map((i) => i.message).join("; ") } });
     const f = new BusinessMemory(p.data.business_id).addFact(p.data.fact);
     return { status: "stored", fact: f };
+  });
+
+  app.delete("/memory/:business_id/:memory_id", async (req, reply) => {
+    const { business_id, memory_id } = req.params as { business_id: string; memory_id: string };
+    if (!/^[a-z0-9-]{1,64}$/.test(business_id) || !/^[\w-]{1,64}$/.test(memory_id)) return reply.code(400).send({ status: "error", error: { type: "InvalidInput", message: "bad id" } });
+    const ok = new BusinessMemory(business_id).forget(memory_id);
+    if (!ok) return reply.code(404).send({ status: "error", error: { type: "NotFound", message: "no such owner fact" } });
+    return { status: "forgotten", memory_id };
   });
 
   app.post("/memory/feedback", async (req, reply) => {
