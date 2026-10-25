@@ -1,0 +1,17 @@
+PASS no .env in a fresh clone
+PASS docker build
+PASS health
+PASS ui served
+PASS example_1 returns a status
+PASS example_2 returns a status
+PASS example_3 returns a status
+PASS example_4 returns a status
+PASS example_5 returns a status
+PASS example_5 asks a clarifying question
+PASS outputs differ by input
+PASS trace logs written in the container
+PASS world model log written
+PASS example_1: cocoa-driven input costs supported
+PASS example_1: verified claims present
+PASS example_1: Skeptic challenged
+FRESH-CLONE TEST: PASS
