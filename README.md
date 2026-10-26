@@ -8,8 +8,8 @@ Causeway answers **"why did this metric change?"** for small-business owners and
 | **Team** | Rui Codex |
 | **Licence** | Apache-2.0 |
 | **Repo** | https://github.com/RuiCodex-dev/open-agent-causeway |
-| **Video** | (link added at submission) |
-| **Deck** | (link added at submission) |
+| **Video** | https://youtu.be/AyXejKr6Fyc (3:09, unlisted) |
+| **Deck** | [deck/Causeway-deck.pdf](deck/Causeway-deck.pdf) |
 
 ---
 

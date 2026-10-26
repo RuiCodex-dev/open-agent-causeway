@@ -3,9 +3,9 @@
 - **Track:** The Agent That Can Explain Why (Track 02)
 - **Team:** Rui Codex (solo), GitHub member: `altinayselman`
 - **Title:** Causeway
-- **GitHub:** https://github.com/RuiCodex-dev/open-agent-causeway (public at submission, owner approval)
-- **Video:** (YouTube link, owner approval)
-- **Deck:** (shared link, owner approval)
+- **GitHub:** https://github.com/RuiCodex-dev/open-agent-causeway (public)
+- **Video:** https://youtu.be/AyXejKr6Fyc
+- **Deck:** https://github.com/RuiCodex-dev/open-agent-causeway/blob/main/deck/Causeway-deck.pdf
 
 ## Description (150-2,000 characters; the form has no separate sponsor or pre-existing fields)
 
