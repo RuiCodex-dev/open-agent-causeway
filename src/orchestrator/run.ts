@@ -13,7 +13,7 @@ import { frameQuestion } from "../agents/framer.ts";
 import { guardQuestion } from "../agents/guard.ts";
 import { propose } from "../agents/hypothesiser.ts";
 import { resolveChallenge, review } from "../agents/skeptic.ts";
-import { untestedCausesNamed, verify } from "../agents/verifier.ts";
+import { untestedCausesNamed, verdictProblems, verify } from "../agents/verifier.ts";
 import { offlineCard, unitFor, write } from "../agents/writer.ts";
 import type { Challenge, Hypothesis, HypothesisResult } from "../agents/types.ts";
 import { buildGuardRouter, buildRouter, makeGenerator, type Generator } from "../meterless/generator.ts";
@@ -180,8 +180,10 @@ export async function runInvestigation(req: RunInput, opts: RunOptions = {}) {
   // The headline and the chain are prose too: a cause named there must be one this run actually tested.
   const offline = offlineCard(frame, results, outcome.change);
   const verdictUntested = untestedCausesNamed(card.verdict, results);
-  if (verdictUntested.length) {
-    trace.log("Verifier", "verdict_replaced", { reason: `names a cause this run never tested (${verdictUntested.join(", ")})`, model_verdict: card.verdict });
+  const verdictNumbers = verdictProblems(card.verdict, results);
+  if (verdictUntested.length || verdictNumbers.length) {
+    const reason = verdictUntested.length ? `names a cause this run never tested (${verdictUntested.join(", ")})` : verdictNumbers.join("; ");
+    trace.log("Verifier", "verdict_replaced", { reason, model_verdict: card.verdict });
     card.verdict = offline.verdict;
   }
   const chainKept = card.chain.filter((s) => untestedCausesNamed(s, results).length === 0);

@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest";
-import { extractNumbers, numberMatches, candidateValues, ppCandidates, untestedCausesNamed, verify } from "./verifier.ts";
+import { extractNumbers, numberMatches, candidateValues, ppCandidates, untestedCausesNamed, misattributedNumbers, verdictProblems, verify } from "./verifier.ts";
 import { parseMetric, parsePeriods, ruleFrame, defaultBaseline, frameQuestion } from "./framer.ts";
 import { applicableCauses } from "./catalogue.ts";
 import { compile, resolve } from "../tests/compiler.ts";
@@ -148,5 +148,23 @@ describe("Verifier: percentage points", () => {
     expect(numberMatches(step!, pp)).toBe(false);
     expect(numberMatches(margin!, pp)).toBe(true);
     expect(extractNumbers("a 6.64% step")[0]!.unit).toBe("%");
+  });
+});
+
+describe("Verifier: attribution", () => {
+  const h = (cause_type: string, numbers: Record<string, number>) => ({ hypothesis: { cause_type }, numbers, evidence_ids: ["ev-1"] });
+  const results = [
+    h("supplier_change", { outcome_change: -10.142, residual_step_pct: 6.64, driver_z: 11.356 }),
+    h("input_cost_cocoa", { outcome_change: -10.142, driver_change_pct: 10.72, driver_cost_effect_pp: -12.164, delta_margin_pp: -10.142 }),
+  ] as unknown as HypothesisResult[];
+  it("strikes a true number credited to the wrong cause (seen in the live hero run)", () => {
+    expect(misattributedNumbers("The supplier change raised unit cost by 6.64%, which explains 12.16 percentage points of the decline.", results)).toEqual([{ raw: "12.16", cause: "supplier_change" }]);
+  });
+  it("accepts each cause's own figures and the shared outcome", () => {
+    expect(misattributedNumbers("The supplier change raised unit cost by 6.64% (z=11.36). Cocoa rose 10.72% and cost 12.16 pp of the 10.14 pp fall.", results)).toEqual([]);
+  });
+  it("flags a headline verdict with a misattributed number", () => {
+    expect(verdictProblems("Margin fell 10.14 pp because the supplier change drove 12.16 pp", results).length).toBe(1);
+    expect(verdictProblems("Margin fell 10.14 pp because of cocoa (12.16 pp) and the supplier change (6.64%)", results)).toEqual([]);
   });
 });

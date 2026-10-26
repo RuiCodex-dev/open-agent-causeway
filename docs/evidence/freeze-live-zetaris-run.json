@@ -1,0 +1,1285 @@
+{
+  "run_id": "example-1",
+  "data_mode": "zetaris",
+  "reasoner": "nemotron",
+  "trace_id": "trace-example-1",
+  "log_file": "logs\\trace-example-1.jsonl",
+  "agents": [
+    {
+      "name": "Guard",
+      "role": "Classifies the question with NVIDIA Nemotron Content Safety before any agent runs"
+    },
+    {
+      "name": "Framer",
+      "role": "Turns the question into metric, period and baseline, or asks one clarifying question"
+    },
+    {
+      "name": "Hypothesiser",
+      "role": "Proposes rival explanations from the cause catalogue"
+    },
+    {
+      "name": "Analyst",
+      "role": "Compiles each test to SQL, runs it on Zetaris, computes statistics and applies the rule table (no LLM)"
+    },
+    {
+      "name": "Skeptic",
+      "role": "Challenges every supported verdict with an untested confounder; veto until the test runs"
+    },
+    {
+      "name": "Writer",
+      "role": "Writes the explanation card; every claim cites evidence"
+    },
+    {
+      "name": "Verifier",
+      "role": "Re-executes cited queries and strikes any number not found in the evidence (no LLM, veto)"
+    },
+    {
+      "name": "Memory Keeper",
+      "role": "Recalls and stores owner facts and verdicts in Meterless H-MEM"
+    }
+  ],
+  "status": "success",
+  "frame": {
+    "business_id": "atelier-noir",
+    "metric": "gross_margin_pct",
+    "period": "2025-H1",
+    "baseline": "2024-H1",
+    "geo": "BE",
+    "question": "Why did our gross margin fall in the first half of 2025?"
+  },
+  "output": {
+    "verdict": "The gross margin fell 10.14 percentage points in the first half of 2025 because of two supported causes: (1) higher cocoa input costs, which drove a 10.72% cost increase contributing -12.16 pp to the margin drop, and (2) the switch to a more expensive single-origin couverture supplier in May 2025, which added a 6.64% unit-cost step contributing to the remaining margin decline.",
+    "chain": [
+      "Cocoa price increase of 10.72% drove a -12.16 pp margin effect (supported, high confidence).",
+      "Supplier change after 2025-05 added a 6.64% residual step that further reduced margin."
+    ],
+    "claims": [
+      {
+        "id": "c-1",
+        "text": "Cocoa-driven input costs accounted for 12.16 percentage points of the 10.14 percentage point gross margin decline, with a 10.72% cost increase tracked by the outcome (r=0.94).",
+        "evidence_ids": [
+          "ev-6e922d17",
+          "ev-61b731e7",
+          "ev-215ca72e",
+          "ev-4fd13909",
+          "ev-e822c07b",
+          "ev-c5ce8061"
+        ],
+        "verified": true
+      },
+      {
+        "id": "c-2",
+        "text": "The supplier switch to a more expensive single-origin couverture in May 2025 added a 6.64% unit-cost step that contributed to the remaining margin decline.",
+        "evidence_ids": [
+          "ev-6e922d17",
+          "ev-61b731e7",
+          "ev-215ca72e",
+          "ev-e9081b8e",
+          "ev-803e6457",
+          "ev-21148c3b"
+        ],
+        "verified": true
+      }
+    ],
+    "struck_claims": [],
+    "rejected": [
+      {
+        "hypothesis": "Energy costs",
+        "why": "driver flat (|z|=0.44 < 1, change 0%) while the outcome moved",
+        "evidence_ids": [
+          "ev-6e922d17",
+          "ev-61b731e7",
+          "ev-215ca72e",
+          "ev-1d656412",
+          "ev-c5ce8061"
+        ]
+      },
+      {
+        "hypothesis": "Easter timing",
+        "why": "the change persists without the Easter months (97% of it remains)",
+        "evidence_ids": [
+          "ev-6e922d17",
+          "ev-61b731e7",
+          "ev-215ca72e",
+          "ev-fd34da22",
+          "ev-98e0b553",
+          "ev-9e8391b6"
+        ]
+      }
+    ],
+    "offsets": [
+      {
+        "hypothesis": "Our own price changes",
+        "why": "driver moved the opposite way (z=>+99, a step with no earlier variation, change 5%)",
+        "evidence_ids": [
+          "ev-6e922d17",
+          "ev-61b731e7",
+          "ev-215ca72e",
+          "ev-593db200"
+        ]
+      }
+    ],
+    "limitations": [
+      "The analysis covers the first half of 2025; longer-term trends are not assessed.",
+      "Other potential cost drivers not tested cannot be ruled out entirely."
+    ],
+    "what_would_change": [
+      "If cocoa input costs were reduced (e.g., by sourcing blends or hedging), the margin drop would be smaller.",
+      "If the supplier contract were renegotiated or switched back, the 6.64% step effect would be eliminated."
+    ],
+    "actions": [
+      "Review the cocoa purchasing strategy: explore blend options or forward‑contract pricing to moderate the 10.72% cost increase.",
+      "Renew or renegotiate the single-origin couverture supplier agreement: seek competitive pricing or alternative origins to remove the 6.64% unit‑cost step.",
+      "Monitor gross margin monthly to verify that the two changes are the primary drivers and to catch any new cost shifts early."
+    ],
+    "memory_used": [
+      {
+        "fact": "We switched to a more expensive single-origin couverture supplier in May 2025.",
+        "source": "owner",
+        "memory_id": "mem-28",
+        "cause_type": "supplier_change"
+      }
+    ]
+  },
+  "hypotheses": [
+    {
+      "id": "hyp-1",
+      "title": "Cocoa-driven input costs",
+      "cause_type": "input_cost_cocoa",
+      "proposed_by": "Hypothesiser",
+      "verdict": "supported",
+      "confidence": "high",
+      "role": "cause",
+      "rule": "material change 11% tracked by the outcome (r=0.94); lag 1 in [0,3]; share 120%; survived Skeptic challenge ch-1-1 (easter timing contradicted)",
+      "numbers": {
+        "outcome_change": -10.142,
+        "outcome_z": -2.971,
+        "splice_ratio": 0.71940448,
+        "assoc_r": 0.9382,
+        "best_lag": 1,
+        "driver_z": 1.015,
+        "driver_change_pct": 10.72,
+        "cost_elasticity": 2.2168,
+        "driver_cost_effect_pp": -12.164,
+        "cost_effect_pp": -13.121,
+        "price_effect_pp": 2.979,
+        "delta_margin_pp": -10.142
+      },
+      "evidence_ids": [
+        "ev-6e922d17",
+        "ev-61b731e7",
+        "ev-215ca72e",
+        "ev-4fd13909",
+        "ev-e822c07b",
+        "ev-c5ce8061"
+      ]
+    },
+    {
+      "id": "hyp-2",
+      "title": "Supplier change",
+      "cause_type": "supplier_change",
+      "proposed_by": "Memory",
+      "verdict": "supported",
+      "confidence": "high",
+      "role": "cause",
+      "rule": "unit-cost step after 2025-05 not explained by cocoa prices: z=11.36 (|z| >= 2) in the expected direction; lag n/a in [0,0]; share n/a",
+      "numbers": {
+        "outcome_change": -10.142,
+        "outcome_z": -2.971,
+        "residual_step_eur": 0.3495,
+        "residual_step_pct": 6.64,
+        "driver_z": 11.356,
+        "months_after": 2
+      },
+      "evidence_ids": [
+        "ev-6e922d17",
+        "ev-61b731e7",
+        "ev-215ca72e",
+        "ev-e9081b8e",
+        "ev-803e6457",
+        "ev-21148c3b"
+      ]
+    },
+    {
+      "id": "hyp-3",
+      "title": "Our own price changes",
+      "cause_type": "own_price_change",
+      "proposed_by": "Hypothesiser",
+      "verdict": "contradicted",
+      "confidence": "medium",
+      "role": "offset",
+      "rule": "driver moved the opposite way (z=>+99, a step with no earlier variation, change 5%)",
+      "numbers": {
+        "outcome_change": -10.142,
+        "outcome_z": -2.971,
+        "driver_z": 99,
+        "driver_change_pct": 4.55,
+        "price_effect_pp": 2.979,
+        "delta_margin_pp": -10.142
+      },
+      "evidence_ids": [
+        "ev-6e922d17",
+        "ev-61b731e7",
+        "ev-215ca72e",
+        "ev-593db200"
+      ]
+    },
+    {
+      "id": "hyp-4",
+      "title": "Energy costs",
+      "cause_type": "energy_cost",
+      "proposed_by": "Hypothesiser",
+      "verdict": "contradicted",
+      "confidence": "medium",
+      "role": "none",
+      "rule": "driver flat (|z|=0.44 < 1, change 0%) while the outcome moved",
+      "numbers": {
+        "outcome_change": -10.142,
+        "outcome_z": -2.971,
+        "assoc_r": 0.8269,
+        "best_lag": 3,
+        "driver_z": -0.441,
+        "driver_change_pct": -0.41,
+        "cost_elasticity": 0.5343,
+        "driver_cost_effect_pp": 0.112,
+        "cost_effect_pp": -13.121,
+        "price_effect_pp": 2.979,
+        "delta_margin_pp": -10.142
+      },
+      "evidence_ids": [
+        "ev-6e922d17",
+        "ev-61b731e7",
+        "ev-215ca72e",
+        "ev-1d656412",
+        "ev-c5ce8061"
+      ]
+    },
+    {
+      "id": "hyp-5",
+      "title": "Easter timing",
+      "cause_type": "easter_shift",
+      "proposed_by": "Skeptic",
+      "verdict": "contradicted",
+      "confidence": "medium",
+      "role": "none",
+      "rule": "the change persists without the Easter months (97% of it remains)",
+      "numbers": {
+        "outcome_change": -10.142,
+        "outcome_z": -2.971,
+        "easter_months_target": 1,
+        "easter_months_baseline": 1,
+        "change_excluding_easter": -9.818,
+        "share_of_change_kept": 0.968
+      },
+      "evidence_ids": [
+        "ev-6e922d17",
+        "ev-61b731e7",
+        "ev-215ca72e",
+        "ev-fd34da22",
+        "ev-98e0b553",
+        "ev-9e8391b6"
+      ]
+    }
+  ],
+  "challenges": [
+    {
+      "id": "ch-1-1",
+      "target_hypothesis_id": "hyp-1",
+      "confounder": "Easter timing",
+      "argument": "The supported cocoa cost driver (r=0.94) likely captures the easter_shift confounder rather than true input cost pressure, as Easter's date shift moves seasonal sales between 2024-H1 and 2025-H1, artificially inflating or deflating gross margin comparisons without a real change in cocoa procurement costs.",
+      "required_test": "easter_shift",
+      "resolved": true,
+      "outcome": "Easter timing is contradicted: the change persists without the Easter months (97% of it remains)"
+    }
+  ],
+  "verdict_changes": [],
+  "evidence": [
+    {
+      "id": "ev-6e922d17",
+      "purpose": "gross_margin_pct by month, 2021-01 to 2025-06",
+      "engine": "zetaris",
+      "sql": "SELECT b.period AS period, ROUND(100 * (1 - SUM(b.cogs) / SUM(b.revenue)), 4) AS value FROM lightning.metastore.causeway_ns.causeway.business_period b WHERE b.business_id = 'atelier-noir' AND b.period BETWEEN '2021-01' AND '2025-06' GROUP BY b.period ORDER BY b.period",
+      "columns": [
+        "period",
+        "value"
+      ],
+      "rows_preview": [
+        [
+          "2021-01",
+          "61.9358"
+        ],
+        [
+          "2021-02",
+          "60.9405"
+        ],
+        [
+          "2021-03",
+          "63.55"
+        ],
+        [
+          "2021-04",
+          "62.6018"
+        ],
+        [
+          "2021-05",
+          "62.4659"
+        ],
+        [
+          "2021-06",
+          "63.0232"
+        ],
+        [
+          "2021-07",
+          "61.7476"
+        ],
+        [
+          "2021-08",
+          "61.4385"
+        ],
+        [
+          "2021-09",
+          "62.4239"
+        ],
+        [
+          "2021-10",
+          "62.5109"
+        ],
+        [
+          "2021-11",
+          "63.0966"
+        ],
+        [
+          "2021-12",
+          "62.1766"
+        ]
+      ],
+      "row_count": 54,
+      "sha256": "0323813449832ee0e4d11d10ef1d69b023f21328b263897e381a8d48741bde47",
+      "source_tables": [
+        "causeway.business_period"
+      ],
+      "executed_at": "2026-10-26T02:53:39.702Z"
+    },
+    {
+      "id": "ev-61b731e7",
+      "purpose": "totals 2025-H1",
+      "engine": "zetaris",
+      "sql": "SELECT SUM(b.revenue) AS revenue, SUM(b.cogs) AS cogs, SUM(b.units) AS units, SUM(b.transactions) AS transactions, COUNT(*) AS months FROM lightning.metastore.causeway_ns.causeway.business_period b WHERE b.business_id = 'atelier-noir' AND b.period IN ('2025-01', '2025-02', '2025-03', '2025-04', '2025-05', '2025-06')",
+      "columns": [
+        "revenue",
+        "cogs",
+        "units",
+        "transactions",
+        "months"
+      ],
+      "rows_preview": [
+        [
+          "367757.31999999995",
+          "225462.91999999998",
+          "35197",
+          "20704",
+          "6"
+        ]
+      ],
+      "row_count": 1,
+      "sha256": "82c8c0fbea5faccc346e1779345a591b7ce6e298dfa2edcc91b63681e1f25abb",
+      "source_tables": [
+        "causeway.business_period"
+      ],
+      "executed_at": "2026-10-26T02:53:41.463Z"
+    },
+    {
+      "id": "ev-215ca72e",
+      "purpose": "totals 2024-H1",
+      "engine": "zetaris",
+      "sql": "SELECT SUM(b.revenue) AS revenue, SUM(b.cogs) AS cogs, SUM(b.units) AS units, SUM(b.transactions) AS transactions, COUNT(*) AS months FROM lightning.metastore.causeway_ns.causeway.business_period b WHERE b.business_id = 'atelier-noir' AND b.period IN ('2024-01', '2024-02', '2024-03', '2024-04', '2024-05', '2024-06')",
+      "columns": [
+        "revenue",
+        "cogs",
+        "units",
+        "transactions",
+        "months"
+      ],
+      "rows_preview": [
+        [
+          "355839.75999999995",
+          "182066.69",
+          "35711",
+          "21006",
+          "6"
+        ]
+      ],
+      "row_count": 1,
+      "sha256": "65903591fa1e6e48039c27dc48fef9c4b007b915acf415d89dfdee391e6d3818",
+      "source_tables": [
+        "causeway.business_period"
+      ],
+      "executed_at": "2026-10-26T02:53:42.842Z"
+    },
+    {
+      "id": "ev-4fd13909",
+      "purpose": "hicp_choc_i15 by month",
+      "engine": "zetaris",
+      "sql": "SELECT d.period AS period, d.value AS value, d.source_period AS source_period FROM lightning.metastore.causeway_ns.causeway.driver_month d WHERE d.series_id = 'hicp_choc_i15' AND d.period BETWEEN '2020-01' AND '2025-06' ORDER BY d.period",
+      "columns": [
+        "period",
+        "value",
+        "source_period"
+      ],
+      "rows_preview": [
+        [
+          "2020-01",
+          "105.88",
+          "2020-01"
+        ],
+        [
+          "2020-02",
+          "103.78",
+          "2020-02"
+        ],
+        [
+          "2020-03",
+          "106.98",
+          "2020-03"
+        ],
+        [
+          "2020-04",
+          "106.93",
+          "2020-04"
+        ],
+        [
+          "2020-05",
+          "106.11",
+          "2020-05"
+        ],
+        [
+          "2020-06",
+          "107.25",
+          "2020-06"
+        ],
+        [
+          "2020-07",
+          "108.87",
+          "2020-07"
+        ],
+        [
+          "2020-08",
+          "105.52",
+          "2020-08"
+        ],
+        [
+          "2020-09",
+          "107.11",
+          "2020-09"
+        ],
+        [
+          "2020-10",
+          "105.28",
+          "2020-10"
+        ],
+        [
+          "2020-11",
+          "107.16",
+          "2020-11"
+        ],
+        [
+          "2020-12",
+          "107.0",
+          "2020-12"
+        ]
+      ],
+      "row_count": 66,
+      "sha256": "079c2c4529bef6be30ed324d9455c8485cfa313483bfb726ceb2f29f25c9b804",
+      "source_tables": [
+        "causeway.driver_month"
+      ],
+      "executed_at": "2026-10-26T02:53:00.798Z"
+    },
+    {
+      "id": "ev-e822c07b",
+      "purpose": "hicp_choc_i25 by month (newer index base)",
+      "engine": "zetaris",
+      "sql": "SELECT d.period AS period, d.value AS value, d.source_period AS source_period FROM lightning.metastore.causeway_ns.causeway.driver_month d WHERE d.series_id = 'hicp_choc_i25' AND d.period BETWEEN '2020-01' AND '2025-06' ORDER BY d.period",
+      "columns": [
+        "period",
+        "value",
+        "source_period"
+      ],
+      "rows_preview": [
+        [
+          "2024-01",
+          "98.03",
+          "2024-01"
+        ],
+        [
+          "2024-02",
+          "97.63",
+          "2024-02"
+        ],
+        [
+          "2024-03",
+          "98.39",
+          "2024-03"
+        ],
+        [
+          "2024-04",
+          "95.0",
+          "2024-04"
+        ],
+        [
+          "2024-05",
+          "92.83",
+          "2024-05"
+        ],
+        [
+          "2024-06",
+          "95.99",
+          "2024-06"
+        ],
+        [
+          "2024-07",
+          "97.38",
+          "2024-07"
+        ],
+        [
+          "2024-08",
+          "96.99",
+          "2024-08"
+        ],
+        [
+          "2024-09",
+          "94.25",
+          "2024-09"
+        ],
+        [
+          "2024-10",
+          "96.21",
+          "2024-10"
+        ],
+        [
+          "2024-11",
+          "95.83",
+          "2024-11"
+        ],
+        [
+          "2024-12",
+          "96.91",
+          "2024-12"
+        ]
+      ],
+      "row_count": 18,
+      "sha256": "d8623be5b7c3b17b0799c098274276f6624cf343e749b8434c7ea1748d6a5798",
+      "source_tables": [
+        "causeway.driver_month"
+      ],
+      "executed_at": "2026-10-26T02:53:04.326Z"
+    },
+    {
+      "id": "ev-c5ce8061",
+      "purpose": "unit_cost by month for the lag test",
+      "engine": "zetaris",
+      "sql": "SELECT b.period AS period, ROUND(SUM(b.cogs) / SUM(b.units), 6) AS value FROM lightning.metastore.causeway_ns.causeway.business_period b WHERE b.business_id = 'atelier-noir' AND b.period BETWEEN '2021-07' AND '2025-06' GROUP BY b.period ORDER BY b.period",
+      "columns": [
+        "period",
+        "value"
+      ],
+      "rows_preview": [
+        [
+          "2021-07",
+          "3.661132"
+        ],
+        [
+          "2021-08",
+          "3.695294"
+        ],
+        [
+          "2021-09",
+          "3.605337"
+        ],
+        [
+          "2021-10",
+          "3.60146"
+        ],
+        [
+          "2021-11",
+          "3.549588"
+        ],
+        [
+          "2021-12",
+          "3.642603"
+        ],
+        [
+          "2022-01",
+          "3.801652"
+        ],
+        [
+          "2022-02",
+          "3.907579"
+        ],
+        [
+          "2022-03",
+          "3.777459"
+        ],
+        [
+          "2022-04",
+          "3.842603"
+        ],
+        [
+          "2022-05",
+          "3.910004"
+        ],
+        [
+          "2022-06",
+          "3.759184"
+        ]
+      ],
+      "row_count": 48,
+      "sha256": "bc815aced14c3f5fcc7ddc8c034799ca0187dbb443dd311201166f6e9a8ffa44",
+      "source_tables": [
+        "causeway.business_period"
+      ],
+      "executed_at": "2026-10-26T02:53:32.584Z"
+    },
+    {
+      "id": "ev-e9081b8e",
+      "purpose": "unit cost by month around the supplier change",
+      "engine": "zetaris",
+      "sql": "SELECT b.period AS period, ROUND(SUM(b.cogs) / SUM(b.units), 6) AS value FROM lightning.metastore.causeway_ns.causeway.business_period b WHERE b.business_id = 'atelier-noir' AND b.period BETWEEN '2022-11' AND '2025-06' GROUP BY b.period ORDER BY b.period",
+      "columns": [
+        "period",
+        "value"
+      ],
+      "rows_preview": [
+        [
+          "2022-11",
+          "4.294997"
+        ],
+        [
+          "2022-12",
+          "4.228807"
+        ],
+        [
+          "2023-01",
+          "4.383428"
+        ],
+        [
+          "2023-02",
+          "4.678184"
+        ],
+        [
+          "2023-03",
+          "4.484767"
+        ],
+        [
+          "2023-04",
+          "4.789235"
+        ],
+        [
+          "2023-05",
+          "4.860798"
+        ],
+        [
+          "2023-06",
+          "4.708145"
+        ],
+        [
+          "2023-07",
+          "4.917144"
+        ],
+        [
+          "2023-08",
+          "5.156867"
+        ],
+        [
+          "2023-09",
+          "4.825958"
+        ],
+        [
+          "2023-10",
+          "4.794716"
+        ]
+      ],
+      "row_count": 32,
+      "sha256": "fbd6a4c16f06e5d73349575793e5c36012caf64cdae15dfd9b81b0b3bcfc91f8",
+      "source_tables": [
+        "causeway.business_period"
+      ],
+      "executed_at": "2026-10-26T02:53:11.434Z"
+    },
+    {
+      "id": "ev-803e6457",
+      "purpose": "hicp_choc_i15 by month",
+      "engine": "zetaris",
+      "sql": "SELECT d.period AS period, d.value AS value, d.source_period AS source_period FROM lightning.metastore.causeway_ns.causeway.driver_month d WHERE d.series_id = 'hicp_choc_i15' AND d.period BETWEEN '2022-10' AND '2025-06' ORDER BY d.period",
+      "columns": [
+        "period",
+        "value",
+        "source_period"
+      ],
+      "rows_preview": [
+        [
+          "2022-10",
+          "115.6",
+          "2022-10"
+        ],
+        [
+          "2022-11",
+          "114.98",
+          "2022-11"
+        ],
+        [
+          "2022-12",
+          "117.19",
+          "2022-12"
+        ],
+        [
+          "2023-01",
+          "122.02",
+          "2023-01"
+        ],
+        [
+          "2023-02",
+          "118.5",
+          "2023-02"
+        ],
+        [
+          "2023-03",
+          "123.67",
+          "2023-03"
+        ],
+        [
+          "2023-04",
+          "124.72",
+          "2023-04"
+        ],
+        [
+          "2023-05",
+          "122.03",
+          "2023-05"
+        ],
+        [
+          "2023-06",
+          "126.23",
+          "2023-06"
+        ],
+        [
+          "2023-07",
+          "129.8",
+          "2023-07"
+        ],
+        [
+          "2023-08",
+          "124.19",
+          "2023-08"
+        ],
+        [
+          "2023-09",
+          "124.11",
+          "2023-09"
+        ]
+      ],
+      "row_count": 33,
+      "sha256": "23c6651297832e9811ba291b56644f32000dd96eddad5d57fad8d3f18a46d67d",
+      "source_tables": [
+        "causeway.driver_month"
+      ],
+      "executed_at": "2026-10-26T02:53:15.842Z"
+    },
+    {
+      "id": "ev-21148c3b",
+      "purpose": "hicp_choc_i25 by month (newer index base)",
+      "engine": "zetaris",
+      "sql": "SELECT d.period AS period, d.value AS value, d.source_period AS source_period FROM lightning.metastore.causeway_ns.causeway.driver_month d WHERE d.series_id = 'hicp_choc_i25' AND d.period BETWEEN '2022-10' AND '2025-06' ORDER BY d.period",
+      "columns": [
+        "period",
+        "value",
+        "source_period"
+      ],
+      "rows_preview": [
+        [
+          "2024-01",
+          "98.03",
+          "2024-01"
+        ],
+        [
+          "2024-02",
+          "97.63",
+          "2024-02"
+        ],
+        [
+          "2024-03",
+          "98.39",
+          "2024-03"
+        ],
+        [
+          "2024-04",
+          "95.0",
+          "2024-04"
+        ],
+        [
+          "2024-05",
+          "92.83",
+          "2024-05"
+        ],
+        [
+          "2024-06",
+          "95.99",
+          "2024-06"
+        ],
+        [
+          "2024-07",
+          "97.38",
+          "2024-07"
+        ],
+        [
+          "2024-08",
+          "96.99",
+          "2024-08"
+        ],
+        [
+          "2024-09",
+          "94.25",
+          "2024-09"
+        ],
+        [
+          "2024-10",
+          "96.21",
+          "2024-10"
+        ],
+        [
+          "2024-11",
+          "95.83",
+          "2024-11"
+        ],
+        [
+          "2024-12",
+          "96.91",
+          "2024-12"
+        ]
+      ],
+      "row_count": 18,
+      "sha256": "d8623be5b7c3b17b0799c098274276f6624cf343e749b8434c7ea1748d6a5798",
+      "source_tables": [
+        "causeway.driver_month"
+      ],
+      "executed_at": "2026-10-26T02:53:18.710Z"
+    },
+    {
+      "id": "ev-593db200",
+      "purpose": "unit price by month",
+      "engine": "zetaris",
+      "sql": "SELECT b.period AS period, ROUND(SUM(b.revenue) / SUM(b.units), 6) AS value FROM lightning.metastore.causeway_ns.causeway.business_period b WHERE b.business_id = 'atelier-noir' AND b.period BETWEEN '2021-01' AND '2025-06' GROUP BY b.period ORDER BY b.period",
+      "columns": [
+        "period",
+        "value"
+      ],
+      "rows_preview": [
+        [
+          "2021-01",
+          "9.5"
+        ],
+        [
+          "2021-02",
+          "9.511793"
+        ],
+        [
+          "2021-03",
+          "9.523602"
+        ],
+        [
+          "2021-04",
+          "9.535426"
+        ],
+        [
+          "2021-05",
+          "9.547265"
+        ],
+        [
+          "2021-06",
+          "9.559118"
+        ],
+        [
+          "2021-07",
+          "9.570985"
+        ],
+        [
+          "2021-08",
+          "9.582867"
+        ],
+        [
+          "2021-09",
+          "9.594765"
+        ],
+        [
+          "2021-10",
+          "9.606676"
+        ],
+        [
+          "2021-11",
+          "9.618603"
+        ],
+        [
+          "2021-12",
+          "9.630543"
+        ]
+      ],
+      "row_count": 54,
+      "sha256": "ef3082571d564c23b409f5b7ebfada005c0615e64936ce1fff6df4ec6d62e3e0",
+      "source_tables": [
+        "causeway.business_period"
+      ],
+      "executed_at": "2026-10-26T02:53:22.403Z"
+    },
+    {
+      "id": "ev-1d656412",
+      "purpose": "elec_nonhh by month",
+      "engine": "zetaris",
+      "sql": "SELECT d.period AS period, d.value AS value, d.source_period AS source_period FROM lightning.metastore.causeway_ns.causeway.driver_month d WHERE d.series_id = 'elec_nonhh' AND d.period BETWEEN '2020-01' AND '2025-06' ORDER BY d.period",
+      "columns": [
+        "period",
+        "value",
+        "source_period"
+      ],
+      "rows_preview": [
+        [
+          "2020-01",
+          "0.1872",
+          "2020-S1"
+        ],
+        [
+          "2020-02",
+          "0.1872",
+          "2020-S1"
+        ],
+        [
+          "2020-03",
+          "0.1872",
+          "2020-S1"
+        ],
+        [
+          "2020-04",
+          "0.1872",
+          "2020-S1"
+        ],
+        [
+          "2020-05",
+          "0.1872",
+          "2020-S1"
+        ],
+        [
+          "2020-06",
+          "0.1872",
+          "2020-S1"
+        ],
+        [
+          "2020-07",
+          "0.1821",
+          "2020-S2"
+        ],
+        [
+          "2020-08",
+          "0.1821",
+          "2020-S2"
+        ],
+        [
+          "2020-09",
+          "0.1821",
+          "2020-S2"
+        ],
+        [
+          "2020-10",
+          "0.1821",
+          "2020-S2"
+        ],
+        [
+          "2020-11",
+          "0.1821",
+          "2020-S2"
+        ],
+        [
+          "2020-12",
+          "0.1821",
+          "2020-S2"
+        ]
+      ],
+      "row_count": 66,
+      "sha256": "44262e51b32b5a0fd98bf3bb017643e2d823c9fcc0643fbc29e77d9a5adb8c4d",
+      "source_tables": [
+        "causeway.driver_month"
+      ],
+      "executed_at": "2026-10-26T02:53:31.106Z"
+    },
+    {
+      "id": "ev-fd34da22",
+      "purpose": "Easter window shares by month",
+      "engine": "zetaris",
+      "sql": "SELECT c.period AS period, c.easter_share AS easter_share, c.easter_date AS easter_date FROM lightning.metastore.causeway_ns.causeway.calendar_month c WHERE c.period IN ('2024-01', '2024-02', '2024-03', '2024-04', '2024-05', '2024-06', '2025-01', '2025-02', '2025-03', '2025-04', '2025-05', '2025-06') ORDER BY c.period",
+      "columns": [
+        "period",
+        "easter_share",
+        "easter_date"
+      ],
+      "rows_preview": [
+        [
+          "2024-01",
+          "0.0",
+          "2024-03-31"
+        ],
+        [
+          "2024-02",
+          "0.0",
+          "2024-03-31"
+        ],
+        [
+          "2024-03",
+          "1.0",
+          "2024-03-31"
+        ],
+        [
+          "2024-04",
+          "0.0",
+          "2024-03-31"
+        ],
+        [
+          "2024-05",
+          "0.0",
+          "2024-03-31"
+        ],
+        [
+          "2024-06",
+          "0.0",
+          "2024-03-31"
+        ],
+        [
+          "2025-01",
+          "0.0",
+          "2025-04-20"
+        ],
+        [
+          "2025-02",
+          "0.0",
+          "2025-04-20"
+        ],
+        [
+          "2025-03",
+          "0.0",
+          "2025-04-20"
+        ],
+        [
+          "2025-04",
+          "1.0",
+          "2025-04-20"
+        ],
+        [
+          "2025-05",
+          "0.0",
+          "2025-04-20"
+        ],
+        [
+          "2025-06",
+          "0.0",
+          "2025-04-20"
+        ]
+      ],
+      "row_count": 12,
+      "sha256": "216e23980397c36901158a3a96f89f80bfbb5f092d5ac0776f6bebad06ede822",
+      "source_tables": [
+        "causeway.calendar_month"
+      ],
+      "executed_at": "2026-10-26T02:53:43.832Z"
+    },
+    {
+      "id": "ev-98e0b553",
+      "purpose": "totals excluding Easter months (target)",
+      "engine": "zetaris",
+      "sql": "SELECT SUM(b.revenue) AS revenue, SUM(b.cogs) AS cogs, SUM(b.units) AS units, SUM(b.transactions) AS transactions, COUNT(*) AS months FROM lightning.metastore.causeway_ns.causeway.business_period b WHERE b.business_id = 'atelier-noir' AND b.period IN ('2025-01', '2025-02', '2025-05', '2025-06')",
+      "columns": [
+        "revenue",
+        "cogs",
+        "units",
+        "transactions",
+        "months"
+      ],
+      "rows_preview": [
+        [
+          "214115.71",
+          "131173.89",
+          "20567",
+          "12098",
+          "4"
+        ]
+      ],
+      "row_count": 1,
+      "sha256": "1d3b1bde4732536d74f2adcd7f9ef0ed2b7aacb05f355f023ccb4f4b8aa5b321",
+      "source_tables": [
+        "causeway.business_period"
+      ],
+      "executed_at": "2026-10-26T02:53:45.226Z"
+    },
+    {
+      "id": "ev-9e8391b6",
+      "purpose": "totals excluding Easter months (baseline)",
+      "engine": "zetaris",
+      "sql": "SELECT SUM(b.revenue) AS revenue, SUM(b.cogs) AS cogs, SUM(b.units) AS units, SUM(b.transactions) AS transactions, COUNT(*) AS months FROM lightning.metastore.causeway_ns.causeway.business_period b WHERE b.business_id = 'atelier-noir' AND b.period IN ('2024-01', '2024-02', '2024-05', '2024-06')",
+      "columns": [
+        "revenue",
+        "cogs",
+        "units",
+        "transactions",
+        "months"
+      ],
+      "rows_preview": [
+        [
+          "211767.30000000002",
+          "108943.11",
+          "21251",
+          "12500",
+          "4"
+        ]
+      ],
+      "row_count": 1,
+      "sha256": "e5a8706a194b18d98cd6610287b6a1b9f9af590043f49e15dfb7a01b35584e51",
+      "source_tables": [
+        "causeway.business_period"
+      ],
+      "executed_at": "2026-10-26T02:53:46.445Z"
+    }
+  ],
+  "verification": {
+    "requery": [
+      {
+        "evidence_id": "ev-6e922d17",
+        "ok": true,
+        "sha_before": "0323813449832ee0e4d11d10ef1d69b023f21328b263897e381a8d48741bde47",
+        "sha_after": "0323813449832ee0e4d11d10ef1d69b023f21328b263897e381a8d48741bde47"
+      },
+      {
+        "evidence_id": "ev-61b731e7",
+        "ok": true,
+        "sha_before": "82c8c0fbea5faccc346e1779345a591b7ce6e298dfa2edcc91b63681e1f25abb",
+        "sha_after": "82c8c0fbea5faccc346e1779345a591b7ce6e298dfa2edcc91b63681e1f25abb"
+      },
+      {
+        "evidence_id": "ev-215ca72e",
+        "ok": true,
+        "sha_before": "65903591fa1e6e48039c27dc48fef9c4b007b915acf415d89dfdee391e6d3818",
+        "sha_after": "65903591fa1e6e48039c27dc48fef9c4b007b915acf415d89dfdee391e6d3818"
+      },
+      {
+        "evidence_id": "ev-4fd13909",
+        "ok": true,
+        "sha_before": "079c2c4529bef6be30ed324d9455c8485cfa313483bfb726ceb2f29f25c9b804",
+        "sha_after": "079c2c4529bef6be30ed324d9455c8485cfa313483bfb726ceb2f29f25c9b804"
+      },
+      {
+        "evidence_id": "ev-e822c07b",
+        "ok": true,
+        "sha_before": "d8623be5b7c3b17b0799c098274276f6624cf343e749b8434c7ea1748d6a5798",
+        "sha_after": "d8623be5b7c3b17b0799c098274276f6624cf343e749b8434c7ea1748d6a5798"
+      },
+      {
+        "evidence_id": "ev-c5ce8061",
+        "ok": true,
+        "sha_before": "bc815aced14c3f5fcc7ddc8c034799ca0187dbb443dd311201166f6e9a8ffa44",
+        "sha_after": "bc815aced14c3f5fcc7ddc8c034799ca0187dbb443dd311201166f6e9a8ffa44"
+      },
+      {
+        "evidence_id": "ev-e9081b8e",
+        "ok": true,
+        "sha_before": "fbd6a4c16f06e5d73349575793e5c36012caf64cdae15dfd9b81b0b3bcfc91f8",
+        "sha_after": "fbd6a4c16f06e5d73349575793e5c36012caf64cdae15dfd9b81b0b3bcfc91f8"
+      },
+      {
+        "evidence_id": "ev-803e6457",
+        "ok": true,
+        "sha_before": "23c6651297832e9811ba291b56644f32000dd96eddad5d57fad8d3f18a46d67d",
+        "sha_after": "23c6651297832e9811ba291b56644f32000dd96eddad5d57fad8d3f18a46d67d"
+      },
+      {
+        "evidence_id": "ev-21148c3b",
+        "ok": true,
+        "sha_before": "d8623be5b7c3b17b0799c098274276f6624cf343e749b8434c7ea1748d6a5798",
+        "sha_after": "d8623be5b7c3b17b0799c098274276f6624cf343e749b8434c7ea1748d6a5798"
+      }
+    ],
+    "struck_first_pass": 0,
+    "struck": 0,
+    "revisions": 0
+  },
+  "markovian": {
+    "config": {
+      "chunkSize": 4000,
+      "maxChunks": 6,
+      "carryoverTokens": 256,
+      "overlapTokens": 0
+    },
+    "rounds": 2,
+    "cascade_levels": [
+      "marker",
+      "marker"
+    ],
+    "totalTokensUsed": 1226,
+    "standardCost": 1871,
+    "markovianCost": 1738,
+    "tokensSaved": 133,
+    "efficiencyPercent": 7.108498129342597,
+    "token_label": "estimated",
+    "log_file": "logs\\markovian-example-1.json"
+  },
+  "sources": {
+    "guard": "nemotron-content-safety",
+    "framer": "nemotron",
+    "hypothesiser": "nemotron",
+    "skeptic": "nemotron",
+    "writer": "nemotron"
+  },
+  "model_calls": [
+    {
+      "provider": "nvidia",
+      "model": "nvidia/nemotron-3.5-content-safety",
+      "ok": true,
+      "failover": false
+    },
+    {
+      "provider": "meterless",
+      "model": "nvidia/nemotron-3.5-lightning-30b-a3b",
+      "ok": true,
+      "failover": false
+    },
+    {
+      "provider": "meterless",
+      "model": "nvidia/nemotron-3.5-lightning-30b-a3b",
+      "ok": true,
+      "failover": false
+    },
+    {
+      "provider": "meterless",
+      "model": "nvidia/nemotron-3.5-lightning-30b-a3b",
+      "ok": true,
+      "failover": false
+    },
+    {
+      "provider": "meterless",
+      "model": "nvidia/nemotron-3.5-lightning-30b-a3b",
+      "ok": true,
+      "failover": false
+    }
+  ],
+  "world_model": {
+    "events": {
+      "upsertEntity": 24,
+      "relate": 46,
+      "assertFact": 5
+    },
+    "log_file": "logs\\worldmodel-example-1.jsonl"
+  },
+  "memory": {
+    "ledger": {
+      "create": 32,
+      "read": 127,
+      "delete": 4
+    },
+    "ledger_file": "logs/hmem-ledger.jsonl"
+  },
+  "execution_time_seconds": 88.7
+}

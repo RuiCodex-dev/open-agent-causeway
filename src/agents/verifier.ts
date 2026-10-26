@@ -127,6 +127,11 @@ export async function verify(claims: Claim[], results: HypothesisResult[], evide
       struck++;
       return { ...c, verified: false, struck_reason: `the number ${miss.raw.trim()} does not appear in the cited evidence` };
     }
+    const wrongCause = misattributedNumbers(c.text, results.filter((r) => r.evidence_ids.some((id) => ids.includes(id))))[0];
+    if (wrongCause) {
+      struck++;
+      return { ...c, verified: false, struck_reason: `${wrongCause.raw} is credited to ${wrongCause.cause}, but it is not one of that cause's figures` };
+    }
     const pp = ppCandidates(results, ids);
     const wrongUnit = nums.find((n) => n.unit === "pp" && !numberMatches(n, pp));
     if (wrongUnit) {
@@ -137,4 +142,49 @@ export async function verify(claims: Claim[], results: HypothesisResult[], evide
   });
   trace?.log("Verifier", "verified", { claims: out.length, struck, requeried: requery.length, requery_failures: badEvidence.size, details: out.map((c) => ({ id: c.id, verified: c.verified, reason: c.struck_reason ?? null })) });
   return { claims: out, requery, struck };
+}
+
+/** Numbers every hypothesis shares: the outcome itself. Any clause may quote them. */
+const SHARED_KEYS = new Set(["outcome_change", "outcome_z", "delta_margin_pp"]);
+
+function expand(values: number[]): number[] {
+  const out = new Set<number>();
+  for (const v of values) {
+    if (!Number.isFinite(v)) continue;
+    out.add(v);
+    out.add(Math.abs(v));
+    if (Math.abs(v) <= 10) {
+      out.add(v * 100);
+      out.add(Math.abs(v * 100));
+    }
+  }
+  return [...out];
+}
+
+/**
+ * Attribution check. A clause that names exactly one tested cause may only use that cause's own numbers (plus the
+ * shared outcome figures). This catches a true number credited to the wrong cause, e.g. cocoa's -12.16 pp cost effect
+ * written as the supplier change's effect. Clauses naming several causes, or none, are left to the number check.
+ */
+export function misattributedNumbers(text: string, results: HypothesisResult[]): { raw: string; cause: CauseType }[] {
+  const tested = new Map(results.map((r) => [r.hypothesis.cause_type, r]));
+  const shared: number[] = [];
+  for (const r of results) for (const [k, v] of Object.entries(r.numbers)) if (SHARED_KEYS.has(k) && v !== null) shared.push(v);
+  const out: { raw: string; cause: CauseType }[] = [];
+  for (const clause of text.split(/;|(?<=[.!?])\s+/)) {
+    const named = (Object.keys(CAUSE_WORDS) as CauseType[]).filter((c) => tested.has(c) && CAUSE_WORDS[c].test(clause));
+    if (named.length !== 1) continue;
+    const own = Object.values(tested.get(named[0]!)!.numbers).filter((v): v is number => v !== null);
+    const cands = expand([...own, ...shared]);
+    for (const n of extractNumbers(clause)) if (!numberMatches(n, cands)) out.push({ raw: n.raw.trim(), cause: named[0]! });
+  }
+  return out;
+}
+
+/** Problems in the headline verdict: numbers that are in no evidence, numbers credited to the wrong cause. */
+export function verdictProblems(verdict: string, results: HypothesisResult[]): string[] {
+  const all = expand(results.flatMap((r) => Object.values(r.numbers).filter((v): v is number => v !== null)));
+  const problems = extractNumbers(verdict).filter((n) => !numberMatches(n, all)).map((n) => `${n.raw.trim()} is in no evidence`);
+  for (const m of misattributedNumbers(verdict, results)) problems.push(`${m.raw} is not a figure of ${m.cause}`);
+  return problems;
 }

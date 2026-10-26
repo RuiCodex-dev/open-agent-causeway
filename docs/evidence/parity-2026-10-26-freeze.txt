@@ -1,0 +1,8 @@
+OK   snapshot business         f1163d82c3ae vs manifest f1163d82c3ae
+OK   snapshot calendar_month   3595f4cac3aa vs manifest 3595f4cac3aa
+OK   snapshot driver_series    a3247d5bbbcd vs manifest a3247d5bbbcd
+OK   snapshot business_period  ae2c877e1ad8 vs manifest ae2c877e1ad8
+OK   snapshot driver_month     c53a40b8f76d vs manifest c53a40b8f76d
+OK   live-vs-snapshot query 1: zetaris 4eca763444ad duckdb 4eca763444ad (18 rows)
+OK   live-vs-snapshot query 2: zetaris d28ca6f50732 duckdb d28ca6f50732 (7 rows)
+OK   live-vs-snapshot query 3: zetaris cbfcbda9b34f duckdb cbfcbda9b34f (8 rows)
