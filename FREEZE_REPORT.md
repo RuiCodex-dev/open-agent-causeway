@@ -95,3 +95,13 @@ Main report: `bench/report.md`, run 9, commit `353328b`, through Meterless Night
 2. **Video** (Tue): HyperFrames, made from real screen recordings of the UI and CLI. It covers the Nightshift receipts, the Zetaris USL and the live run, and the memory demo, with motion graphics and narration. It shows no mocked UI and no staged results.
 3. **Internal submit target:** Tue 27 Oct 22:00 CET; the deadline is 23:45 UTC.
 4. **Owner approval first:** making the repo public, publishing the video, sharing the deck and submitting on HackOS each wait for the owner's OK, relayed by the coordinator. A secret scan runs before the repo goes public.
+
+## 6. Addendum, Mon 26 Oct: live Zetaris re-check on the frozen code
+
+- **Eurostat changed under us, and parity caught it.** `sts_trtu_m` (retail volume) was republished on 24 Oct with September 2026 listed but not yet filled (`positions-with-no-data.time = [128]`). The Zetaris REST table, whose JSON schema was inferred on 22 Oct, could not read that (Spark `ArrayIndexOutOfBounds`); the other 6 series were fine. We recreated that one REST table with the same endpoint (`DROP LIGHTNING DATABASE TABLE` + the `CREATE` in `zetaris/sql/02_eurostat_rest.sql`). Live vs snapshot is again 5/5 tables and 3/3 join queries hash-identical (`docs/evidence/parity-2026-10-26-freeze.txt`).
+- **Known gap 5 showed up in the live hero, so it was fixed.** The Writer credited cocoa's -12.16 pp cost effect to the supplier change: a true number, wrong cause, and the headline verdict was not number-checked at all. This was a correctness fix, not a feature (`ac24f0c`). A clause that names one cause may now quote only that cause's figures plus the shared outcome. The verdict is checked for grounded, correctly attributed numbers; otherwise the code-built verdict replaces it.
+  - Live re-run on Zetaris through Nightshift: correct attribution, 0 struck (`docs/evidence/freeze-live-zetaris-run.json`).
+  - Bench run 10: 12/12, 2/2, 0 ungrounded, 1 strike, B11 unchanged.
+  - Tests: 74/74.
+- Gap 5 now reads: *the Verifier checks numbers, units, named causes and per-cause attribution; it does not judge wording such as "the majority of".*
+- Gap 4 is closed: the live Zetaris run was re-executed on the frozen code.
