@@ -1,0 +1,362 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Causeway — Open Agent Hackathon 2026, Track 02</title>
+<style>
+@font-face { font-family: "Source Serif 4"; src: url(fonts/source-serif-4-latin-400-normal.woff2) format("woff2"); font-weight: 400; }
+@font-face { font-family: "Source Serif 4"; src: url(fonts/source-serif-4-latin-600-normal.woff2) format("woff2"); font-weight: 600; }
+@font-face { font-family: "Source Serif 4"; src: url(fonts/source-serif-4-latin-700-normal.woff2) format("woff2"); font-weight: 700; }
+@font-face { font-family: "IBM Plex Sans"; src: url(fonts/ibm-plex-sans-latin-400-normal.woff2) format("woff2"); font-weight: 400; }
+@font-face { font-family: "IBM Plex Sans"; src: url(fonts/ibm-plex-sans-latin-500-normal.woff2) format("woff2"); font-weight: 500; }
+@font-face { font-family: "IBM Plex Sans"; src: url(fonts/ibm-plex-sans-latin-600-normal.woff2) format("woff2"); font-weight: 600; }
+@font-face { font-family: "IBM Plex Mono"; src: url(fonts/ibm-plex-mono-latin-400-normal.woff2) format("woff2"); font-weight: 400; }
+@font-face { font-family: "IBM Plex Mono"; src: url(fonts/ibm-plex-mono-latin-500-normal.woff2) format("woff2"); font-weight: 500; }
+
+:root {
+  --paper: #f6f3ec; --paper-2: #efeadf; --ink: #1c1f24; --rule: #d8d2c4; --muted: #6b6f76;
+  --signal: #1f5fbf; --support: #2f7a4f; --refute: #b4442e; --night: #14161a;
+  --serif: "Source Serif 4", Georgia, serif; --sans: "IBM Plex Sans", Helvetica, Arial, sans-serif; --mono: "IBM Plex Mono", Consolas, monospace;
+}
+@page { size: 1920px 1080px; margin: 0; }
+* { box-sizing: border-box; }
+html, body { margin: 0; padding: 0; background: #888; }
+body { font-family: var(--sans); color: var(--ink); -webkit-font-smoothing: antialiased; }
+.slide { width: 1920px; height: 1080px; position: relative; overflow: hidden; background: var(--paper); page-break-after: always; break-after: page; padding: 96px 120px 88px; display: flex; flex-direction: column; }
+.slide:last-child { page-break-after: auto; break-after: auto; }
+.kicker { font-family: var(--mono); font-size: 20px; letter-spacing: .14em; text-transform: uppercase; color: var(--signal); margin: 0 0 22px; }
+h1 { font-family: var(--serif); font-weight: 700; font-size: 72px; line-height: 1.05; margin: 0 0 28px; letter-spacing: -0.01em; max-width: 1500px; }
+h2 { font-family: var(--serif); font-weight: 600; font-size: 34px; margin: 0 0 14px; }
+p, li { font-size: 27px; line-height: 1.45; }
+p { margin: 0 0 18px; }
+.lede { font-size: 32px; line-height: 1.4; color: #34373d; max-width: 1450px; }
+.muted { color: var(--muted); }
+.foot { position: absolute; left: 120px; right: 120px; bottom: 40px; display: flex; justify-content: space-between; font-family: var(--mono); font-size: 16px; color: var(--muted); letter-spacing: .06em; border-top: 1px solid var(--rule); padding-top: 14px; }
+.cols { display: grid; gap: 64px; flex: 1; min-height: 0; }
+.c2 { grid-template-columns: 1fr 1fr; } .c3 { grid-template-columns: 1fr 1fr 1fr; } .c-wide { grid-template-columns: 1.55fr 1fr; } .c-narrow { grid-template-columns: 1fr 1.45fr; }
+ul.clean { list-style: none; padding: 0; margin: 0; }
+ul.clean li { padding: 14px 0; border-bottom: 1px solid var(--rule); }
+ul.clean li:first-child { border-top: 1px solid var(--rule); }
+b, strong { font-weight: 600; }
+.shot { border: 1px solid var(--rule); box-shadow: 0 18px 40px -22px rgba(28,31,36,.45); background: #fff; display: block; max-width: 100%; }
+.cap { font-family: var(--mono); font-size: 17px; color: var(--muted); margin-top: 12px; letter-spacing: .02em; }
+.tag { display: inline-block; font-family: var(--mono); font-size: 17px; letter-spacing: .08em; text-transform: uppercase; border: 1.5px solid currentColor; padding: 3px 10px; border-radius: 2px; }
+.ok { color: var(--support); } .no { color: var(--refute); } .sig { color: var(--signal); }
+table { border-collapse: collapse; width: 100%; font-size: 25px; }
+th, td { text-align: left; padding: 14px 16px; border-bottom: 1px solid var(--rule); vertical-align: top; }
+th { font-family: var(--mono); font-size: 17px; letter-spacing: .08em; text-transform: uppercase; color: var(--muted); font-weight: 500; }
+.num { font-family: var(--serif); font-weight: 700; font-size: 96px; line-height: 1; }
+.stat { border-top: 3px solid var(--ink); padding-top: 18px; }
+.stat p { font-size: 24px; margin-top: 10px; }
+.note { background: var(--paper-2); border-left: 4px solid var(--refute); padding: 22px 28px; }
+.note p { font-size: 25px; }
+.spons { display: flex; gap: 22px; flex-wrap: wrap; margin-top: 18px; }
+.spons span { font-family: var(--mono); font-size: 20px; letter-spacing: .06em; border: 1px solid var(--ink); padding: 10px 18px; }
+
+/* cover */
+.cover { background: var(--night); color: #ece8df; justify-content: flex-end; padding-bottom: 120px; }
+.cover .kicker { color: #8fb3ec; }
+.cover h1 { font-size: 168px; margin-bottom: 18px; color: #f6f3ec; }
+.cover .lede { color: #cfcabf; font-size: 40px; font-family: var(--serif); font-style: normal; }
+.cover .spons span { border-color: #6b6f76; color: #ece8df; }
+.cover .foot { color: #8b8e94; border-top-color: #34373d; }
+.cover .rule { position: absolute; top: 96px; left: 120px; right: 120px; display: flex; justify-content: space-between; font-family: var(--mono); font-size: 19px; color: #8b8e94; letter-spacing: .12em; text-transform: uppercase; }
+
+/* architecture */
+svg text { font-family: var(--sans); }
+</style>
+</head>
+<body>
+
+<!-- 1 Cover -->
+<section class="slide cover">
+  <div class="rule"><span>Open Agent Hackathon 2026</span><span>Track 02 · The Agent That Can Explain Why</span></div>
+  <p class="kicker">Rui Codex</p>
+  <h1>Causeway</h1>
+  <p class="lede">The agent that argues with itself before it tells you why.</p>
+  <div class="spons"><span>Zetaris</span><span>Meterless · Nightshift</span><span>NVIDIA Nemotron</span><span>Cursor</span></div>
+  <div class="foot"><span>Small-business “why” questions, answered with evidence</span><span>October 2026</span></div>
+</section>
+
+<!-- 2 Problem -->
+<section class="slide">
+  <p class="kicker">The problem</p>
+  <h1>“Why did our margin fall?” is asked every quarter, and answered with a guess.</h1>
+  <div class="cols c2" style="margin-top:28px">
+    <div>
+      <h2>Who asks</h2>
+      <ul class="clean">
+        <li>Owner-managers of small Belgian businesses, such as a chocolatier, a café or a bike shop (the demo businesses are synthetic).</li>
+        <li>The accountants who advise them and have to explain the numbers.</li>
+      </ul>
+    </div>
+    <div>
+      <h2>Why it is hard</h2>
+      <ul class="clean">
+        <li>The ledger lives in one system; the drivers that might explain it (cocoa, energy, tourism, retail volume, bankruptcies) live at Eurostat.</li>
+        <li>A chatbot writes a fluent paragraph of “possible reasons”. Nobody can check its numbers, and rival explanations are never tested.</li>
+      </ul>
+    </div>
+  </div>
+  <div class="foot"><span>Causeway</span><span>02</span></div>
+</section>
+
+<!-- 3 Solution -->
+<section class="slide">
+  <p class="kicker">What Causeway does</p>
+  <div class="cols c-narrow">
+    <div>
+      <h1 style="font-size:60px">An investigation, not a paragraph.</h1>
+      <ul class="clean">
+        <li>Proposes rival causes, tests each one with SQL on the owner’s ledger joined to live public data.</li>
+        <li>A Skeptic with veto power forces the confounder tests (Easter timing, own price changes).</li>
+        <li>Every claim on the answer card links to the query that produced its number.</li>
+        <li>Owner memory changes the next answer.</li>
+      </ul>
+    </div>
+    <div>
+      <img class="shot" src="assets/answer.png" alt="Causeway answer after a live run">
+      <p class="cap">Real run · Zetaris live · Nemotron via Meterless Nightshift · 30 Zetaris queries</p>
+    </div>
+  </div>
+  <div class="foot"><span>Causeway</span><span>03</span></div>
+</section>
+
+<!-- 4 Architecture -->
+<section class="slide" style="padding-bottom:70px">
+  <p class="kicker">Agent workflow</p>
+  <h1 style="font-size:56px;margin-bottom:18px">Eight agents, one shared evidence graph. Models propose; code decides.</h1>
+  <svg viewBox="0 0 1680 760" width="1680" height="760" aria-label="Causeway architecture">
+    <defs>
+      <marker id="a" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="8" markerHeight="8" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" fill="#1c1f24"/></marker>
+      <marker id="r" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="8" markerHeight="8" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" fill="#b4442e"/></marker>
+    </defs>
+    <style>
+      .bx{fill:#fff;stroke:#1c1f24;stroke-width:1.6}
+      .llm{fill:#eef3fb;stroke:#1f5fbf}
+      .code{fill:#eef6f1;stroke:#2f7a4f}
+      .t{font-size:22px;font-weight:600;fill:#1c1f24}
+      .s{font-size:16px;fill:#4d5158}
+      .ln{stroke:#1c1f24;stroke-width:1.8;fill:none}
+      .lr{stroke:#b4442e;stroke-width:2;fill:none;stroke-dasharray:7 6}
+      .band{fill:#efeadf;stroke:#d8d2c4}
+      .bl{font-family:"IBM Plex Mono";font-size:15px;letter-spacing:.1em;fill:#6b6f76}
+    </style>
+    <!-- top row: agents -->
+    <rect class="bx" x="0" y="20" width="170" height="92" rx="3"/><text class="t" x="20" y="58">Question</text><text class="s" x="20" y="86">owner, in words</text>
+    <rect class="bx llm" x="210" y="20" width="170" height="92" rx="3"/><text class="t" x="230" y="58">Guard</text><text class="s" x="230" y="86">Content Safety</text>
+    <rect class="bx llm" x="420" y="20" width="190" height="92" rx="3"/><text class="t" x="440" y="58">Framer</text><text class="s" x="440" y="86">stated terms → code</text>
+    <rect class="bx" x="650" y="20" width="210" height="92" rx="3"/><text class="t" x="670" y="58">Memory Keeper</text><text class="s" x="670" y="86">H-MEM recall</text>
+    <rect class="bx llm" x="900" y="20" width="210" height="92" rx="3"/><text class="t" x="920" y="58">Hypothesiser</text><text class="s" x="920" y="86">typed catalogue</text>
+    <rect class="bx code" x="1150" y="20" width="230" height="92" rx="3"/><text class="t" x="1170" y="58">Analyst</text><text class="s" x="1170" y="86">SQL on Zetaris → rules</text>
+    <rect class="bx llm" x="1420" y="20" width="250" height="92" rx="3"/><text class="t" x="1440" y="58">Skeptic · veto</text><text class="s" x="1440" y="86">names a confounder</text>
+    <path class="ln" d="M170,66 H206" marker-end="url(#a)"/><path class="ln" d="M380,66 H416" marker-end="url(#a)"/><path class="ln" d="M610,66 H646" marker-end="url(#a)"/>
+    <path class="ln" d="M860,66 H896" marker-end="url(#a)"/><path class="ln" d="M1110,66 H1146" marker-end="url(#a)"/><path class="ln" d="M1380,66 H1416" marker-end="url(#a)"/>
+    <!-- skeptic loop back to analyst -->
+    <path class="lr" d="M1545,112 C1545,180 1265,180 1265,116" marker-end="url(#r)"/>
+    <text class="s" x="1300" y="196" style="fill:#b4442e">untested confounder → back to the Analyst (≤ 2 rounds)</text>
+    <!-- second row -->
+    <rect class="bx llm" x="1150" y="250" width="230" height="92" rx="3"/><text class="t" x="1170" y="288">Writer</text><text class="s" x="1170" y="316">prose only, 1 revision</text>
+    <rect class="bx code" x="1420" y="250" width="250" height="92" rx="3"/><text class="t" x="1440" y="288">Verifier · veto</text><text class="s" x="1440" y="316">re-runs every query</text>
+    <path class="ln" d="M1545,112 V180" style="display:none"/>
+    <path class="ln" d="M1265,116 V246" marker-end="url(#a)"/>
+    <path class="ln" d="M1380,296 H1416" marker-end="url(#a)"/>
+    <path class="lr" d="M1545,342 C1545,400 1265,400 1265,346" marker-end="url(#r)"/>
+    <text class="s" x="1290" y="420" style="fill:#b4442e">struck claim → rewrite once</text>
+    <rect class="bx" x="840" y="250" width="270" height="92" rx="3" style="fill:#1c1f24"/><text class="t" x="860" y="288" style="fill:#f6f3ec">Explanation card</text><text class="s" x="860" y="316" style="fill:#cfcabf">every claim → its query</text>
+    <path class="ln" d="M1150,296 H1114" marker-end="url(#a)"/>
+    <!-- sponsor bands -->
+    <rect class="band" x="0" y="470" width="1680" height="120" rx="3"/>
+    <text class="bl" x="20" y="500">MODELS · METERLESS NIGHTSHIFT (PRIMARY PROVIDER) → NVIDIA NEMOTRON 3.5</text>
+    <text class="s" x="20" y="535" style="font-size:19px">Framer, Hypothesiser, Skeptic and Writer calls are routed by Nightshift; signed receipts record the routed model.</text>
+    <text class="s" x="20" y="565" style="font-size:19px">One scope per investigation, so the runtime’s own memory and answer cache never cross runs. Failover: NVIDIA direct, then Nebius.</text>
+    <rect class="band" x="0" y="610" width="820" height="140" rx="3"/>
+    <text class="bl" x="20" y="640">DATA · ZETARIS LIGHTNING</text>
+    <text class="s" x="20" y="675" style="font-size:19px">USL “causeway”: ledger datasource (PostgreSQL)</text>
+    <text class="s" x="20" y="703" style="font-size:19px">+ 7 Eurostat REST tables, 5 tables, 4 foreign keys.</text>
+    <text class="s" x="20" y="731" style="font-size:19px">Only data path; a snapshot replays hash-identical.</text>
+    <rect class="band" x="860" y="610" width="820" height="140" rx="3"/>
+    <text class="bl" x="880" y="640">STATE · METERLESS ENGINES</text>
+    <text class="s" x="880" y="675" style="font-size:19px">World Model: shared evidence graph for all agents.</text>
+    <text class="s" x="880" y="703" style="font-size:19px">H-MEM: owner facts + verdicts + trust ledger.</text>
+    <text class="s" x="880" y="731" style="font-size:19px">Markovian: bounded carryover between rounds.</text>
+    <path class="ln" d="M1265,112 V0" style="display:none"/>
+  </svg>
+  <div class="foot" style="bottom:28px"><span>Blue: model proposes · Green: code decides · Red: veto loops</span><span>04</span></div>
+</section>
+
+<!-- 5 Code decides -->
+<section class="slide">
+  <p class="kicker">Explainable by construction</p>
+  <h1>No model writes SQL or issues a verdict.</h1>
+  <table style="margin-top:12px">
+    <tr><th style="width:24%">Step</th><th style="width:30%">Model (Nemotron)</th><th>Code</th></tr>
+    <tr><td><b>Frame</b></td><td>fills what the words leave open</td><td>a metric or period the question <b>states</b> is parsed by code and wins</td></tr>
+    <tr><td><b>Hypothesise</b></td><td>proposes rival causes</td><td>typed catalogue; out-of-catalogue proposals are rejected</td></tr>
+    <tr><td><b>Test</b></td><td>—</td><td>SQL on the Zetaris USL; z-scores, lagged association, contribution share; a <b>rule table</b> decides supported / contradicted</td></tr>
+    <tr><td><b>Challenge</b></td><td>Skeptic names a confounder</td><td>the confounder is tested; “nothing explains it” is challenged too</td></tr>
+    <tr><td><b>Explain</b></td><td>Writer drafts prose</td><td>Verifier re-executes queries (hash match); strikes numbers not in the evidence, wrong pp units, untested causes and numbers credited to the wrong cause</td></tr>
+  </table>
+  <div class="foot"><span>Causeway</span><span>05</span></div>
+</section>
+
+<!-- 6 Zetaris -->
+<section class="slide">
+  <p class="kicker">Zetaris · the only data path</p>
+  <div class="cols c-wide">
+    <div style="display:flex;flex-direction:column;gap:22px;min-height:0">
+      <img class="shot" src="assets/zetaris_usl_erd.png" alt="Zetaris Unified Semantic Layer causeway" style="max-height:400px;width:100%;object-fit:cover;object-position:top">
+      <img class="shot" src="assets/zetaris_sql_crop.png" alt="Federated query in the Zetaris SQL Workspace" style="width:100%">
+      <p class="cap" style="margin:0">Real Zetaris UI · USL “causeway” · SQL Workspace: synthetic ledger × live Eurostat cocoa index</p>
+    </div>
+    <div>
+      <h1 style="font-size:52px">Ledger and public drivers in one semantic layer.</h1>
+      <ul class="clean">
+        <li><b>Federated:</b> PostgreSQL ledger datasource + 7 Eurostat REST tables, unified in the USL <span style="font-family:var(--mono);font-size:23px">causeway</span> (5 tables, 4 foreign keys).</li>
+        <li><b>Every number has a query:</b> the Analyst only runs SQL on the USL; each result is hashed and cited.</li>
+        <li><b>Replayable:</b> a snapshot of the USL replays hash-identical (5/5 tables, 3/3 joins).</li>
+        <li><b>Live data moves:</b> on 24 Oct Eurostat republished retail volume with an empty month; the parity check caught it, and one REST table was recreated.</li>
+      </ul>
+    </div>
+  </div>
+  <div class="foot"><span>Causeway</span><span>06</span></div>
+</section>
+
+<!-- 7 Meterless -->
+<section class="slide">
+  <p class="kicker">Meterless · Nightshift and the engines</p>
+  <div class="cols" style="grid-template-columns: 1.35fr 1fr; gap:56px">
+    <div>
+      <img class="shot" src="assets/nightshift.png" alt="Nightshift live field showing the Causeway job" style="background:#14161a;width:100%">
+      <p class="cap">Real Nightshift 1.2.3 window · live job “[Causeway]” · attempts and requests rise while Causeway runs</p>
+    </div>
+    <div>
+      <h1 style="font-size:46px;margin-bottom:18px">Nightshift is the primary provider.</h1>
+      <ul class="clean">
+        <li style="font-size:23px"><b>Every reasoning call</b> is routed by Nightshift to Nemotron 3.5, and receipts record the routed model: 316 calls across 7 Bench runs, all answered, 0 failovers.</li>
+        <li style="font-size:23px"><b>One scope per investigation.</b> Nightshift injected its own stored memories into our prompts; a per-run scope keeps every run independent.</li>
+        <li style="font-size:23px"><b>H-MEM</b> holds what the owner confirmed · <b>World Model</b> is the evidence graph · <b>Markovian</b> carries state between Skeptic rounds.</li>
+      </ul>
+      <img class="shot" src="assets/trace.png" alt="Causeway trace: guard on NVIDIA, reasoning through Meterless" style="width:100%;margin-top:22px">
+      <p class="cap">Causeway trace · guard → NVIDIA · reasoning → provider “meterless”</p>
+    </div>
+  </div>
+  <div class="foot"><span>Causeway</span><span>07</span></div>
+</section>
+
+<!-- 8 Memory -->
+<section class="slide">
+  <p class="kicker">Memory changes the answer</p>
+  <div class="cols" style="grid-template-columns:1fr 640px;gap:72px">
+    <div>
+      <h1 style="font-size:54px">The owner adds one fact. The next answer tests it.</h1>
+      <p class="lede" style="font-size:28px">“We switched to a more expensive single-origin couverture supplier in May 2025.” It is stored in H-MEM, mapped to a testable cause with a start month, and recalled before the next investigation.</p>
+      <img class="shot" src="assets/memory_card.png" alt="Owner fact in memory panel" style="margin-top:26px">
+    </div>
+    <div>
+      <img class="shot" src="assets/memory_answer.png" alt="Re-ask showing supplier change supported and a before/now table" style="max-height:640px">
+      <p class="cap">Real re-ask on Zetaris: supplier change goes from “not tested” to “supported” (unit-cost step z = 11.36), after surviving the Skeptic’s Easter challenge</p>
+    </div>
+  </div>
+  <div class="foot"><span>Causeway</span><span>08</span></div>
+</section>
+
+<!-- 9 Evidence -->
+<section class="slide">
+  <p class="kicker">Every claim has a receipt</p>
+  <div class="cols" style="grid-template-columns: 1fr 470px">
+    <div>
+      <h1 style="font-size:58px">Click any claim: the SQL, the rows and the hash.</h1>
+      <ul class="clean">
+        <li>The Verifier <b>re-executes every cited query</b> and compares the result hash before the owner sees the card.</li>
+        <li>It <b>strikes</b> a claim whose number is in no evidence, whose “percentage points” are not pp in the evidence, that names a cause never tested, or that credits a number to the wrong cause.</li>
+        <li>A struck claim goes back to the Writer once; the headline verdict falls back to a code-built one.</li>
+      </ul>
+    </div>
+    <div>
+      <img class="shot" src="assets/evidence_drawer.png" alt="Evidence drawer with SQL, rows and sha256" style="max-height:830px">
+    </div>
+  </div>
+  <div class="foot"><span>Causeway</span><span>09</span></div>
+</section>
+
+<!-- 10 Bench -->
+<section class="slide">
+  <p class="kicker">Causeway Bench · measured, not claimed</p>
+  <h1 style="font-size:54px;margin-bottom:34px">12 cases on 8 synthetic businesses with a hidden ground truth, driven by real Eurostat series.</h1>
+  <div class="cols c3" style="flex:0 0 auto;gap:48px">
+    <div class="stat"><div class="num">12/12</div><p>main cause found</p></div>
+    <div class="stat"><div class="num">2/2</div><p>“nothing external explains it” controls passed</p></div>
+    <div class="stat"><div class="num">0</div><p>ungrounded numbers in the final prose</p></div>
+  </div>
+  <div class="cols c2" style="margin-top:40px;gap:56px">
+    <div class="note" style="align-self:start">
+      <p><b>One false support, in every run (B11).</b> For a bike shop, Belgian retail bankruptcies rose 11 % and track the synthetic sales at r = 0.54, which passes a rule a shared trend can satisfy. It is a clean holdout case, so we report it instead of tuning the rule after seeing it.</p>
+    </div>
+    <div>
+      <p style="font-size:24px">Run through Meterless Nightshift, snapshot of the Zetaris USL. Tune/holdout split; holdout cases that ever prompted a fix are listed as no longer clean. Every run, including a miss (11/12 before a Framer fix), is in <span style="font-family:var(--mono);font-size:21px">bench/RUNS.md</span>.</p>
+      <p class="muted" style="font-size:22px">Measures recovery of planted causes, not real-world causality.</p>
+    </div>
+  </div>
+  <div class="foot"><span>Causeway</span><span>10</span></div>
+</section>
+
+<!-- 11 Stack -->
+<section class="slide">
+  <p class="kicker">Technical stack and sponsor technology</p>
+  <h1 style="font-size:56px">Built to be run by someone else.</h1>
+  <div class="cols c2" style="gap:72px;align-items:start">
+    <table>
+      <tr><th style="width:34%">Layer</th><th>Choice</th></tr>
+      <tr><td><b>Data</b></td><td>Zetaris Lightning (local Docker): USL, JDBC ledger datasource, REST tables; DuckDB snapshot replay</td></tr>
+      <tr><td><b>Models</b></td><td>NVIDIA Nemotron 3.5 Lightning, Super, Content Safety; Nebius failover</td></tr>
+      <tr><td><b>Runtime</b></td><td>Meterless Nightshift (provider contract v4), World Model, H-MEM, Markovian (vendored, unmodified, conformance 8/8, 13/13, 8/8)</td></tr>
+      <tr><td><b>App</b></td><td>TypeScript, Node 22, Fastify API + SSE, React UI, zod, 74 unit tests, Docker</td></tr>
+    </table>
+    <div>
+      <h2>Cursor</h2>
+      <p>Headless Cursor sessions built the scaffold, the Meterless Runtime provider, the web UI and the README draft; every session is logged in the repo.</p>
+      <h2 style="margin-top:30px">Run it</h2>
+      <p style="font-family:var(--mono);font-size:22px;background:var(--paper-2);padding:18px 22px">docker compose up<br>npm run ask -- --input input_examples/example_1.json</p>
+      <p class="muted" style="font-size:22px">An empty .env runs the full loop on the bundled Zetaris snapshot with the offline reasoner. A fresh clone from GitHub passes the Docker test (16/16).</p>
+    </div>
+  </div>
+  <div class="foot"><span>Causeway</span><span>11</span></div>
+</section>
+
+<!-- 12 Unique + next -->
+<section class="slide">
+  <p class="kicker">What is different, and what comes next</p>
+  <div class="cols c2" style="gap:80px">
+    <div>
+      <h1 style="font-size:50px">Unique</h1>
+      <ul class="clean">
+        <li><b>Adversarial and auditable:</b> a Skeptic and a Verifier both hold vetoes; every number is a re-runnable Zetaris query.</li>
+        <li><b>Sponsor tech doing real work:</b> Zetaris federates private and public data; Nightshift routes the reasoning; H-MEM turns an owner’s sentence into a test.</li>
+        <li><b>Honest evaluation:</b> a public bench with its failures left in.</li>
+      </ul>
+    </div>
+    <div>
+      <h1 style="font-size:50px">Next</h1>
+      <ul class="clean">
+        <li>Connect real accounting ledgers through Zetaris datasources, in place of the synthetic ones.</li>
+        <li>An accountant view across many client businesses.</li>
+        <li>More drivers (wages, rents, weather, local events) and a stricter association rule, measured on new holdout cases.</li>
+        <li>Monthly watch: re-run the question when Eurostat publishes.</li>
+      </ul>
+    </div>
+  </div>
+  <div class="foot"><span>Causeway</span><span>12</span></div>
+</section>
+
+<!-- 13 Close -->
+<section class="slide cover" style="justify-content:center">
+  <p class="kicker">Causeway · Rui Codex</p>
+  <h1 style="font-size:96px;max-width:1500px">Ask why. Get the evidence, not a guess.</h1>
+  <p class="lede">Source, README and Bench: github.com/RuiCodex-dev/open-agent-causeway</p>
+  <div class="spons"><span>Zetaris</span><span>Meterless · Nightshift</span><span>NVIDIA Nemotron</span><span>Cursor</span></div>
+  <div class="foot"><span>Business ledgers in the demo are synthetic and labelled; public drivers are real Eurostat series.</span><span>13</span></div>
+</section>
+
+</body>
+</html>

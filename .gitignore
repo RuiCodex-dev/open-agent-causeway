@@ -14,3 +14,4 @@ ui/dist/
 .vite/
 tmp/
 data/memory/
+deck/preview/
