@@ -15,7 +15,7 @@ evidence behind every sentence. It runs an investigation instead of writing a pa
 - each one is tested with SQL on Zetaris, joining the owner's ledger with live Eurostat drivers, and decided by a rule
   table in code;
 - a Skeptic agent with veto power forces confounder tests (Easter timing, own price changes) before any verdict stands;
-- a Verifier re-executes every cited query and strikes any number not in the evidence.
+- a Verifier re-executes every cited query and strikes any number not in the evidence or credited to the wrong cause.
 
 Models propose, code decides: no model writes SQL or issues a verdict.
 
